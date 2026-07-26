@@ -49,79 +49,69 @@ This is a custom fork of Hermes Agent **modified and maintained by Ahlfs**, feat
 2. **Automated Config Backup**
    - Backs up your `~/.hermes` configs, custom skills, and memories to a separate private GitHub repo via a scheduled cron job (default: every 24h).
 
-### Setup Instructions
+## Quick Install & Setup
 
-1. **Install OS Dependencies**
-   The Second Brain pipeline requires `ffmpeg` (for audio) and `tesseract-ocr` (for images).
-   ```bash
-   sudo apt update
-   sudo apt install ffmpeg tesseract-ocr
-   ```
+Follow these steps to install the LAM-Cyberlab compatible version of Hermes Agent.
 
-2. **Initialize the Python Environment**
-   Run the setup script to create an isolated virtual environment for the Second Brain tools:
-   ```bash
-   bash scripts/second-brain/setup-venv.sh
-   ```
-
-3. **Configure Environment Variables**
-   Open your `~/.hermes/.env` file and add the following at the bottom:
-   ```ini
-   # Directory of your Obsidian Vault (Second Brain)
-   OBSIDIAN_VAULT_DIR=/home/user/obsidian/memo
-
-   # GitHub Backup Settings
-   GITHUB_USERNAME=your_github_username
-   GITHUB_REPO_CONFIG=hermes-config
-   GITHUB_REPO_SECONDBRAIN=second-brain
-   ```
-
-4. **Connect GitHub via SSH**
-   Ensure your machine is connected to GitHub via SSH. The automated backups rely on SSH keys to push changes without requiring passwords.
-   ```bash
-   ssh-keygen -t ed25519
-   # Add the public key (~/.ssh/id_ed25519.pub) to your GitHub account
-   ```
-
-5. **Start Using It!**
-   - Tell Hermes: *"Learn from this [link] and add it to my Second Brain."*
-   - Or drop files directly into your Obsidian Vault's `01-Audio` or `02-Documents` folders.
-   - Hermes will automatically run the synchronization pipeline every 30 minutes in the background, extracting knowledge, formatting it, and pushing it to GitHub!
-
----
-
-## Quick Install
-
-### Linux, macOS, WSL2, Termux
-
+### 1. Install OS Dependencies
+The Second Brain pipeline requires `ffmpeg` (for audio) and `tesseract-ocr` (for images).
 ```bash
+sudo apt update
+sudo apt install ffmpeg tesseract-ocr
+```
+
+### 2. Install Hermes Base & Swap to Custom Fork
+First, use the official installer to set up the necessary runtimes (Node.js, uv, PATH wrapper), then replace the source code with this custom repository.
+
+**Linux / macOS / WSL2:**
+```bash
+# Install the base environment
 curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash
+
+# Replace official repo with the Ahlfs custom fork
+rm -rf ~/.hermes/hermes-agent
+git clone https://github.com/ahlfs/hermes-agent.git ~/.hermes/hermes-agent
+
+# Re-sync dependencies
+cd ~/.hermes/hermes-agent
+~/.hermes/bin/uv pip install -e ".[all]"
 ```
 
-### Windows (native, PowerShell)
+> **Windows Native:** Run `iex (irm https://hermes-agent.nousresearch.com/install.ps1)` in PowerShell, then delete `%LOCALAPPDATA%\hermes\hermes-agent` and `git clone https://github.com/ahlfs/hermes-agent.git` in its place.
 
-> **Heads up:** Native Windows runs Hermes without WSL — CLI, gateway, TUI, and tools all work natively. If you'd rather use WSL2, the Linux/macOS one-liner above works there too. Found a bug? Please [file issues](https://github.com/NousResearch/hermes-agent/issues).
-
-Run this in PowerShell:
-
-```powershell
-iex (irm https://hermes-agent.nousresearch.com/install.ps1)
+### 3. Initialize Second Brain Environment
+Run the setup script to create an isolated virtual environment specifically for the Second Brain tools:
+```bash
+bash scripts/second-brain/setup-venv.sh
 ```
 
-The installer handles everything: uv, Python 3.11, Node.js, ripgrep, ffmpeg, **and a portable Git Bash** (MinGit, unpacked to `%LOCALAPPDATA%\hermes\git` — no admin required, completely isolated from any system Git install). Hermes uses this bundled Git Bash to run shell commands.
+### 4. Configure Environment Variables
+Open your `~/.hermes/.env` file and add the following settings at the bottom:
+```ini
+# Directory of your Obsidian Vault (Second Brain)
+OBSIDIAN_VAULT_DIR=/home/user/obsidian/memo
 
-If you already have Git installed, the installer detects it and uses that instead. Otherwise a ~45MB MinGit download is all you need — it won't touch or interfere with any system Git.
+# GitHub Backup Settings (Optional: for automated cloud backup)
+GITHUB_USERNAME=your_github_username
+GITHUB_REPO_CONFIG=hermes-config
+GITHUB_REPO_SECONDBRAIN=second-brain
+```
 
-> **Android / Termux:** The tested manual path is documented in the [Termux guide](https://hermes-agent.nousresearch.com/docs/getting-started/termux). On Termux, Hermes installs a curated `.[termux]` extra because the full `.[all]` extra currently pulls Android-incompatible voice dependencies.
->
-> **Windows:** Native Windows is fully supported — the PowerShell one-liner above installs everything. If you'd rather use WSL2, the Linux command works there too. Native Windows install lives under `%LOCALAPPDATA%\hermes`; WSL2 installs under `~/.hermes` as on Linux.
+### 5. Connect GitHub via SSH (Optional)
+If you configured the GitHub Backup Settings above, ensure your machine is connected to GitHub via SSH. The automated backups rely on SSH keys to push changes without requiring passwords.
+```bash
+ssh-keygen -t ed25519
+# Add the public key (~/.ssh/id_ed25519.pub) to your GitHub account
+```
 
-After installation:
-
+### 6. Start Using It!
+Reload your shell and start the agent:
 ```bash
 source ~/.bashrc    # reload shell (or: source ~/.zshrc)
 hermes              # start chatting!
 ```
+- Tell Hermes: *"Learn from this [link] and add it to my Second Brain."*
+- Or drop files directly into your Obsidian Vault's `01-Audio` or `02-Documents` folders. Hermes will automatically run the synchronization pipeline every 30 minutes in the background!
 
 ### Troubleshooting
 
