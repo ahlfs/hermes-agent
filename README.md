@@ -16,6 +16,10 @@
   <a href="README.es.md"><img src="https://img.shields.io/badge/Lang-Español-orange?style=for-the-badge" alt="Español"></a>
 </p>
 
+> **⚠️ CUSTOM FORK FOR LAM-CYBERLAB**
+>
+> This repository is a heavily modified version of Hermes Agent by **Ahlfs**. It is specifically designed to be fully compatible as the backend intelligence engine for **[LAM-Cyberlab](https://github.com/ahlfs/LAM-Cyberlab)**. See the [Second Brain Edition](#-second-brain-edition-custom-fork) section below for details on custom features.
+
 **The self-improving AI agent built by [Nous Research](https://nousresearch.com).** It's the only agent with a built-in learning loop — it creates skills from experience, improves them during use, nudges itself to persist knowledge, searches its own past conversations, and builds a deepening model of who you are across sessions. Run it on a $5 VPS, a GPU cluster, or serverless infrastructure that costs nearly nothing when idle. It's not tied to your laptop — talk to it from Telegram while it works on a cloud VM.
 
 Use any model you want — [Nous Portal](https://portal.nousresearch.com), OpenRouter, OpenAI, your own endpoint, and [many others](https://hermes-agent.nousresearch.com/docs/integrations/providers). Switch with `hermes model` — no code changes, no lock-in.
@@ -29,6 +33,60 @@ Use any model you want — [Nous Portal](https://portal.nousresearch.com), OpenR
 <tr><td><b>Runs anywhere, not just your laptop</b></td><td>Six terminal backends — local, Docker, SSH, Singularity, Modal, and Daytona. Daytona and Modal offer serverless persistence — your agent's environment hibernates when idle and wakes on demand, costing nearly nothing between sessions. Run it on a $5 VPS or a GPU cluster.</td></tr>
 <tr><td><b>Research-ready</b></td><td>Batch trajectory generation, trajectory compression for training the next generation of tool-calling models.</td></tr>
 </table>
+
+---
+
+## 🧠 Second Brain Edition (Custom Fork)
+
+This is a custom fork of Hermes Agent **modified and maintained by Ahlfs**, featuring an autonomous **Second Brain** pipeline and automated GitHub configuration backups.
+
+### Features
+1. **Automated Second Brain Pipeline**
+   - **Audio Transcription**: Drops an `.mp3` into `01-Audio` and Hermes automatically transcribes it using Whisper.
+   - **Document Parsing**: Parses `.pdf` and performs OCR on images dropped into `02-Documents`.
+   - **Wiki Generation**: Synthesizes transcripts and documents into interlinked Wikipedia-style markdown files in `04-Wiki`.
+   - **Git Backup**: Automatically commits and pushes new knowledge to a private GitHub repository.
+2. **Automated Config Backup**
+   - Backs up your `~/.hermes` configs, custom skills, and memories to a separate private GitHub repo via a scheduled cron job (default: every 24h).
+
+### Setup Instructions
+
+1. **Install OS Dependencies**
+   The Second Brain pipeline requires `ffmpeg` (for audio) and `tesseract-ocr` (for images).
+   ```bash
+   sudo apt update
+   sudo apt install ffmpeg tesseract-ocr
+   ```
+
+2. **Initialize the Python Environment**
+   Run the setup script to create an isolated virtual environment for the Second Brain tools:
+   ```bash
+   bash scripts/second-brain/setup-venv.sh
+   ```
+
+3. **Configure Environment Variables**
+   Open your `~/.hermes/.env` file and add the following at the bottom:
+   ```ini
+   # Directory of your Obsidian Vault (Second Brain)
+   OBSIDIAN_VAULT_DIR=/home/user/obsidian/memo
+
+   # GitHub Backup Settings
+   GITHUB_USERNAME=your_github_username
+   GITHUB_REPO_CONFIG=hermes-config
+   GITHUB_REPO_SECONDBRAIN=second-brain
+   ```
+
+4. **Connect GitHub via SSH**
+   Ensure your machine is connected to GitHub via SSH. The automated backups rely on SSH keys to push changes without requiring passwords.
+   ```bash
+   ssh-keygen -t ed25519
+   # Add the public key (~/.ssh/id_ed25519.pub) to your GitHub account
+   ```
+
+5. **Start Using It!**
+   - Tell Hermes: *"Learn from this [link] and add it to my Second Brain."*
+   - Or drop files directly into your Obsidian Vault's `01-Audio` or `02-Documents` folders.
+   - Hermes will automatically run the synchronization pipeline every 30 minutes in the background, extracting knowledge, formatting it, and pushing it to GitHub!
 
 ---
 
