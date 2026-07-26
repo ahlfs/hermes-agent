@@ -1,0 +1,14 @@
+# Second Brain — Python dependencies
+# Install into an isolated venv:
+#   python3 -m venv ~/.hermes/venv-second-brain
+#   ~/.hermes/venv-second-brain/bin/pip install -r requirements-second-brain.txt
+
+# Audio transcription (Pass 1)
+faster-whisper>=1.1.0
+
+# PDF text extraction (Pass 2)
+pypdf>=4.0.0
+
+# Image OCR (Pass 2) — also requires `sudo apt install tesseract-ocr`
+pytesseract>=0.3.10
+Pillow>=10.0.0
