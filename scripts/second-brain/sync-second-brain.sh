@@ -74,4 +74,31 @@ echo "== Pass 5: cleanup source notes =="
 python3 "$SCRIPT_DIR/cleanup_sources.py" || true
 
 echo
+echo "== Pass 6: git auto-sync =="
+cd "$OBSIDIAN_VAULT_DIR"
+if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  # Auto-setup remote dari env vars jika belum ada
+  GH_USER="${GITHUB_USERNAME:-}"
+  GH_REPO="${GITHUB_REPO_SECONDBRAIN:-second-brain}"
+  if [ -n "$GH_USER" ] && ! git remote get-url origin >/dev/null 2>&1; then
+    REMOTE_URL="git@github.com:${GH_USER}/${GH_REPO}.git"
+    echo "Menambahkan remote origin: $REMOTE_URL"
+    git remote add origin "$REMOTE_URL"
+  fi
+
+  git add -A
+  if git diff --cached --quiet; then
+    echo "Tidak ada perubahan baru. Skip push."
+  else
+    TIMESTAMP=$(date '+%Y-%m-%d %H:%M')
+    git commit -m "knowledge-sync: $TIMESTAMP"
+    git push origin main && echo "Knowledge berhasil di-push ke GitHub!" \
+      || echo "Push gagal (mungkin offline). Commit tersimpan lokal."
+  fi
+else
+  echo "Vault belum di-init sebagai Git repo. Skip auto-sync."
+  echo "Jalankan: cd ~/obsidian/memo && git init && git remote add origin <url>"
+fi
+
+echo
 echo "Second brain sync complete."
