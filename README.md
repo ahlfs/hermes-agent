@@ -114,8 +114,17 @@ Reload your shell and start the agent:
 source ~/.bashrc    # reload shell (or: source ~/.zshrc)
 hermes              # start chatting!
 ```
-- Tell Hermes: *"Learn from this [link] and add it to my Second Brain."*
-- Or drop files directly into your Obsidian Vault's `01-Audio` or `02-Documents` folders. Hermes will automatically run the synchronization pipeline every 30 minutes in the background!
+### 7. Teaching Your Second Brain (Ingesting Knowledge)
+To provide your agent with new knowledge (meeting recordings, books, research papers, etc.), simply place the raw files into your designated Obsidian Vault directory (`OBSIDIAN_VAULT_DIR`):
+
+1. **Audio Files (`.mp3`, `.m4a`, `.wav`)**: Move them into the `01-Audio/` folder.
+2. **Documents & Images (`.pdf`, `.png`, `.jpg`)**: Move them into the `02-Documents/` folder.
+
+**What happens next?**
+- The agent automatically detects new files and runs the ingestion pipeline in the background. You can also force this manually by telling the agent: *"Learn from my new files in the vault."*
+- Audio is transcribed via Whisper; Documents and Images are parsed and OCR-ed.
+- The extracted information is synthesized into Wikipedia-style interconnected `.md` pages in your `04-Wiki/` folder.
+- **Auto-Cleanup**: Once the knowledge has been successfully converted into Wiki pages and safely backed up to your GitHub repository, the agent's **Full Source Cleanup Cascade** kicks in. It will automatically delete the large raw source files (`.mp3`, `.pdf`, etc.) from your `01-Audio` and `02-Documents` folders to keep your server lightweight.
 
 ---
 
