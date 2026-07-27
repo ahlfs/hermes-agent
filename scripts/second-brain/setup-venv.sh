@@ -99,22 +99,24 @@ echo "[OK] Dependencies installed successfully."
 echo
 echo "[INFO] Initializing Second Brain templates..."
 TEMPLATES_DIR="$SCRIPT_DIR/templates"
-HERMES_DIR="$HOME/.hermes"
+HERMES_MEMORIES_DIR="$HOME/.hermes/memories"
 
 if [ -d "$TEMPLATES_DIR" ]; then
-  if [ -f "$HERMES_DIR/MEMORY.md" ]; then
-    echo "[INFO] Backing up existing MEMORY.md..."
-    mv "$HERMES_DIR/MEMORY.md" "$HERMES_DIR/MEMORY.md.backup"
-  fi
-  echo "[INFO] Overwriting $HERMES_DIR/MEMORY.md with template..."
-  cp "$TEMPLATES_DIR/MEMORY.md" "$HERMES_DIR/MEMORY.md"
+  mkdir -p "$HERMES_MEMORIES_DIR"
 
-  if [ -f "$HERMES_DIR/USER.md" ]; then
-    echo "[INFO] Backing up existing USER.md..."
-    mv "$HERMES_DIR/USER.md" "$HERMES_DIR/USER.md.backup"
+  if [ -f "$HERMES_MEMORIES_DIR/MEMORY.md" ]; then
+    echo "[INFO] Backing up existing MEMORY.md..."
+    mv "$HERMES_MEMORIES_DIR/MEMORY.md" "$HERMES_MEMORIES_DIR/MEMORY.md.backup"
   fi
-  echo "[INFO] Overwriting $HERMES_DIR/USER.md with template..."
-  cp "$TEMPLATES_DIR/USER.md" "$HERMES_DIR/USER.md"
+  echo "[INFO] Overwriting $HERMES_MEMORIES_DIR/MEMORY.md with template..."
+  cp "$TEMPLATES_DIR/MEMORY.md" "$HERMES_MEMORIES_DIR/MEMORY.md"
+
+  if [ -f "$HERMES_MEMORIES_DIR/USER.md" ]; then
+    echo "[INFO] Backing up existing USER.md..."
+    mv "$HERMES_MEMORIES_DIR/USER.md" "$HERMES_MEMORIES_DIR/USER.md.backup"
+  fi
+  echo "[INFO] Overwriting $HERMES_MEMORIES_DIR/USER.md with template..."
+  cp "$TEMPLATES_DIR/USER.md" "$HERMES_MEMORIES_DIR/USER.md"
 fi
 
 echo
