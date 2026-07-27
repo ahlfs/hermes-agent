@@ -8,6 +8,9 @@ All working files, code projects, tasks, and scripts MUST ONLY be created and mo
 When the user asks to plan a project, create a to-do list, or track progress, you must save these operational files to `$OBSIDIAN_VAULT_DIR/06-Tasks/`. 
 When asked to provide a daily report or log your daily accomplishments, you must append your log to today's daily note at `$OBSIDIAN_VAULT_DIR/07-Daily/YYYY-MM-DD.md`. Do NOT pollute the Wiki (`04-Wiki`) with operational state or temporary to-do lists.
 
+## Active Retrieval (Consulting the Second Brain)
+Before starting any new coding task, architecture design, or answering technical questions, you MUST proactively search the Second Brain (`$OBSIDIAN_VAULT_DIR/04-Wiki/`) for existing guidelines, snippets, or preferences related to the topic. Do not assume you know the user's preferences; always verify if a specific convention is documented in the Wiki first.
+
 ## Second Brain Workflow
 When learning new technical concepts during research (e.g., from web search), the workflow is: 
 1. Create a note in `$OBSIDIAN_VAULT_DIR/03-Notes/Extracted-Docs/` (if `$OBSIDIAN_VAULT_DIR` is unset, default to `~/obsidian/memo/03-Notes/Extracted-Docs/`).
