@@ -122,20 +122,27 @@ GITHUB_REPO_CONFIG=hermes-config
 GITHUB_REPO_SECONDBRAIN=second-brain
 ```
 
-### 5. Connect GitHub via SSH (Optional)
+### 5. Initialize the Vault Structure
+To let Hermes automatically build the empty folder structure for you and verify your environment, run the sync script manually for the first time:
+```bash
+bash scripts/second-brain/sync-second-brain.sh
+```
+*(After this completes, you will find the `01-Audio`, `02-Documents`, and `04-Wiki` folders ready in your Vault.)*
+
+### 6. Connect GitHub via SSH (Optional)
 If you configured the GitHub Backup Settings above, ensure your machine is connected to GitHub via SSH. The automated backups rely on SSH keys to push changes without requiring passwords.
 ```bash
 ssh-keygen -t ed25519
 # Add the public key (~/.ssh/id_ed25519.pub) to your GitHub account
 ```
 
-### 6. Start Using It!
+### 7. Start Using It!
 Reload your shell and start the agent:
 ```bash
 source ~/.bashrc    # reload shell (or: source ~/.zshrc)
 hermes              # start chatting!
 ```
-### 7. Teaching Your Second Brain (Ingesting Knowledge)
+### 8. Teaching Your Second Brain (Ingesting Knowledge)
 To provide your agent with new knowledge (meeting recordings, books, research papers, etc.), simply place the raw files into your designated Obsidian Vault directory (`OBSIDIAN_VAULT_DIR`):
 
 1. **Audio Files (`.mp3`, `.m4a`, `.wav`)**: Move them into the `01-Audio/` folder.
