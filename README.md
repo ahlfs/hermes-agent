@@ -46,8 +46,12 @@ This is a custom fork of Hermes Agent **modified and maintained by Ahlfs**, feat
    - **Document Parsing**: Parses `.pdf` and performs OCR on images dropped into `02-Documents`.
    - **Wiki Generation**: Synthesizes transcripts and documents into interlinked Wikipedia-style markdown files in `04-Wiki`.
    - **Git Backup**: Automatically commits and pushes new knowledge to a private GitHub repository.
+   - **Full Source Cleanup Cascade**: Safely deletes the raw source files (`.mp3`, `.pdf`, etc.) from `01-Audio` and `02-Documents` *only after* the final knowledge has been successfully backed up to GitHub, keeping your vault lean.
 2. **Automated Config Backup**
    - Backs up your `~/.hermes` configs, custom skills, and memories to a separate private GitHub repo via a scheduled cron job (default: every 24h).
+3. **Dynamic Swarm Router (Intent-Based Routing)**
+   - Automatically intercepts and routes incoming messages to the most capable specialist sub-agent (`builder`, `researcher`, `writer`).
+   - Uses zero-latency keyword classification to infer user intent, providing a frictionless swarm experience without manual profile switching.
 
 ## Quick Install & Setup
 
