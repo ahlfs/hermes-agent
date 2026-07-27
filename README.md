@@ -191,6 +191,21 @@ GITHUB_REPO_SECONDBRAIN=second-brain
 If you want to force a backup immediately, you can command the agent directly in the chat:
 > *"Sync my Second Brain to GitHub now"* or *"Backup your config and skills to GitHub right away."*
 
+### 6. Restoring from Backup (New Machine / Reinstall)
+If you're setting up Hermes on a new server or reinstalling, you can automatically pull all your backed-up data (configs, skills, memories, and your entire Second Brain) from GitHub with a single command:
+```bash
+bash scripts/second-brain/restore-from-cloud.sh
+```
+
+**What the script does:**
+1. Reads `GITHUB_USERNAME`, `GITHUB_REPO_CONFIG`, `GITHUB_REPO_SECONDBRAIN`, and `OBSIDIAN_VAULT_DIR` from your `~/.hermes/.env`.
+2. Verifies SSH connectivity to GitHub.
+3. Clones your `hermes-config` repo and restores `skills/`, `profiles/`, `config.yaml`, `MEMORY.md`, and `SOUL.md` back into `~/.hermes/`.
+4. Clones your `second-brain` repo directly into your `OBSIDIAN_VAULT_DIR`. If the vault already exists as a Git repo, it performs a `git pull` instead.
+5. Cleans up temporary files.
+
+> **Prerequisites:** Make sure you have already completed Steps 1–4 of [Quick Install & Setup](#quick-install--setup) (OS dependencies, Hermes base install, venv setup, and `.env` configuration) before running this restore script.
+
 ---
 
 ### Troubleshooting

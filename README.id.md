@@ -188,6 +188,21 @@ GITHUB_REPO_SECONDBRAIN=second-brain
 Jika Anda ingin memaksakan pencadangan segera, Anda dapat memerintahkan agen secara langsung dalam obrolan:
 > *"Sinkronkan Second Brain saya ke GitHub sekarang"* atau *"Cadangkan konfigurasi dan keterampilan Anda ke GitHub segera."*
 
+### 6. Memulihkan dari Pencadangan (Mesin Baru / Instal Ulang)
+Jika Anda menyiapkan Hermes di server baru atau menginstal ulang, Anda dapat secara otomatis mengunduh semua data yang telah dicadangkan (konfigurasi, keterampilan, memori, dan seluruh Second Brain Anda) dari GitHub dengan satu perintah:
+```bash
+bash scripts/second-brain/restore-from-cloud.sh
+```
+
+**Apa yang dilakukan skrip ini:**
+1. Membaca `GITHUB_USERNAME`, `GITHUB_REPO_CONFIG`, `GITHUB_REPO_SECONDBRAIN`, dan `OBSIDIAN_VAULT_DIR` dari file `~/.hermes/.env` Anda.
+2. Memverifikasi konektivitas SSH ke GitHub.
+3. Meng-*clone* repositori `hermes-config` Anda dan memulihkan `skills/`, `profiles/`, `config.yaml`, `MEMORY.md`, dan `SOUL.md` kembali ke `~/.hermes/`.
+4. Meng-*clone* repositori `second-brain` Anda langsung ke `OBSIDIAN_VAULT_DIR` Anda. Jika vault sudah ada sebagai repo Git, skrip akan melakukan `git pull` saja.
+5. Membersihkan file sementara.
+
+> **Prasyarat:** Pastikan Anda telah menyelesaikan Langkah 1–4 dari [Instalasi & Pengaturan Cepat](#instalasi--pengaturan-cepat) (dependensi OS, instalasi dasar Hermes, pengaturan venv, dan konfigurasi `.env`) sebelum menjalankan skrip pemulihan ini.
+
 ---
 
 Silakan laporkan masalah (issues) di GitHub jika Anda menemukan bug.
