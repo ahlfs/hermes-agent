@@ -1,15 +1,23 @@
 #!/usr/bin/env python3
-"""Cleanup source notes after successful wiki ingest.
+"""Cleanup source notes AND raw source files after successful wiki ingest.
 
 This script removes files from:
 - 03-Notes/Extracted-Docs/
 - 03-Notes/Transcripts/
+- 01-Audio/ (raw audio files whose transcripts have been wiki-ingested)
+- 02-Documents/ (raw PDFs/images whose extractions have been wiki-ingested)
 
 after they have been successfully ingested into the wiki (04-Wiki/).
 
 The script checks the state file (.wiki-state.json) to determine which
 notes have been ingested, then deletes only those that exist in both
 the state AND the source folder.
+
+The raw source cascade (01-Audio, 02-Documents) matches by stem name:
+if 03-Notes/Transcripts/recording.md was ingested, then
+01-Audio/recording.mp3 is also deleted.
+
+Set HERMES_CLEANUP_SOURCES=false to disable raw source deletion.
 
 This prevents accidental deletion of notes that were not processed.
 """
@@ -28,8 +36,17 @@ NOTES_DIRS = [
     VAULT_ROOT / "03-Notes" / "Transcripts",
     VAULT_ROOT / "03-Notes" / "Extracted-Docs",
 ]
+RAW_SOURCE_DIRS = [
+    VAULT_ROOT / "01-Audio",
+    VAULT_ROOT / "02-Documents",
+]
 STATE_FILE = VAULT_ROOT / ".wiki-state.json"
 LOG_FILE = VAULT_ROOT / "04-Wiki" / "log.md"
+
+# Set HERMES_CLEANUP_SOURCES=false to keep raw files in 01-Audio & 02-Documents
+CLEANUP_RAW_SOURCES = os.environ.get("HERMES_CLEANUP_SOURCES", "true").lower() not in (
+    "false", "0", "no", "off",
+)
 
 
 def load_state() -> dict:
@@ -69,7 +86,8 @@ def clean_sources() -> tuple[int, int]:
     """
     state = load_state()
     log_content = load_log()
-    deleted = 0
+    deleted_notes = 0
+    deleted_raw = 0
     skipped = 0
 
     if not state:
@@ -110,19 +128,37 @@ def clean_sources() -> tuple[int, int]:
             print(f"  [skip] {note_path.name} (no ingest log entry)")
             continue
 
-        # Delete the source file
+        # ── Cascade: delete raw source in 01-Audio / 02-Documents ──
+        if CLEANUP_RAW_SOURCES:
+            for raw_dir in RAW_SOURCE_DIRS:
+                if not raw_dir.exists():
+                    continue
+                for raw_file in raw_dir.iterdir():
+                    if raw_file.is_file() and raw_file.stem == note_path.stem:
+                        try:
+                            raw_file.unlink()
+                            deleted_raw += 1
+                            print(f"  [del]  {raw_file.relative_to(VAULT_ROOT)} (raw source)")
+                        except OSError as e:
+                            print(
+                                f"  [error] Could not delete raw source {raw_file.name}: {e}",
+                                file=sys.stderr,
+                            )
+
+        # Delete the note file in 03-Notes/
         try:
             note_path.unlink()
-            deleted += 1
-            # Find the wiki pages created from this note (by extracting from log)
-            # For now just report success without specific wiki page names
+            deleted_notes += 1
             print(f"  [del]  {note_path.name}")
         except OSError as e:
             print(f"  [error] Could not delete {note_path.name}: {e}", file=sys.stderr)
             skipped += 1
 
-    print(f"\nCleanup complete: {deleted} deleted, {skipped} skipped")
-    return deleted, skipped
+    print(
+        f"\nCleanup complete: {deleted_notes} notes deleted, "
+        f"{deleted_raw} raw sources deleted, {skipped} skipped"
+    )
+    return deleted_notes, skipped
 
 
 def main() -> int:

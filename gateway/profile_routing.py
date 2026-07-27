@@ -164,3 +164,70 @@ def match_profile_route(
         if route.matches(platform, guild_id=guild_id, chat_id=chat_id, thread_id=thread_id, parent_chat_id=parent_chat_id):
             return route
     return None
+
+
+def match_profile_route_with_intent(
+    routes: List[ProfileRoute],
+    platform: str,
+    message: str = "",
+    guild_id: Optional[str] = None,
+    chat_id: Optional[str] = None,
+    thread_id: Optional[str] = None,
+    parent_chat_id: Optional[str] = None,
+    auto_swarm_routing: bool = False,
+) -> Optional[ProfileRoute]:
+    """Extended routing: static routes first, then intent-based fallback.
+
+    When ``auto_swarm_routing`` is True and no static route matches, the
+    user's ``message`` is classified by ``gateway.swarm_router`` to pick
+    the best specialist profile (builder, researcher, writer, etc.).
+
+    The result is wrapped in a synthetic ``ProfileRoute`` so the caller
+    can handle it identically to a static match.
+    """
+    # 1. Try static routes first (existing behavior)
+    matched = match_profile_route(
+        routes, platform,
+        guild_id=guild_id, chat_id=chat_id,
+        thread_id=thread_id, parent_chat_id=parent_chat_id,
+    )
+    if matched:
+        return matched
+
+    # 2. Intent-based fallback (only if enabled and message is provided)
+    if not auto_swarm_routing or not message:
+        return None
+
+    try:
+        from gateway.swarm_router import auto_route_by_intent
+        profile_name = auto_route_by_intent(message, platform=platform)
+        if profile_name:
+            # Validate the profile name before using it
+            try:
+                from hermes_cli.profiles import (
+                    normalize_profile_name,
+                    validate_profile_name,
+                )
+                profile_name = normalize_profile_name(profile_name)
+                validate_profile_name(profile_name)
+            except (ValueError, ImportError):
+                logger.warning(
+                    "Swarm router returned invalid profile %r, ignoring",
+                    profile_name,
+                )
+                return None
+
+            logger.info(
+                "Swarm router: auto-routing to profile %r for platform=%s",
+                profile_name, platform,
+            )
+            return ProfileRoute(
+                name=f"auto-swarm-{profile_name}",
+                platform=platform,
+                profile=profile_name,
+            )
+    except Exception:
+        logger.warning("Swarm router fallback failed", exc_info=True)
+
+    return None
+

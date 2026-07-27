@@ -69,9 +69,7 @@ echo
 echo "== Pass 4.5: wiki lint =="
 python3 "$SCRIPT_DIR/wiki_lint.py" --no-llm --save-report || true
 
-echo
-echo "== Pass 5: cleanup source notes =="
-python3 "$SCRIPT_DIR/cleanup_sources.py" || true
+# cleanup moved to after git push (Pass 7) to ensure backup exists
 
 echo
 echo "== Pass 6: git auto-sync =="
@@ -100,5 +98,12 @@ else
   echo "Jalankan: cd ~/obsidian/memo && git init && git remote add origin <url>"
 fi
 
-echo
 echo "Second brain sync complete."
+
+echo
+echo "== Pass 7: cleanup source notes and raw files =="
+echo "(runs after git push to ensure cloud backup exists)"
+python3 "$SCRIPT_DIR/cleanup_sources.py" || true
+
+echo
+echo "All passes complete."

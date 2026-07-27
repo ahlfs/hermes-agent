@@ -178,3 +178,7 @@ apps/desktop/demo/
 infographic/
 native/fts5_cjk/*.so
 graphify-out/
+
+# Custom markdown files
+PRD.md
+modification.md
