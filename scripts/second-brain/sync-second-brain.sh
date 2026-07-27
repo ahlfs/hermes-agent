@@ -97,41 +97,12 @@ mkdir -p "$OBSIDIAN_VAULT_DIR/05-Projects"
 mkdir -p "$OBSIDIAN_VAULT_DIR/06-Tasks"
 mkdir -p "$OBSIDIAN_VAULT_DIR/07-Daily"
 
-echo
-info "== Pass 0: profile injection =="
-
-# 1. Inject to root MEMORY.md
-ROOT_MEMORY="$HOME/.hermes/MEMORY.md"
-if [ ! -f "$ROOT_MEMORY" ]; then
-  touch "$ROOT_MEMORY"
-fi
-if ! grep -q "Second Brain Directive" "$ROOT_MEMORY"; then
-  info "Injecting Second Brain directive into root MEMORY.md"
-  cat <<EOF >> "$ROOT_MEMORY"
-
-## Second Brain Directive
-Whenever the user asks you to "learn", "save", or "remember" something new, DO NOT just save it to your internal memory. You MUST proactively use your file tools to create a new \`.md\` file summarizing the knowledge and save it directly into the user's Obsidian Vault at: \`${OBSIDIAN_VAULT_DIR}/04-Wiki/\`
-EOF
-fi
-
-# 2. Inject to any specific profiles
-if [ -d "$HOME/.hermes/profiles" ]; then
-  for profile_dir in "$HOME/.hermes/profiles"/*; do
-    if [ -d "$profile_dir" ]; then
-      MEMORY_FILE="$profile_dir/MEMORY.md"
-      if [ ! -f "$MEMORY_FILE" ]; then
-        touch "$MEMORY_FILE"
-      fi
-      if ! grep -q "Second Brain Directive" "$MEMORY_FILE"; then
-        info "Injecting Second Brain directive into $(basename "$profile_dir")/MEMORY.md"
-        cat <<EOF >> "$MEMORY_FILE"
-
-## Second Brain Directive
-Whenever the user asks you to "learn", "save", or "remember" something new, DO NOT just save it to your internal memory. You MUST proactively use your file tools to create a new \`.md\` file summarizing the knowledge and save it directly into the user's Obsidian Vault at: \`${OBSIDIAN_VAULT_DIR}/04-Wiki/\`
-EOF
-      fi
-    fi
-  done
+SCHEMA_FILE="$OBSIDIAN_VAULT_DIR/WIKI_SCHEMA.md"
+if [ ! -f "$SCHEMA_FILE" ]; then
+  info "Copying default WIKI_SCHEMA.md to vault..."
+  if [ -f "$SCRIPT_DIR/templates/WIKI_SCHEMA.md" ]; then
+    cp "$SCRIPT_DIR/templates/WIKI_SCHEMA.md" "$SCHEMA_FILE"
+  fi
 fi
 
 echo
@@ -167,10 +138,23 @@ python3 "$SCRIPT_DIR/wiki_lint.py" --no-llm --save-report || true
 echo
 info "== Pass 6: git auto-sync =="
 cd "$OBSIDIAN_VAULT_DIR"
+
+GH_USER="${GITHUB_USERNAME:-}"
+GH_REPO="${GITHUB_REPO_SECONDBRAIN:-second-brain}"
+
+if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  if [ -n "$GH_USER" ]; then
+    info "Initializing Vault as a Git repository..."
+    git init
+    git branch -M main
+  else
+    warn "Vault is not initialized as a Git repo. Skipping auto-sync."
+    warn "To enable, configure GITHUB_USERNAME in ~/.hermes/.env or run manually:"
+    echo "  cd $OBSIDIAN_VAULT_DIR && git init && git remote add origin <url>"
+  fi
+fi
+
 if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-  # Auto-setup remote from env vars if not already set
-  GH_USER="${GITHUB_USERNAME:-}"
-  GH_REPO="${GITHUB_REPO_SECONDBRAIN:-second-brain}"
   if [ -n "$GH_USER" ] && ! git remote get-url origin >/dev/null 2>&1; then
     REMOTE_URL="git@github.com:${GH_USER}/${GH_REPO}.git"
     info "Adding remote origin: $REMOTE_URL"
@@ -193,10 +177,6 @@ if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
       warn "Commit saved locally and will be pushed on next sync."
     fi
   fi
-else
-  warn "Vault is not initialized as a Git repo. Skipping auto-sync."
-  warn "To enable, run the following:"
-  echo "  cd $OBSIDIAN_VAULT_DIR && git init && git remote add origin <url>"
 fi
 
 echo
