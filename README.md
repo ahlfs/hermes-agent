@@ -130,32 +130,33 @@ bash scripts/second-brain/setup-venv.sh
 > **✨ NEW (Plug-and-Play):** This script will now also automatically initialize your Agent's persistent memory (`MEMORY.md` and `USER.md`) with highly-optimized Second Brain workflow rules. You don't need to configure the AI's core behavior manually!
 
 
-### 4. Configure Environment Variables
-Open your `~/.hermes/.env` file and add the following settings at the bottom:
+### 4. Configure Environment Variables & Auto-Backup
+Open your `~/.hermes/.env` file and add the following settings at the bottom. This is required to define your vault location and enable the Auto-Backup system:
 ```ini
 # Directory of your Obsidian Vault (Second Brain)
 OBSIDIAN_VAULT_DIR=/home/user/obsidian/memo
 
-# GitHub Backup Settings (Optional: for automated cloud backup)
+# GitHub Backup Settings (Required for Auto-Sync)
 GITHUB_USERNAME=your_github_username
 GITHUB_REPO_CONFIG=hermes-config
 GITHUB_REPO_SECONDBRAIN=second-brain
 ```
 
-### 5. Initialize the Vault Structure
-To let Hermes automatically build the empty folder structure for you and verify your environment, run the sync script manually for the first time:
+### 5. Setup GitHub SSH Keys (For Auto-Backup)
+To allow the agent to automatically push config and knowledge backups in the background, ensure your machine is connected to GitHub via SSH. 
+1. Generate an SSH key (if you haven't already):
+   ```bash
+   ssh-keygen -t ed25519 -C "your_email@example.com"
+   ```
+2. Display the public key with `cat ~/.ssh/id_ed25519.pub` and add it to your GitHub account (**Settings > SSH and GPG keys > New SSH key**).
+
+### 6. Initialize the Vault Structure & First Sync
+Now that your environment variables and SSH keys are ready, let Hermes automatically build the empty folder structure and initialize the Git repositories. Run the sync script manually for the first time:
 ```bash
 cd ~/.hermes/hermes-agent
 bash scripts/second-brain/sync-second-brain.sh
 ```
-*(After this completes, you will find the `01-Audio`, `02-Documents`, and `04-Wiki` folders ready in your Vault.)*
-
-### 6. Connect GitHub via SSH (Optional)
-If you configured the GitHub Backup Settings above, ensure your machine is connected to GitHub via SSH. The automated backups rely on SSH keys to push changes without requiring passwords.
-```bash
-ssh-keygen -t ed25519
-# Add the public key (~/.ssh/id_ed25519.pub) to your GitHub account
-```
+*(After this completes, you will find the `01-Audio`, `02-Documents`, and `04-Wiki` folders ready, and your vault will be successfully pushed to your GitHub repo).*
 
 ### 7. Start Using It!
 Reload your shell and start the agent:

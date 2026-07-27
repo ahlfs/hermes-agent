@@ -126,36 +126,36 @@ bash scripts/second-brain/setup-venv.sh
 ```
 > **✨ BARU (Plug-and-Play):** Skrip ini sekarang juga akan secara otomatis menginisialisasi memori permanen Agen Anda (`MEMORY.md` dan `USER.md`) dengan aturan *workflow* Second Brain yang sangat optimal. Anda tidak perlu lagi mengonfigurasi perilaku dasar AI secara manual!
 
-
-### 4. Konfigurasi Variabel Lingkungan
-Buka file `~/.hermes/.env` Anda dan tambahkan pengaturan berikut di bagian bawah:
+### 4. Konfigurasi Variabel Lingkungan & Auto-Backup
+Buka file `~/.hermes/.env` Anda dan tambahkan pengaturan berikut di bagian bawah. Ini wajib untuk menentukan lokasi Vault dan mengaktifkan sistem Auto-Backup:
 ```ini
-# Direktori Vault Obsidian Anda (Second Brain)
+# Directory of your Obsidian Vault (Second Brain)
 OBSIDIAN_VAULT_DIR=/home/user/obsidian/memo
 
-# Pengaturan Pencadangan GitHub
-GITHUB_USERNAME=username_github_anda
+# GitHub Backup Settings (Required for Auto-Sync)
+GITHUB_USERNAME=your_github_username
 GITHUB_REPO_CONFIG=hermes-config
 GITHUB_REPO_SECONDBRAIN=second-brain
 ```
 
-### 5. Inisialisasi Struktur Vault
-Untuk membiarkan Hermes membangun kerangka folder kosong Anda secara otomatis dan memverifikasi lingkungan Anda, jalankan skrip sinkronisasi secara manual untuk pertama kalinya:
+### 5. Setup SSH GitHub (Untuk Auto-Backup)
+Agar agen dapat melakukan *push* otomatis untuk mem-*backup* konfigurasi dan memori di latar belakang, pastikan mesin/VPS Anda terhubung ke GitHub menggunakan SSH.
+1. Buat kunci SSH (jika belum punya):
+   ```bash
+   ssh-keygen -t ed25519 -C "email_anda@example.com"
+   ```
+2. Tampilkan kuncinya dengan `cat ~/.ssh/id_ed25519.pub` lalu salin dan tambahkan ke akun GitHub Anda (**Settings > SSH and GPG keys > New SSH key**).
+
+### 6. Inisialisasi Struktur Vault & Sinkronisasi Pertama
+Setelah Variabel Lingkungan dan SSH Anda siap, biarkan Hermes membangun struktur folder kosong dan menginisialisasi repositori Git secara otomatis. Jalankan skrip sinkronisasi ini secara manual untuk pertama kalinya:
 ```bash
 cd ~/.hermes/hermes-agent
 bash scripts/second-brain/sync-second-brain.sh
 ```
-*(Setelah ini selesai, Anda akan menemukan folder `01-Audio`, `02-Documents`, dan `04-Wiki` telah siap di dalam Vault Anda.)*
-
-### 6. Hubungkan GitHub via SSH (Opsional)
-Jika Anda mengkonfigurasi Pengaturan Pencadangan GitHub di atas, pastikan mesin Anda terhubung ke GitHub melalui SSH. Pencadangan otomatis mengandalkan kunci SSH untuk mendorong perubahan tanpa memerlukan kata sandi.
-```bash
-ssh-keygen -t ed25519
-# Tambahkan kunci publik (~/.ssh/id_ed25519.pub) ke akun GitHub Anda
-```
+*(Setelah selesai, Anda akan melihat folder `01-Audio`, `02-Documents`, dan `04-Wiki` telah siap, dan Vault Anda berhasil di-push ke GitHub).*
 
 ### 7. Mulai Gunakan!
-Muat ulang shell Anda dan mulai agen:
+Muat ulang *shell* Anda dan mulai agen:
 ```bash
 source ~/.bashrc    # muat ulang shell (atau: source ~/.zshrc)
 hermes              # mulai mengobrol!
