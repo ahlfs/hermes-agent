@@ -25,15 +25,26 @@ success() { echo -e "${GREEN}[OK]${NC} $*"; }
 warn()    { echo -e "${YELLOW}[WARN]${NC} $*"; }
 error()   { echo -e "${RED}[ERROR]${NC} $*" >&2; }
 
-# ── Load environment variables ───────────────────────────────────────────
-HERMES_ENV="$HOME/.hermes/.env"
-if [ ! -f "$HERMES_ENV" ]; then
-  error "File $HERMES_ENV tidak ditemukan."
-  error "Pastikan Anda sudah mengkonfigurasi file .env terlebih dahulu (Langkah 4 di README)."
+# ── Pre-flight checks ───────────────────────────────────────────────────
+info "Checking prerequisites..."
+
+# Check: git installed
+if ! command -v git >/dev/null 2>&1; then
+  error "'git' not found. Please install it first:"
+  echo "  Ubuntu/Debian: sudo apt install git"
+  echo "  macOS:         brew install git"
   exit 1
 fi
 
-info "Membaca konfigurasi dari $HERMES_ENV..."
+# ── Load environment variables ───────────────────────────────────────────
+HERMES_ENV="$HOME/.hermes/.env"
+if [ ! -f "$HERMES_ENV" ]; then
+  error "File $HERMES_ENV not found."
+  error "Make sure you have configured your .env file first (Step 4 in README)."
+  exit 1
+fi
+
+info "Reading configuration from $HERMES_ENV..."
 export $(grep -v '^#' "$HERMES_ENV" | grep -v '^\s*$' | xargs)
 
 # ── Validate required variables ──────────────────────────────────────────
@@ -46,8 +57,8 @@ if [ -z "${OBSIDIAN_VAULT_DIR:-}" ]; then
 fi
 
 if [ -z "$GITHUB_USERNAME" ]; then
-  error "GITHUB_USERNAME belum diatur di $HERMES_ENV."
-  error "Tambahkan baris berikut ke file .env Anda:"
+  error "GITHUB_USERNAME is not set in $HERMES_ENV."
+  error "Add the following line to your .env file:"
   echo "  GITHUB_USERNAME=your_github_username"
   exit 1
 fi
@@ -59,13 +70,15 @@ info "Obsidian Vault Dir : $OBSIDIAN_VAULT_DIR"
 echo
 
 # ── Verify SSH access to GitHub ──────────────────────────────────────────
-info "Memeriksa koneksi SSH ke GitHub..."
+info "Checking SSH connectivity to GitHub..."
 if ssh -T git@github.com 2>&1 | grep -q "successfully authenticated"; then
-  success "Koneksi SSH ke GitHub berhasil."
+  success "SSH connection to GitHub verified."
 else
-  warn "Tidak dapat memverifikasi koneksi SSH ke GitHub."
-  warn "Pastikan kunci SSH Anda sudah ditambahkan ke akun GitHub."
-  warn "Melanjutkan proses... (akan gagal jika SSH belum dikonfigurasi)"
+  warn "Could not verify SSH connection to GitHub."
+  warn "Make sure your SSH key has been added to your GitHub account."
+  warn "  Generate key: ssh-keygen -t ed25519"
+  warn "  Add key:      Copy ~/.ssh/id_ed25519.pub to GitHub > Settings > SSH Keys"
+  warn "Continuing... (will fail if SSH is not configured)"
 fi
 echo
 
@@ -74,12 +87,12 @@ REMOTE_CONFIG="git@github.com:${GITHUB_USERNAME}/${GITHUB_REPO_CONFIG}.git"
 TEMP_CONFIG="$HOME/.hermes/_restore-config-tmp"
 
 info "═══════════════════════════════════════════════════"
-info "  TAHAP 1: Memulihkan Config (Agent Brain)"
+info "  STAGE 1: Restoring Config (Agent Brain)"
 info "═══════════════════════════════════════════════════"
 
 # Check if the remote repo actually exists / is accessible
 if git ls-remote "$REMOTE_CONFIG" &>/dev/null; then
-  info "Mengunduh repositori config dari $REMOTE_CONFIG..."
+  info "Downloading config repository from $REMOTE_CONFIG..."
 
   # Clean up any previous temp directory
   rm -rf "$TEMP_CONFIG"
@@ -95,23 +108,27 @@ if git ls-remote "$REMOTE_CONFIG" &>/dev/null; then
     if [ -e "$src" ]; then
       # If it's a directory, merge it (don't delete existing items the backup doesn't have)
       if [ -d "$src" ]; then
-        info "  Memulihkan direktori: $item/"
+        info "  Restoring directory: $item/"
         cp -r "$src/." "$dest/" 2>/dev/null || cp -r "$src" "$dest"
       else
-        info "  Memulihkan file: $item"
+        info "  Restoring file: $item"
         cp "$src" "$dest"
       fi
     else
-      warn "  $item tidak ditemukan di backup — dilewati."
+      warn "  $item not found in backup — skipped."
     fi
   done
 
   # Clean up
   rm -rf "$TEMP_CONFIG"
-  success "Config berhasil dipulihkan!"
+  success "Config restored successfully!"
 else
-  warn "Repositori $REMOTE_CONFIG tidak dapat diakses atau belum ada."
-  warn "Melewati pemulihan Config."
+  warn "Repository $REMOTE_CONFIG is not accessible or does not exist."
+  warn "Possible causes:"
+  warn "  1. SSH key not configured (run: ssh-keygen -t ed25519)"
+  warn "  2. Repository '${GITHUB_REPO_CONFIG}' has not been created on GitHub"
+  warn "  3. GITHUB_USERNAME is incorrect in .env"
+  warn "Skipping Config restoration."
 fi
 echo
 
@@ -119,43 +136,47 @@ echo
 REMOTE_SB="git@github.com:${GITHUB_USERNAME}/${GITHUB_REPO_SECONDBRAIN}.git"
 
 info "═══════════════════════════════════════════════════"
-info "  TAHAP 2: Memulihkan Second Brain (Knowledge Base)"
+info "  STAGE 2: Restoring Second Brain (Knowledge Base)"
 info "═══════════════════════════════════════════════════"
 
 if git ls-remote "$REMOTE_SB" &>/dev/null; then
   if [ -d "$OBSIDIAN_VAULT_DIR/.git" ]; then
     # Vault already exists and is a git repo — just pull latest
-    info "Vault sudah ada dan merupakan repo Git. Melakukan git pull..."
+    info "Vault already exists and is a Git repo. Running git pull..."
     cd "$OBSIDIAN_VAULT_DIR"
-    git pull origin main && success "Second Brain berhasil diperbarui!" \
-      || warn "Git pull gagal. Mungkin ada konflik yang perlu diselesaikan."
+    git pull origin main && success "Second Brain updated successfully!" \
+      || warn "Git pull failed. There may be conflicts to resolve."
   elif [ -d "$OBSIDIAN_VAULT_DIR" ] && [ "$(ls -A "$OBSIDIAN_VAULT_DIR" 2>/dev/null)" ]; then
     # Directory exists and is not empty, but not a git repo
-    warn "Direktori $OBSIDIAN_VAULT_DIR sudah ada dan tidak kosong, tapi bukan repo Git."
-    warn "Untuk menghindari kehilangan data, pemulihan Second Brain dilewati."
-    warn "Solusi: Kosongkan direktori tersebut atau hapus, lalu jalankan skrip ini lagi."
+    warn "Directory $OBSIDIAN_VAULT_DIR already exists and is not empty, but is not a Git repo."
+    warn "To avoid data loss, Second Brain restoration is skipped."
+    warn "Solution: Empty or delete the directory, then run this script again."
   else
     # Directory doesn't exist or is empty — clone directly
-    info "Mengunduh Second Brain dari $REMOTE_SB..."
+    info "Downloading Second Brain from $REMOTE_SB..."
     mkdir -p "$(dirname "$OBSIDIAN_VAULT_DIR")"
     rm -rf "$OBSIDIAN_VAULT_DIR"  # remove empty dir if exists
     git clone "$REMOTE_SB" "$OBSIDIAN_VAULT_DIR"
-    success "Second Brain berhasil dipulihkan ke $OBSIDIAN_VAULT_DIR!"
+    success "Second Brain restored to $OBSIDIAN_VAULT_DIR!"
   fi
 else
-  warn "Repositori $REMOTE_SB tidak dapat diakses atau belum ada."
-  warn "Melewati pemulihan Second Brain."
+  warn "Repository $REMOTE_SB is not accessible or does not exist."
+  warn "Possible causes:"
+  warn "  1. SSH key not configured (run: ssh-keygen -t ed25519)"
+  warn "  2. Repository '${GITHUB_REPO_SECONDBRAIN}' has not been created on GitHub"
+  warn "  3. GITHUB_USERNAME is incorrect in .env"
+  warn "Skipping Second Brain restoration."
 fi
 echo
 
 # ── Summary ──────────────────────────────────────────────────────────────
 echo "═══════════════════════════════════════════════════"
-success "Proses pemulihan selesai!"
+success "Restoration process complete!"
 echo "═══════════════════════════════════════════════════"
 echo
-info "Langkah selanjutnya:"
-echo "  1. Muat ulang shell Anda:  source ~/.bashrc"
-echo "  2. Mulai agen:             hermes"
-echo "  3. Verifikasi memori agen bekerja dengan bertanya:"
-echo "     \"Apa yang kamu ingat tentang saya?\""
+info "Next steps:"
+echo "  1. Reload your shell:  source ~/.bashrc"
+echo "  2. Start the agent:    hermes"
+echo "  3. Verify agent memory by asking:"
+echo "     \"What do you remember about me?\""
 echo
