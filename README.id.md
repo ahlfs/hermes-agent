@@ -202,14 +202,22 @@ GITHUB_REPO_SECONDBRAIN=second-brain
 ```
 
 ### 4. Cara Kerja Pencadangan Otomatis
-- **Sinkronisasi Otomatis Second Brain:** Dikelola melalui skrip Bash (`sync-second-brain.sh`). Skrip ini dapat dijalankan secara manual, atau akan dieksekusi secara otomatis sesuai jadwal (cron) / setiap kali agen menerima perintah *konsumsi*. Selama **Pass 6**, agen secara otomatis menjalankan `git add`, `git commit`, dan `git push` ke repositori `second-brain`.
-- **Pencadangan Konfigurasi Otomatis:** Berjalan secara otomatis di latar belakang melalui tugas cron setiap 24 jam. Agen memeriksa perubahan dalam keterampilan kustom, memori yang baru ditambahkan, atau profil yang dimodifikasi, dan menyinkronkannya ke repositori `hermes-config`.
+- **Sinkronisasi Otomatis Second Brain:** Dikelola melalui skrip Bash (`sync-second-brain.sh`). Selama **Pass 6**, agen secara otomatis menjalankan `git add`, `git commit`, dan `git push` ke repositori `second-brain`.
+- **Pencadangan Konfigurasi Otomatis:** Agen memeriksa perubahan dalam keterampilan kustom, memori yang baru ditambahkan, atau profil yang dimodifikasi, dan menyinkronkannya ke repositori `hermes-config`.
 
-### 5. Pencadangan Manual
+### 5. Mengotomatiskan Sinkronisasi (Tugas Cron)
+Agar VPS Anda secara otomatis menyinkronkan dan mencadangkan Second Brain Anda setiap jam di latar belakang, cukup jalankan skrip instalasinya:
+```bash
+cd ~/.hermes/hermes-agent
+bash scripts/second-brain/install-cron.sh
+```
+Server Anda sekarang akan otomatis melakukan *pull* dan *push* pembaruan setiap jam tanpa henti!
+
+### 6. Pencadangan Manual
 Jika Anda ingin memaksakan pencadangan segera, Anda dapat memerintahkan agen secara langsung dalam obrolan:
 > *"Sinkronkan Second Brain saya ke GitHub sekarang"* atau *"Cadangkan konfigurasi dan keterampilan Anda ke GitHub segera."*
 
-### 6. Memulihkan dari Pencadangan (Mesin Baru / Instal Ulang)
+### 7. Memulihkan dari Pencadangan (Mesin Baru / Instal Ulang)
 Jika Anda menyiapkan Hermes di server baru atau menginstal ulang, Anda dapat secara otomatis mengunduh semua data yang telah dicadangkan (konfigurasi, keterampilan, memori, dan seluruh Second Brain Anda) dari GitHub dengan satu perintah:
 ```bash
 cd ~/.hermes/hermes-agent

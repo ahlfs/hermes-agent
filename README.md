@@ -206,14 +206,22 @@ GITHUB_REPO_SECONDBRAIN=second-brain
 ```
 
 ### 4. How Auto-Backup Works
-- **Second Brain Auto-Sync:** Orchestrated via a Bash script (`sync-second-brain.sh`). This script can be run manually, or it will execute automatically on a schedule (cron) / whenever the agent receives an *ingest* command. During **Pass 6**, the agent automatically runs `git add`, `git commit`, and `git push` to the `second-brain` repository.
-- **Config Auto-Backup:** Runs automatically in the background via cron job every 24 hours. The agent checks for changes in custom skills, newly added memories, or modified profiles, and syncs them to the `hermes-config` repository.
+- **Second Brain Auto-Sync:** Orchestrated via a Bash script (`sync-second-brain.sh`). During **Pass 6**, the agent automatically runs `git add`, `git commit`, and `git push` to the `second-brain` repository.
+- **Config Auto-Backup:** The agent checks for changes in custom skills, newly added memories, or modified profiles, and syncs them to the `hermes-config` repository.
 
-### 5. Manual Backup
+### 5. Automating the Sync (Cron Job)
+To make your VPS automatically sync and backup your Second Brain every hour in the background, simply run the installation script:
+```bash
+cd ~/.hermes/hermes-agent
+bash scripts/second-brain/install-cron.sh
+```
+Your server will now automatically pull and push updates every hour on the hour!
+
+### 6. Manual Backup
 If you want to force a backup immediately, you can command the agent directly in the chat:
 > *"Sync my Second Brain to GitHub now"* or *"Backup your config and skills to GitHub right away."*
 
-### 6. Restoring from Backup (New Machine / Reinstall)
+### 7. Restoring from Backup (New Machine / Reinstall)
 If you're setting up Hermes on a new server or reinstalling, you can automatically pull all your backed-up data (configs, skills, memories, and your entire Second Brain) from GitHub with a single command:
 ```bash
 cd ~/.hermes/hermes-agent
