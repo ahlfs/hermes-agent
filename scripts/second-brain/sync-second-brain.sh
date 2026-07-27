@@ -163,18 +163,30 @@ if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
 
   git add -A
   if git diff --cached --quiet; then
-    info "No new changes. Skipping push."
+    info "No local changes to commit."
+    HAS_CHANGES=false
   else
     TIMESTAMP=$(date '+%Y-%m-%d %H:%M')
     git commit -m "knowledge-sync: $TIMESTAMP"
-    if git push origin main 2>/dev/null; then
-      success "Knowledge successfully pushed to GitHub!"
+    HAS_CHANGES=true
+  fi
+
+  if git remote get-url origin >/dev/null 2>&1; then
+    info "Pulling latest changes from GitHub..."
+    git pull origin main --rebase --autostash || warn "Pull failed or conflict occurred."
+
+    if [ "$HAS_CHANGES" = true ] || [ $(git rev-list HEAD...origin/main --count) -gt 0 ]; then
+      info "Pushing to GitHub..."
+      if git push origin main 2>/dev/null; then
+        success "Knowledge successfully synced with GitHub!"
+      else
+        warn "Push failed. Possible causes:"
+        warn "  1. SSH key not configured (run: ssh-keygen -t ed25519)"
+        warn "  2. Repository '${GH_REPO}' does not exist on GitHub"
+        warn "  3. No internet connection"
+      fi
     else
-      warn "Push failed. Possible causes:"
-      warn "  1. SSH key not configured (run: ssh-keygen -t ed25519)"
-      warn "  2. Repository '${GH_REPO}' does not exist on GitHub"
-      warn "  3. No internet connection"
-      warn "Commit saved locally and will be pushed on next sync."
+      info "Vault is already up to date with remote."
     fi
   fi
 fi
