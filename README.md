@@ -60,6 +60,8 @@ This is a custom fork of Hermes Agent **modified and maintained by Ahlfs**, feat
 
 Follow these steps to install the LAM-Cyberlab compatible version of Hermes Agent.
 
+> **⚠️ WINDOWS USERS**: This project heavily relies on Linux packages (like `apt install ffmpeg`) and Bash scripts. Git Bash or native PowerShell will **not** work for the Second Brain pipeline. You **must** install and use **[WSL2 (Windows Subsystem for Linux)](https://learn.microsoft.com/en-us/windows/wsl/install)** to follow these steps.
+
 ### 1. Install OS Dependencies
 The Second Brain pipeline requires `ffmpeg` (for audio) and `tesseract-ocr` (for images).
 ```bash
