@@ -130,41 +130,53 @@ bash scripts/second-brain/setup-venv.sh
 > **✨ NEW (Plug-and-Play):** This script will now also automatically initialize your Agent's persistent memory (`MEMORY.md` and `USER.md`) with highly-optimized Second Brain workflow rules. You don't need to configure the AI's core behavior manually!
 
 
-### 4. Configure Environment Variables & Auto-Backup
-Open your `~/.hermes/.env` file and add the following settings at the bottom. This is required to define your vault location and enable the Auto-Backup system:
+### 4. Configure Environment Variables & Auto-Backup (Optional)
+If you want to enable the Auto-Backup system (synced to cloud/GitHub) to secure your configurations and knowledge base, open your `~/.hermes/.env` file and add the following settings:
 ```ini
 # Directory of your Obsidian Vault (Second Brain)
 OBSIDIAN_VAULT_DIR=/home/user/obsidian/memo
 
-# GitHub Backup Settings (Required for Auto-Sync)
+# GitHub Backup Settings
 GITHUB_USERNAME=your_github_username
 GITHUB_REPO_CONFIG=hermes-config
 GITHUB_REPO_SECONDBRAIN=second-brain
 ```
 
-### 5. Setup GitHub SSH Keys (For Auto-Backup)
-To allow the agent to automatically push config and knowledge backups in the background, ensure your machine is connected to GitHub via SSH. 
-1. Generate an SSH key (if you haven't already):
-   ```bash
-   ssh-keygen -t ed25519 -C "your_email@example.com"
-   ```
-2. Display the public key with `cat ~/.ssh/id_ed25519.pub` and add it to your GitHub account (**Settings > SSH and GPG keys > New SSH key**).
+### 5. Setup GitHub Repositories & SSH Keys (Optional)
+To allow the agent to automatically push backups in the background:
+1. Create 2 empty **Private** repositories on GitHub (e.g., `second-brain` and `hermes-config`).
+2. Generate an SSH key on your VPS: `ssh-keygen -t ed25519 -C "your_email@example.com"`
+3. Display the public key with `cat ~/.ssh/id_ed25519.pub` and add it to your GitHub account (**Settings > SSH and GPG keys > New SSH key**).
 
-### 6. Initialize the Vault Structure & First Sync
-Now that your environment variables and SSH keys are ready, let Hermes automatically build the empty folder structure and initialize the Git repositories. Run the sync script manually for the first time:
+### 6. Restoring from Backup / New Machine (Optional)
+If you're setting up a new VPS and *already* have backed-up data on GitHub, pull it all down **before** initializing:
+```bash
+cd ~/.hermes/hermes-agent
+bash scripts/second-brain/restore-from-cloud.sh
+```
+
+### 7. Initialize the Vault Structure & First Sync
+Let Hermes automatically build the empty folder structure and initialize the Git repositories. Run the sync script manually for the first time:
 ```bash
 cd ~/.hermes/hermes-agent
 bash scripts/second-brain/sync-second-brain.sh
 ```
-*(After this completes, you will find the `01-Audio`, `02-Documents`, and `04-Wiki` folders ready, and your vault will be successfully pushed to your GitHub repo).*
+*(After this completes, you will find the `01-Audio`, `02-Documents`, etc. folders ready).*
 
-### 7. Start Using It!
+### 8. Automating the Sync (Cron Job) (Optional)
+To make your VPS automatically sync and backup your Second Brain every hour in the background, simply run the installation script:
+```bash
+cd ~/.hermes/hermes-agent
+bash scripts/second-brain/install-cron.sh
+```
+
+### 9. Start Using It!
 Reload your shell and start the agent:
 ```bash
 source ~/.bashrc    # reload shell (or: source ~/.zshrc)
 hermes              # start chatting!
 ```
-### 8. Teaching Your Second Brain (Ingesting Knowledge)
+### 10. Teaching Your Second Brain (Ingesting Knowledge)
 To provide your agent with new knowledge (meeting recordings, books, research papers, etc.), simply place the raw files into your designated Obsidian Vault directory (`OBSIDIAN_VAULT_DIR`):
 
 1. **Audio Files (`.mp3`, `.m4a`, `.wav`)**: Move them into the `01-Audio/` folder.
@@ -175,67 +187,6 @@ To provide your agent with new knowledge (meeting recordings, books, research pa
 - Audio is transcribed via Whisper; Documents and Images are parsed and OCR-ed.
 - The extracted information is synthesized into Wikipedia-style interconnected `.md` pages in your `04-Wiki/` folder.
 - **Auto-Cleanup**: Once the knowledge has been successfully converted into Wiki pages and safely backed up to your GitHub repository, the agent's **Full Source Cleanup Cascade** kicks in. It will automatically delete the large raw source files (`.mp3`, `.pdf`, etc.) from your `01-Audio` and `02-Documents` folders to keep your server lightweight.
-
----
-
-## 📦 Backup & Auto-Backup System
-
-This custom edition of Hermes Agent features an Auto-Backup system (fully synced to the cloud/GitHub) to ensure your configurations, agent memories, custom skills, and knowledge base are secure even if your server/VPS goes down.
-
-### 1. What Gets Backed Up?
-The system separates backups into two repositories to keep things organized:
-- **`second-brain` (Knowledge Base):** Stores your entire Obsidian Vault structure (extracted notes, transcripts, `.md` wiki pages).
-- **`hermes-config` (Agent Brain):** Stores your agent's core identity. This includes the `~/.hermes/` directory (`config.yaml`, `skills/` folder, `profiles/` folder, `MEMORY.md`, `SOUL.md`).
-
-### 2. Repository Preparation & Access
-To allow the automated features to run without intervention, set up SSH access for Git:
-1. Create 2 empty **Private** repositories on GitHub (e.g., `second-brain` and `hermes-config`).
-2. Generate an SSH Key on your machine (if you haven't already):
-   ```bash
-   ssh-keygen -t ed25519 -C "your_email@example.com"
-   ```
-3. Copy your public key (`cat ~/.ssh/id_ed25519.pub`) and add it to your GitHub account (**Settings > SSH and GPG keys > New SSH key**).
-
-### 3. Environment Variable Configuration
-To tell Hermes where to back up your data, you must add the following variables to your `~/.hermes/.env` file:
-```ini
-# GitHub Backup Settings
-GITHUB_USERNAME=your_github_username
-GITHUB_REPO_CONFIG=hermes-config
-GITHUB_REPO_SECONDBRAIN=second-brain
-```
-
-### 4. How Auto-Backup Works
-- **Second Brain Auto-Sync:** Orchestrated via a Bash script (`sync-second-brain.sh`). During **Pass 6**, the agent automatically runs `git add`, `git commit`, and `git push` to the `second-brain` repository.
-- **Config Auto-Backup:** The agent checks for changes in custom skills, newly added memories, or modified profiles, and syncs them to the `hermes-config` repository.
-
-### 5. Automating the Sync (Cron Job)
-To make your VPS automatically sync and backup your Second Brain every hour in the background, simply run the installation script:
-```bash
-cd ~/.hermes/hermes-agent
-bash scripts/second-brain/install-cron.sh
-```
-Your server will now automatically pull and push updates every hour on the hour!
-
-### 6. Manual Backup
-If you want to force a backup immediately, you can command the agent directly in the chat:
-> *"Sync my Second Brain to GitHub now"* or *"Backup your config and skills to GitHub right away."*
-
-### 7. Restoring from Backup (New Machine / Reinstall)
-If you're setting up Hermes on a new server or reinstalling, you can automatically pull all your backed-up data (configs, skills, memories, and your entire Second Brain) from GitHub with a single command:
-```bash
-cd ~/.hermes/hermes-agent
-bash scripts/second-brain/restore-from-cloud.sh
-```
-
-**What the script does:**
-1. Reads `GITHUB_USERNAME`, `GITHUB_REPO_CONFIG`, `GITHUB_REPO_SECONDBRAIN`, and `OBSIDIAN_VAULT_DIR` from your `~/.hermes/.env`.
-2. Verifies SSH connectivity to GitHub.
-3. Clones your `hermes-config` repo and restores `skills/`, `profiles/`, `config.yaml`, `MEMORY.md`, and `SOUL.md` back into `~/.hermes/`.
-4. Clones your `second-brain` repo directly into your `OBSIDIAN_VAULT_DIR`. If the vault already exists as a Git repo, it performs a `git pull` instead.
-5. Cleans up temporary files.
-
-> **Prerequisites:** Make sure you have already completed Steps 1–4 of [Quick Install & Setup](#quick-install--setup) (OS dependencies, Hermes base install, venv setup, and `.env` configuration) before running this restore script.
 
 ---
 

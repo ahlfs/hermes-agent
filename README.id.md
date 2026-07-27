@@ -126,41 +126,53 @@ bash scripts/second-brain/setup-venv.sh
 ```
 > **✨ BARU (Plug-and-Play):** Skrip ini sekarang juga akan secara otomatis menginisialisasi memori permanen Agen Anda (`MEMORY.md` dan `USER.md`) dengan aturan *workflow* Second Brain yang sangat optimal. Anda tidak perlu lagi mengonfigurasi perilaku dasar AI secara manual!
 
-### 4. Konfigurasi Variabel Lingkungan & Auto-Backup
-Buka file `~/.hermes/.env` Anda dan tambahkan pengaturan berikut di bagian bawah. Ini wajib untuk menentukan lokasi Vault dan mengaktifkan sistem Auto-Backup:
+### 4. Konfigurasi Variabel Lingkungan & Auto-Backup (Opsional)
+Jika Anda ingin mengaktifkan sistem Auto-Backup (disinkronkan ke cloud/GitHub) untuk mengamankan konfigurasi dan basis pengetahuan Anda, buka file `~/.hermes/.env` Anda dan tambahkan pengaturan berikut:
 ```ini
 # Directory of your Obsidian Vault (Second Brain)
 OBSIDIAN_VAULT_DIR=/home/user/obsidian/memo
 
-# GitHub Backup Settings (Required for Auto-Sync)
+# GitHub Backup Settings
 GITHUB_USERNAME=your_github_username
 GITHUB_REPO_CONFIG=hermes-config
 GITHUB_REPO_SECONDBRAIN=second-brain
 ```
 
-### 5. Setup SSH GitHub (Untuk Auto-Backup)
-Agar agen dapat melakukan *push* otomatis untuk mem-*backup* konfigurasi dan memori di latar belakang, pastikan mesin/VPS Anda terhubung ke GitHub menggunakan SSH.
-1. Buat kunci SSH (jika belum punya):
-   ```bash
-   ssh-keygen -t ed25519 -C "email_anda@example.com"
-   ```
-2. Tampilkan kuncinya dengan `cat ~/.ssh/id_ed25519.pub` lalu salin dan tambahkan ke akun GitHub Anda (**Settings > SSH and GPG keys > New SSH key**).
+### 5. Siapkan Repositori & SSH GitHub (Opsional)
+Agar agen dapat melakukan *push* otomatis di latar belakang:
+1. Buat 2 repositori **Privat** kosong di GitHub (misalnya: `second-brain` dan `hermes-config`).
+2. Buat kunci SSH di VPS Anda: `ssh-keygen -t ed25519 -C "email_anda@example.com"`
+3. Tampilkan kuncinya dengan `cat ~/.ssh/id_ed25519.pub` lalu salin dan tambahkan ke akun GitHub Anda (**Settings > SSH and GPG keys > New SSH key**).
 
-### 6. Inisialisasi Struktur Vault & Sinkronisasi Pertama
-Setelah Variabel Lingkungan dan SSH Anda siap, biarkan Hermes membangun struktur folder kosong dan menginisialisasi repositori Git secara otomatis. Jalankan skrip sinkronisasi ini secara manual untuk pertama kalinya:
+### 6. Memulihkan dari Pencadangan / Mesin Baru (Opsional)
+Jika Anda menyiapkan VPS baru dan *sudah* memiliki data yang dicadangkan di GitHub, unduh semuanya **sebelum** melakukan sinkronisasi pertama:
+```bash
+cd ~/.hermes/hermes-agent
+bash scripts/second-brain/restore-from-cloud.sh
+```
+
+### 7. Inisialisasi Struktur Vault & Sinkronisasi Pertama
+Biarkan Hermes membangun struktur folder kosong dan menginisialisasi repositori Git secara otomatis. Jalankan skrip sinkronisasi ini secara manual untuk pertama kalinya:
 ```bash
 cd ~/.hermes/hermes-agent
 bash scripts/second-brain/sync-second-brain.sh
 ```
-*(Setelah selesai, Anda akan melihat folder `01-Audio`, `02-Documents`, dan `04-Wiki` telah siap, dan Vault Anda berhasil di-push ke GitHub).*
+*(Setelah selesai, Anda akan melihat folder `01-Audio`, `02-Documents`, dll telah siap).*
 
-### 7. Mulai Gunakan!
+### 8. Mengotomatiskan Sinkronisasi (Tugas Cron) (Opsional)
+Agar VPS Anda secara otomatis menyinkronkan dan mencadangkan Second Brain Anda setiap jam di latar belakang, cukup jalankan skrip instalasinya:
+```bash
+cd ~/.hermes/hermes-agent
+bash scripts/second-brain/install-cron.sh
+```
+
+### 9. Mulai Gunakan!
 Muat ulang *shell* Anda dan mulai agen:
 ```bash
 source ~/.bashrc    # muat ulang shell (atau: source ~/.zshrc)
 hermes              # mulai mengobrol!
 ```
-### 8. Mengajarkan Second Brain Anda (Mengonsumsi Pengetahuan)
+### 10. Mengajarkan Second Brain Anda (Mengonsumsi Pengetahuan)
 Untuk memberi agen Anda pengetahuan baru (rekaman rapat, buku, makalah penelitian, dll.), cukup letakkan file mentah ke dalam direktori Vault Obsidian yang Anda tentukan (`OBSIDIAN_VAULT_DIR`):
 
 1. **File Audio (`.mp3`, `.m4a`, `.wav`)**: Pindahkan ke dalam folder `01-Audio/`.
@@ -171,67 +183,6 @@ Untuk memberi agen Anda pengetahuan baru (rekaman rapat, buku, makalah penelitia
 - Audio ditranskripsikan melalui Whisper; Dokumen dan Gambar diuraikan dan di-OCR.
 - Informasi yang diekstraksi disintesis menjadi halaman `.md` yang saling terhubung bergaya Wikipedia di folder `04-Wiki/` Anda.
 - **Pembersihan Otomatis**: Setelah pengetahuan berhasil diubah menjadi halaman Wiki dan dengan aman dicadangkan ke repositori GitHub Anda, **Kaskade Pembersihan Sumber Penuh** agen akan bekerja. Ini akan secara otomatis menghapus file sumber mentah besar (`.mp3`, `.pdf`, dll.) dari folder `01-Audio` dan `02-Documents` Anda untuk menjaga server Anda tetap ringan.
-
----
-
-## 📦 Sistem Pencadangan & Pencadangan Otomatis
-
-Edisi kustom Hermes Agent ini memiliki sistem Pencadangan Otomatis (sepenuhnya disinkronkan ke cloud/GitHub) untuk memastikan konfigurasi, memori agen, keterampilan kustom, dan basis pengetahuan Anda aman bahkan jika server/VPS Anda mati.
-
-### 1. Apa yang Dicadangkan?
-Sistem memisahkan cadangan menjadi dua repositori agar semuanya tetap teratur:
-- **`second-brain` (Basis Pengetahuan):** Menyimpan seluruh struktur Vault Obsidian Anda (catatan yang diekstraksi, transkrip, halaman wiki `.md`).
-- **`hermes-config` (Otak Agen):** Menyimpan identitas inti agen Anda. Ini termasuk direktori `~/.hermes/` (file `config.yaml`, folder `skills/`, folder `profiles/`, `MEMORY.md`, `SOUL.md`).
-
-### 2. Persiapan Repositori & Akses
-Untuk memungkinkan fitur otomatis berjalan tanpa campur tangan, atur akses SSH untuk Git:
-1. Buat 2 repositori **Pribadi** kosong di GitHub (misalnya, `second-brain` dan `hermes-config`).
-2. Buat Kunci SSH di mesin Anda (jika belum):
-   ```bash
-   ssh-keygen -t ed25519 -C "email_anda@example.com"
-   ```
-3. Salin kunci publik Anda (`cat ~/.ssh/id_ed25519.pub`) dan tambahkan ke akun GitHub Anda (**Pengaturan > Kunci SSH dan GPG > Kunci SSH Baru**).
-
-### 3. Konfigurasi Variabel Lingkungan
-Untuk memberi tahu Hermes di mana harus mencadangkan data Anda, Anda harus menambahkan variabel berikut ke file `~/.hermes/.env` Anda:
-```ini
-# Pengaturan Pencadangan GitHub
-GITHUB_USERNAME=username_github_anda
-GITHUB_REPO_CONFIG=hermes-config
-GITHUB_REPO_SECONDBRAIN=second-brain
-```
-
-### 4. Cara Kerja Pencadangan Otomatis
-- **Sinkronisasi Otomatis Second Brain:** Dikelola melalui skrip Bash (`sync-second-brain.sh`). Selama **Pass 6**, agen secara otomatis menjalankan `git add`, `git commit`, dan `git push` ke repositori `second-brain`.
-- **Pencadangan Konfigurasi Otomatis:** Agen memeriksa perubahan dalam keterampilan kustom, memori yang baru ditambahkan, atau profil yang dimodifikasi, dan menyinkronkannya ke repositori `hermes-config`.
-
-### 5. Mengotomatiskan Sinkronisasi (Tugas Cron)
-Agar VPS Anda secara otomatis menyinkronkan dan mencadangkan Second Brain Anda setiap jam di latar belakang, cukup jalankan skrip instalasinya:
-```bash
-cd ~/.hermes/hermes-agent
-bash scripts/second-brain/install-cron.sh
-```
-Server Anda sekarang akan otomatis melakukan *pull* dan *push* pembaruan setiap jam tanpa henti!
-
-### 6. Pencadangan Manual
-Jika Anda ingin memaksakan pencadangan segera, Anda dapat memerintahkan agen secara langsung dalam obrolan:
-> *"Sinkronkan Second Brain saya ke GitHub sekarang"* atau *"Cadangkan konfigurasi dan keterampilan Anda ke GitHub segera."*
-
-### 7. Memulihkan dari Pencadangan (Mesin Baru / Instal Ulang)
-Jika Anda menyiapkan Hermes di server baru atau menginstal ulang, Anda dapat secara otomatis mengunduh semua data yang telah dicadangkan (konfigurasi, keterampilan, memori, dan seluruh Second Brain Anda) dari GitHub dengan satu perintah:
-```bash
-cd ~/.hermes/hermes-agent
-bash scripts/second-brain/restore-from-cloud.sh
-```
-
-**Apa yang dilakukan skrip ini:**
-1. Membaca `GITHUB_USERNAME`, `GITHUB_REPO_CONFIG`, `GITHUB_REPO_SECONDBRAIN`, dan `OBSIDIAN_VAULT_DIR` dari file `~/.hermes/.env` Anda.
-2. Memverifikasi konektivitas SSH ke GitHub.
-3. Meng-*clone* repositori `hermes-config` Anda dan memulihkan `skills/`, `profiles/`, `config.yaml`, `MEMORY.md`, dan `SOUL.md` kembali ke `~/.hermes/`.
-4. Meng-*clone* repositori `second-brain` Anda langsung ke `OBSIDIAN_VAULT_DIR` Anda. Jika vault sudah ada sebagai repo Git, skrip akan melakukan `git pull` saja.
-5. Membersihkan file sementara.
-
-> **Prasyarat:** Pastikan Anda telah menyelesaikan Langkah 1–4 dari [Instalasi & Pengaturan Cepat](#instalasi--pengaturan-cepat) (dependensi OS, instalasi dasar Hermes, pengaturan venv, dan konfigurasi `.env`) sebelum menjalankan skrip pemulihan ini.
 
 ---
 
