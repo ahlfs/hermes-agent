@@ -9,7 +9,8 @@
 <p align="center">
   <a href="https://github.com/ahlfs/hermes-agent"><img src="https://img.shields.io/badge/Modified%20by-Ahlfs-blueviolet?style=for-the-badge" alt="Modified by Ahlfs"></a>
   <a href="https://github.com/NousResearch/hermes-agent/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License: MIT"></a>
-  <a href="README.md"><img src="https://img.shields.io/badge/Lang-Indonesia-blue?style=for-the-badge" alt="Indonesia"></a>
+  <a href="README.md"><img src="https://img.shields.io/badge/Lang-English-lightgrey?style=for-the-badge" alt="English"></a>
+  <a href="README.id.md"><img src="https://img.shields.io/badge/Lang-Indonesia-blue?style=for-the-badge" alt="Indonesia"></a>
   <a href="README.zh-CN.md"><img src="https://img.shields.io/badge/Lang-中文-red?style=for-the-badge" alt="中文"></a>
   <a href="README.ur-pk.md"><img src="https://img.shields.io/badge/Lang-اردو-green?style=for-the-badge" alt="اردو"></a>
   <a href="README.es.md"><img src="https://img.shields.io/badge/Lang-Español-orange?style=for-the-badge" alt="Español"></a>
