@@ -2,10 +2,8 @@
   <img src="assets/banner.png" alt="Hermes Agent" width="100%">
 </p>
 
-# Hermes Agent - Second Brain Edition
-<p align="center">
-  <a href="https://hermes-agent.nousresearch.com/">Hermes Agent</a> | <a href="https://hermes-agent.nousresearch.com/">Hermes Desktop</a>
-</p>
+# Hermes Agent ☤
+
 <p align="center">
   <a href="https://github.com/ahlfs/hermes-agent"><img src="https://img.shields.io/badge/Modified%20by-Ahlfs-blueviolet?style=for-the-badge" alt="Modified by Ahlfs"></a>
   <a href="https://github.com/NousResearch/hermes-agent/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License: MIT"></a>
@@ -15,333 +13,190 @@
   <a href="README.es.md"><img src="https://img.shields.io/badge/Lang-Español-orange?style=for-the-badge" alt="Español"></a>
 </p>
 
-> **⚠️ CUSTOM FORK FOR LAM-CYBERLAB**
+> **⚠️ LAM-CYBERLAB 定制分支**
 >
-> This repository is a heavily modified version of Hermes Agent by **Ahlfs**. It is specifically designed to be fully compatible as the backend intelligence engine for **[LAM-Cyberlab](https://github.com/ahlfs/LAM-Cyberlab)**. See the [Second Brain Edition](#-second-brain-edition-custom-fork) section below for details on custom features.
+> 此仓库是 Hermes Agent 由 **Ahlfs** 大幅修改的版本。它专门设计为 **[LAM-Cyberlab](https://github.com/ahlfs/LAM-Cyberlab)** 的后端智能引擎。有关定制功能的详细信息，请参阅下面的 [第二大脑版](#-第二大脑版定制分支) 部分。
 
-**The self-improving AI agent built by [Nous Research](https://nousresearch.com).** It's the only agent with a built-in learning loop — it creates skills from experience, improves them during use, nudges itself to persist knowledge, searches its own past conversations, and builds a deepening model of who you are across sessions. Run it on a $5 VPS, a GPU cluster, or serverless infrastructure that costs nearly nothing when idle. It's not tied to your laptop — talk to it from Telegram while it works on a cloud VM.
+**由 [Nous Research](https://nousresearch.com) 构建的自进化 AI 代理。** 它是唯一内置学习闭环的智能代理——从经验中创建技能，在使用中改进技能，主动持久化知识，搜索过往对话，并在跨会话中逐步构建对你的深度理解。可以在 $5 的 VPS 上运行，也可以在 GPU 集群上运行，或者使用几乎零成本的 Serverless 基础设施。它不绑定你的笔记本——你可以在 Telegram 上与它对话，而它在云端 VM 上工作。
 
-Use any model you want — [Nous Portal](https://portal.nousresearch.com), OpenRouter, OpenAI, your own endpoint, and [many others](https://hermes-agent.nousresearch.com/docs/integrations/providers). Switch with `hermes model` — no code changes, no lock-in.
+支持任意模型——[Nous Portal](https://portal.nousresearch.com)、[OpenRouter](https://openrouter.ai)（200+ 模型）、[NVIDIA NIM](https://build.nvidia.com)（Nemotron）、[小米 MiMo](https://platform.xiaomimimo.com)、[z.ai/GLM](https://z.ai)、[Kimi/Moonshot](https://platform.moonshot.ai)、[MiniMax](https://www.minimax.io)、[Hugging Face](https://huggingface.co)、OpenAI，或自定义端点。使用 `hermes model` 即可切换——无需改代码，无锁定。
 
 <table>
-<tr><td><b>A real terminal interface</b></td><td>Full TUI with multiline editing, slash-command autocomplete, conversation history, interrupt-and-redirect, and streaming tool output.</td></tr>
-<tr><td><b>Lives where you do</b></td><td>Telegram, Discord, Slack, WhatsApp, Signal, and CLI — all from a single gateway process. Voice memo transcription, cross-platform conversation continuity.</td></tr>
-<tr><td><b>A closed learning loop</b></td><td>Agent-curated memory with periodic nudges. Autonomous skill creation after complex tasks. Skills self-improve during use. FTS5 session search with LLM summarization for cross-session recall. <a href="https://github.com/plastic-labs/honcho">Honcho</a> dialectic user modeling. Compatible with the <a href="https://agentskills.io">agentskills.io</a> open standard.</td></tr>
-<tr><td><b>Scheduled automations</b></td><td>Built-in cron scheduler with delivery to any platform. Daily reports, nightly backups, weekly audits — all in natural language, running unattended.</td></tr>
-<tr><td><b>Delegates and parallelizes</b></td><td>Spawn isolated subagents for parallel workstreams. Write Python scripts that call tools via RPC, collapsing multi-step pipelines into zero-context-cost turns.</td></tr>
-<tr><td><b>Runs anywhere, not just your laptop</b></td><td>Six terminal backends — local, Docker, SSH, Singularity, Modal, and Daytona. Daytona and Modal offer serverless persistence — your agent's environment hibernates when idle and wakes on demand, costing nearly nothing between sessions. Run it on a $5 VPS or a GPU cluster.</td></tr>
-<tr><td><b>Research-ready</b></td><td>Batch trajectory generation, trajectory compression for training the next generation of tool-calling models.</td></tr>
+<tr><td><b>真正的终端界面</b></td><td>完整的 TUI，支持多行编辑、斜杠命令自动补全、对话历史、中断重定向和流式工具输出。</td></tr>
+<tr><td><b>随你所在</b></td><td>Telegram、Discord、Slack、WhatsApp、Signal 和 CLI——全部从单个网关进程运行。语音备忘录转写、跨平台对话连续性。</td></tr>
+<tr><td><b>闭环学习</b></td><td>代理管理记忆并定期自我提醒。复杂任务后自动创建技能。技能在使用中自我改进。FTS5 会话搜索配合 LLM 摘要实现跨会话回溯。<a href="https://github.com/plastic-labs/honcho">Honcho</a> 辩证式用户建模。兼容 <a href="https://agentskills.io">agentskills.io</a> 开放标准。</td></tr>
+<tr><td><b>定时自动化</b></td><td>内置 cron 调度器，支持向任何平台投递。日报、夜间备份、周审计——全部用自然语言描述，无人值守运行。</td></tr>
+<tr><td><b>委派与并行</b></td><td>生成隔离子代理处理并行工作流。编写 Python 脚本通过 RPC 调用工具，将多步管道压缩为零上下文开销的轮次。</td></tr>
+<tr><td><b>随处运行</b></td><td>六种终端后端——本地、Docker、SSH、Daytona、Singularity 和 Modal。Daytona 和 Modal 提供 Serverless 持久化——代理环境空闲时休眠、按需唤醒，空闲期间几乎零成本。$5 VPS 或 GPU 集群都能跑。</td></tr>
+<tr><td><b>研究就绪</b></td><td>批量轨迹生成、轨迹压缩——用于训练下一代工具调用模型。</td></tr>
 </table>
 
 ---
 
-## 🧠 Second Brain Edition (Custom Fork)
+## 🧠 第二大脑版 (定制分支)
 
-This is a custom fork of Hermes Agent **modified and maintained by Ahlfs**, featuring an autonomous **Second Brain** pipeline and automated GitHub configuration backups.
+这是由 **Ahlfs** 修改和维护的 Hermes Agent 定制分支，具有自治的**第二大脑 (Second Brain)**管道和自动 GitHub 配置备份功能。
 
-### Features
-1. **Automated Second Brain Pipeline**
-   - **Audio Transcription**: Drops an `.mp3` into `01-Audio` and Hermes automatically transcribes it using Whisper.
-   - **Document Parsing**: Parses `.pdf` and performs OCR on images dropped into `02-Documents`.
-   - **Wiki Generation**: Synthesizes transcripts and documents into interlinked Wikipedia-style markdown files in `04-Wiki`.
-   - **Git Backup**: Automatically commits and pushes new knowledge to a private GitHub repository.
-   - **Full Source Cleanup Cascade**: Safely deletes the raw source files (`.mp3`, `.pdf`, etc.) from `01-Audio` and `02-Documents` *only after* the final knowledge has been successfully backed up to GitHub, keeping your vault lean.
-2. **Automated Config Backup**
-   - Backs up your `~/.hermes` configs, custom skills, and memories to a separate private GitHub repo via a scheduled cron job (default: every 24h).
-3. **Dynamic Swarm Router (Intent-Based Routing)**
-   - Automatically intercepts and routes incoming messages to the most capable specialist sub-agent (`builder`, `researcher`, `writer`).
-   - Uses zero-latency keyword classification to infer user intent, providing a frictionless swarm experience without manual profile switching.
-4. **LAM-Cyberlab Native Integration**
-   - **Real-time Streaming**: Full support for progressive token streaming via SSE/WebSockets (`stream_events.py`), making it a zero-friction, plug-and-play intelligence backend for the LAM-Cyberlab UI.
-   - **Closed-Loop Learning**: Synergizes flawlessly with the native Self-Healing Skill Generator. When faced with complex tasks from the Cyberlab UI, the agent can autonomously write, test, and save its own new `.md` skills for future use.
+### 特性
+1. **自动化第二大脑管道**
+   - **音频转录**：将 `.mp3` 拖入 `01-Audio`，Hermes 会使用 Whisper 自动转录。
+   - **文档解析**：解析 `.pdf` 并对放入 `02-Documents` 的图像执行 OCR。
+   - **Wiki 生成**：将转录和文档合成为位于 `04-Wiki` 的类似维基百科的互连 markdown 文件。
+   - **Git 备份**：自动提交新知识并将其推送到私有 GitHub 仓库。
+   - **全源清理级联**：仅在最终知识成功备份到 GitHub *之后*，才安全地从 `01-Audio` 和 `02-Documents` 删除原始源文件（`.mp3`、`.pdf` 等），保持仓库精简。
+2. **自动配置备份**
+   - 通过计划的 cron 任务（默认：每 24 小时）将您的 `~/.hermes` 配置、自定义技能和记忆备份到一个独立的私有 GitHub 仓库。
+3. **动态群集路由器 (基于意图的路由)**
+   - 自动拦截并将传入消息路由到最胜任的专家子代理 (`builder`, `researcher`, `writer`)。
+   - 使用零延迟关键字分类推断用户意图，提供无摩擦的体验，无需手动切换配置文件。
+4. **LAM-Cyberlab 原生集成**
+   - **实时流式传输**：全面支持通过 SSE/WebSockets (`stream_events.py`) 进行渐进式令牌流传输，使其成为 LAM-Cyberlab UI 的即插即用智能后端。
+   - **闭环学习**：与原生的自我修复技能生成器完美协同。当在 Cyberlab UI 面对复杂任务时，代理可以自主编写、测试并保存自己的新 `.md` 技能以备未来使用。
 
-## Quick Install & Setup
+---
 
-Follow these steps to install the LAM-Cyberlab compatible version of Hermes Agent.
+## 快速安装
 
-> **⚠️ WINDOWS USERS**: This project heavily relies on Linux packages (like `apt install ffmpeg`) and Bash scripts. Git Bash or native PowerShell will **not** work for the Second Brain pipeline. You **must** install and use **[WSL2 (Windows Subsystem for Linux)](https://learn.microsoft.com/en-us/windows/wsl/install)** to follow these steps.
-
-### 1. Install OS Dependencies
-The Second Brain pipeline requires `ffmpeg` (for audio) and `tesseract-ocr` (for images). Run the command appropriate for your system:
-
-**Ubuntu / Debian / WSL2 (Default):**
 ```bash
-sudo apt update && sudo apt install ffmpeg tesseract-ocr
-```
-
-**macOS (via Homebrew):**
-```bash
-brew install ffmpeg tesseract
-```
-
-**Fedora / RHEL:**
-```bash
-sudo dnf install ffmpeg tesseract
-```
-
-**Arch Linux:**
-```bash
-sudo pacman -S ffmpeg tesseract
-```
-
-### 2. Install Hermes Base & Swap to Custom Fork
-First, use the official installer to set up the necessary runtimes (Node.js, uv, PATH wrapper), then replace the source code with this custom repository.
-
-**Linux / macOS / WSL2:**
-```bash
-# Install the base environment
 curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash
-
-# Replace official repo with the Ahlfs custom fork
-rm -rf ~/.hermes/hermes-agent
-git clone https://github.com/ahlfs/hermes-agent.git ~/.hermes/hermes-agent
-
-# Re-sync dependencies
-cd ~/.hermes/hermes-agent
-~/.hermes/bin/uv pip install -e ".[all]"
 ```
 
-> **Windows Native:** Run `iex (irm https://hermes-agent.nousresearch.com/install.ps1)` in PowerShell, then delete `%LOCALAPPDATA%\hermes\hermes-agent` and `git clone https://github.com/ahlfs/hermes-agent.git` in its place.
+支持 Linux、macOS、WSL2 和 Android (Termux)。安装程序会自动处理平台特定的配置。
 
-### 3. Initialize Second Brain Environment
-Run the setup script to create an isolated virtual environment specifically for the Second Brain tools:
+> **Android / Termux：** 已测试的手动安装路径请参考 [Termux 指南](https://hermes-agent.nousresearch.com/docs/getting-started/termux)。在 Termux 上，Hermes 会安装精选的 `.[termux]` 扩展，因为完整的 `.[all]` 扩展会拉取 Android 不兼容的语音依赖。
+>
+> **Windows：** 在 PowerShell 中运行：
+> ```powershell
+> iex (irm https://hermes-agent.nousresearch.com/install.ps1)
+> ```
+> 安装完成后，可能需要重启终端，然后运行 `hermes` 开始对话。
+
+安装后：
+
 ```bash
-bash scripts/second-brain/setup-venv.sh
+source ~/.bashrc    # 重新加载 shell（或: source ~/.zshrc）
+hermes              # 开始对话！
 ```
-
-### 4. Configure Environment Variables
-Open your `~/.hermes/.env` file and add the following settings at the bottom:
-```ini
-# Directory of your Obsidian Vault (Second Brain)
-OBSIDIAN_VAULT_DIR=/home/user/obsidian/memo
-
-# GitHub Backup Settings (Optional: for automated cloud backup)
-GITHUB_USERNAME=your_github_username
-GITHUB_REPO_CONFIG=hermes-config
-GITHUB_REPO_SECONDBRAIN=second-brain
-```
-
-### 5. Connect GitHub via SSH (Optional)
-If you configured the GitHub Backup Settings above, ensure your machine is connected to GitHub via SSH. The automated backups rely on SSH keys to push changes without requiring passwords.
-```bash
-ssh-keygen -t ed25519
-# Add the public key (~/.ssh/id_ed25519.pub) to your GitHub account
-```
-
-### 6. Start Using It!
-Reload your shell and start the agent:
-```bash
-source ~/.bashrc    # reload shell (or: source ~/.zshrc)
-hermes              # start chatting!
-```
-### 7. Teaching Your Second Brain (Ingesting Knowledge)
-To provide your agent with new knowledge (meeting recordings, books, research papers, etc.), simply place the raw files into your designated Obsidian Vault directory (`OBSIDIAN_VAULT_DIR`):
-
-1. **Audio Files (`.mp3`, `.m4a`, `.wav`)**: Move them into the `01-Audio/` folder.
-2. **Documents & Images (`.pdf`, `.png`, `.jpg`)**: Move them into the `02-Documents/` folder.
-
-**What happens next?**
-- The agent automatically detects new files and runs the ingestion pipeline in the background. You can also force this manually by telling the agent: *"Learn from my new files in the vault."*
-- Audio is transcribed via Whisper; Documents and Images are parsed and OCR-ed.
-- The extracted information is synthesized into Wikipedia-style interconnected `.md` pages in your `04-Wiki/` folder.
-- **Auto-Cleanup**: Once the knowledge has been successfully converted into Wiki pages and safely backed up to your GitHub repository, the agent's **Full Source Cleanup Cascade** kicks in. It will automatically delete the large raw source files (`.mp3`, `.pdf`, etc.) from your `01-Audio` and `02-Documents` folders to keep your server lightweight.
 
 ---
 
-## 📦 Backup & Auto-Backup System
-
-This custom edition of Hermes Agent features an Auto-Backup system (fully synced to the cloud/GitHub) to ensure your configurations, agent memories, custom skills, and knowledge base are secure even if your server/VPS goes down.
-
-### 1. What Gets Backed Up?
-The system separates backups into two repositories to keep things organized:
-- **`second-brain` (Knowledge Base):** Stores your entire Obsidian Vault structure (extracted notes, transcripts, `.md` wiki pages).
-- **`hermes-config` (Agent Brain):** Stores your agent's core identity. This includes the `~/.hermes/` directory (`config.yaml`, `skills/` folder, `profiles/` folder, `MEMORY.md`, `SOUL.md`).
-
-### 2. Repository Preparation & Access
-To allow the automated features to run without intervention, set up SSH access for Git:
-1. Create 2 empty **Private** repositories on GitHub (e.g., `second-brain` and `hermes-config`).
-2. Generate an SSH Key on your machine (if you haven't already):
-   ```bash
-   ssh-keygen -t ed25519 -C "your_email@example.com"
-   ```
-3. Copy your public key (`cat ~/.ssh/id_ed25519.pub`) and add it to your GitHub account (**Settings > SSH and GPG keys > New SSH key**).
-
-### 3. Environment Variable Configuration
-To tell Hermes where to back up your data, you must add the following variables to your `~/.hermes/.env` file:
-```ini
-# GitHub Backup Settings
-GITHUB_USERNAME=your_github_username
-GITHUB_REPO_CONFIG=hermes-config
-GITHUB_REPO_SECONDBRAIN=second-brain
-```
-
-### 4. How Auto-Backup Works
-- **Second Brain Auto-Sync:** Orchestrated via a Bash script (`sync-second-brain.sh`). This script can be run manually, or it will execute automatically on a schedule (cron) / whenever the agent receives an *ingest* command. During **Pass 6**, the agent automatically runs `git add`, `git commit`, and `git push` to the `second-brain` repository.
-- **Config Auto-Backup:** Runs automatically in the background via cron job every 24 hours. The agent checks for changes in custom skills, newly added memories, or modified profiles, and syncs them to the `hermes-config` repository.
-
-### 5. Manual Backup
-If you want to force a backup immediately, you can command the agent directly in the chat:
-> *"Sync my Second Brain to GitHub now"* or *"Backup your config and skills to GitHub right away."*
-
----
-
-### Troubleshooting
-
-#### Windows Defender or antivirus flags `uv.exe` as malware
-
-If your antivirus (Bitdefender, Windows Defender, etc.) quarantines `uv.exe` from the Hermes `bin` folder (`%LOCALAPPDATA%\hermes\bin\uv.exe`), this is a **false positive**. The file is Astral's `uv` — the Rust Python package manager Hermes bundles to manage its Python environment. ML-based antivirus engines commonly flag unsigned Rust binaries that download and install packages.
-
-**To verify your copy is authentic:**
-
-```powershell
-# Install GitHub CLI if needed
-winget install --id GitHub.cli
-
-# Login to GitHub
-gh auth login
-
-# Run verification
-$uv = "$env:LOCALAPPDATA\hermes\bin\uv.exe"
-$ver = (& $uv --version).Split(' ')[1]
-[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-$zip = "$env:TEMP\uv.zip"
-Invoke-WebRequest "https://github.com/astral-sh/uv/releases/download/$ver/uv-x86_64-pc-windows-msvc.zip" -OutFile $zip -UseBasicParsing
-gh attestation verify $zip --repo astral-sh/uv
-Expand-Archive $zip "$env:TEMP\uv_x" -Force
-(Get-FileHash "$env:TEMP\uv_x\uv.exe").Hash -eq (Get-FileHash $uv).Hash
-```
-
-If attestation says "Verification succeeded" and the last line prints `True`, you're good.
-
-**To whitelist Hermes:**
-- **Windows Defender:** Run PowerShell as Admin → `Add-MpPreference -ExclusionPath "$env:LOCALAPPDATA\hermes\bin"`
-- **Bitdefender:** Add an exception in the Bitdefender console (Protection > Antivirus > Settings > Manage Exceptions)
-- Whitelist the **folder**, not the file hash — Hermes updates `uv` and the hash changes every version
-
-For more context, see the upstream Astral reports: [astral-sh/uv#13553](https://github.com/astral-sh/uv/issues/13553), [astral-sh/uv#15011](https://github.com/astral-sh/uv/issues/15011), [astral-sh/uv#10079](https://github.com/astral-sh/uv/issues/10079).
-
----
-
-## Getting Started
+## 快速入门
 
 ```bash
-hermes              # Interactive CLI — start a conversation
-hermes model        # Choose your LLM provider and model
-hermes tools        # Configure which tools are enabled
-hermes config set   # Set individual config values
-hermes config get   # Print individual config values
-hermes gateway      # Start the messaging gateway (Telegram, Discord, etc.)
-hermes setup        # Run the full setup wizard (configures everything at once)
-hermes claw migrate # Migrate from OpenClaw (if coming from OpenClaw)
-hermes update       # Update to the latest version
-hermes doctor       # Diagnose any issues
+hermes              # 交互式 CLI — 开始对话
+hermes model        # 选择 LLM 提供商和模型
+hermes tools        # 配置启用的工具
+hermes config set   # 设置单个配置项
+hermes gateway      # 启动消息网关（Telegram、Discord 等）
+hermes setup        # 运行完整设置向导（一次性配置所有内容）
+hermes claw migrate # 从 OpenClaw 迁移（如果来自 OpenClaw）
+hermes update       # 更新到最新版本
+hermes doctor       # 诊断问题
 ```
 
-📖 **[Full documentation →](https://hermes-agent.nousresearch.com/docs/)**
+📖 **[完整文档 →](https://hermes-agent.nousresearch.com/docs/)**
 
 ---
 
-## Skip the API-key collection — Nous Portal
+## 省去到处收集 API Key — Nous Portal
 
-Hermes works with whatever provider you want — that's not changing. But if you'd rather not collect five separate API keys for the model, web search, image generation, TTS, and a cloud browser, **[Nous Portal](https://portal.nousresearch.com)** covers all of them under one subscription:
+Hermes 始终允许你使用任意服务商，这点不会改变。但如果你不想为模型、网页搜索、图像生成、TTS、云浏览器分别去申请五个不同的 API Key，**[Nous Portal](https://portal.nousresearch.com)** 用一个订阅就能覆盖全部：
 
-- **300+ models** — pick any of them with `/model <name>`
-- **Tool Gateway** — web search (Firecrawl), image generation (FAL), text-to-speech (OpenAI), cloud browser (Browser Use), all routed through your sub. No extra accounts.
+- **300+ 模型** — 用 `/model <name>` 随时切换
+- **Tool Gateway** — 网页搜索（Firecrawl）、图像生成（FAL）、文本转语音（OpenAI）、云浏览器（Browser Use），全部通过订阅托管。无需额外注册任何账户。
 
-One command from a fresh install:
+全新安装时一条命令即可：
 
 ```bash
 hermes setup --portal
 ```
 
-That logs you in via OAuth, sets Nous as your provider, and turns on the Tool Gateway. Check what's wired up any time with `hermes portal info`. Full details on the [Tool Gateway docs page](https://hermes-agent.nousresearch.com/docs/user-guide/features/tool-gateway).
+它会通过 OAuth 登录、把 Nous 设为推理服务商，并启用 Tool Gateway。随时用 `hermes portal info` 查看路由状态。完整说明见 [Tool Gateway 文档](https://hermes-agent.nousresearch.com/docs/user-guide/features/tool-gateway)。
 
-You can still bring your own keys per-tool whenever you want — the gateway is per-backend, not all-or-nothing.
-
----
-
-## CLI vs Messaging Quick Reference
-
-Hermes has two entry points: start the terminal UI with `hermes`, or run the gateway and talk to it from Telegram, Discord, Slack, WhatsApp, Signal, or Email. Once you're in a conversation, many slash commands are shared across both interfaces.
-
-| Action                         | CLI                                           | Messaging platforms                                                              |
-| ------------------------------ | --------------------------------------------- | -------------------------------------------------------------------------------- |
-| Start chatting                 | `hermes`                                      | Run `hermes gateway setup` + `hermes gateway start`, then send the bot a message |
-| Start fresh conversation       | `/new` or `/reset`                            | `/new` or `/reset`                                                               |
-| Change model                   | `/model [provider:model]`                     | `/model [provider:model]`                                                        |
-| Set a personality              | `/personality [name]`                         | `/personality [name]`                                                            |
-| Retry or undo the last turn    | `/retry`, `/undo`                             | `/retry`, `/undo`                                                                |
-| Compress context / check usage | `/compress`, `/usage`, `/insights [--days N]` | `/compress`, `/usage`, `/insights [days]`                                        |
-| Browse skills                  | `/skills` or `/<skill-name>`                  | `/<skill-name>`                                                                  |
-| Interrupt current work         | `Ctrl+C` or send a new message                | `/stop` or send a new message                                                    |
-| Platform-specific status       | `/platforms`                                  | `/status`, `/sethome`                                                            |
-
-For the full command lists, see the [CLI guide](https://hermes-agent.nousresearch.com/docs/user-guide/cli) and the [Messaging Gateway guide](https://hermes-agent.nousresearch.com/docs/user-guide/messaging).
+你随时可以按工具单独切回自己的 API Key — Gateway 是按工具粒度生效的，不是一刀切。
 
 ---
 
-## Documentation
+## CLI 与消息平台 快速对照
 
-All documentation lives at **[hermes-agent.nousresearch.com/docs](https://hermes-agent.nousresearch.com/docs/)**:
+Hermes 有两种入口：用 `hermes` 启动终端 UI，或运行网关从 Telegram、Discord、Slack、WhatsApp、Signal 或 Email 与之对话。进入对话后，许多斜杠命令在两种界面中通用。
 
-| Section                                                                                             | What's Covered                                             |
-| --------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
-| [Quickstart](https://hermes-agent.nousresearch.com/docs/getting-started/quickstart)                 | Install → setup → first conversation in 2 minutes          |
-| [CLI Usage](https://hermes-agent.nousresearch.com/docs/user-guide/cli)                              | Commands, keybindings, personalities, sessions             |
-| [Configuration](https://hermes-agent.nousresearch.com/docs/user-guide/configuration)                | Config file, providers, models, all options                |
-| [Messaging Gateway](https://hermes-agent.nousresearch.com/docs/user-guide/messaging)                | Telegram, Discord, Slack, WhatsApp, Signal, Home Assistant |
-| [Security](https://hermes-agent.nousresearch.com/docs/user-guide/security)                          | Command approval, DM pairing, container isolation          |
-| [Tools & Toolsets](https://hermes-agent.nousresearch.com/docs/user-guide/features/tools)            | 40+ tools, toolset system, terminal backends               |
-| [Skills System](https://hermes-agent.nousresearch.com/docs/user-guide/features/skills)              | Procedural memory, Skills Hub, creating skills             |
-| [Memory](https://hermes-agent.nousresearch.com/docs/user-guide/features/memory)                     | Persistent memory, user profiles, best practices           |
-| [MCP Integration](https://hermes-agent.nousresearch.com/docs/user-guide/features/mcp)               | Connect any MCP server for extended capabilities           |
-| [Cron Scheduling](https://hermes-agent.nousresearch.com/docs/user-guide/features/cron)              | Scheduled tasks with platform delivery                     |
-| [Context Files](https://hermes-agent.nousresearch.com/docs/user-guide/features/context-files)       | Project context that shapes every conversation             |
-| [Architecture](https://hermes-agent.nousresearch.com/docs/developer-guide/architecture)             | Project structure, agent loop, key classes                 |
-| [Contributing](https://hermes-agent.nousresearch.com/docs/developer-guide/contributing)             | Development setup, PR process, code style                  |
-| [CLI Reference](https://hermes-agent.nousresearch.com/docs/reference/cli-commands)                  | All commands and flags                                     |
-| [Environment Variables](https://hermes-agent.nousresearch.com/docs/reference/environment-variables) | Complete env var reference                                 |
+| 操作 | CLI | 消息平台 |
+|------|-----|----------|
+| 开始对话 | `hermes` | 运行 `hermes gateway setup` + `hermes gateway start`，然后给机器人发消息 |
+| 开始新对话 | `/new` 或 `/reset` | `/new` 或 `/reset` |
+| 更换模型 | `/model [provider:model]` | `/model [provider:model]` |
+| 设置人格 | `/personality [name]` | `/personality [name]` |
+| 重试或撤销上一轮 | `/retry`、`/undo` | `/retry`、`/undo` |
+| 压缩上下文 / 查看用量 | `/compress`、`/usage`、`/insights [--days N]` | `/compress`、`/usage`、`/insights [days]` |
+| 浏览技能 | `/skills` 或 `/<skill-name>` | `/skills` 或 `/<skill-name>` |
+| 中断当前工作 | `Ctrl+C` 或发送新消息 | `/stop` 或发送新消息 |
+| 平台特定状态 | `/platforms` | `/status`、`/sethome` |
+
+完整命令列表请参阅 [CLI 指南](https://hermes-agent.nousresearch.com/docs/user-guide/cli) 和 [消息网关指南](https://hermes-agent.nousresearch.com/docs/user-guide/messaging)。
 
 ---
 
-## Migrating from OpenClaw
+## 文档
 
-If you're coming from OpenClaw, Hermes can automatically import your settings, memories, skills, and API keys.
+所有文档位于 **[hermes-agent.nousresearch.com/docs](https://hermes-agent.nousresearch.com/docs/)**：
 
-**During first-time setup:** The setup wizard (`hermes setup`) automatically detects `~/.openclaw` and offers to migrate before configuration begins.
+| 章节 | 内容 |
+|------|------|
+| [快速开始](https://hermes-agent.nousresearch.com/docs/getting-started/quickstart) | 安装 → 设置 → 2 分钟内开始首次对话 |
+| [CLI 使用](https://hermes-agent.nousresearch.com/docs/user-guide/cli) | 命令、快捷键、人格、会话 |
+| [配置](https://hermes-agent.nousresearch.com/docs/user-guide/configuration) | 配置文件、提供商、模型、所有选项 |
+| [消息网关](https://hermes-agent.nousresearch.com/docs/user-guide/messaging) | Telegram、Discord、Slack、WhatsApp、Signal、Home Assistant |
+| [安全](https://hermes-agent.nousresearch.com/docs/user-guide/security) | 命令审批、DM 配对、容器隔离 |
+| [工具与工具集](https://hermes-agent.nousresearch.com/docs/user-guide/features/tools) | 40+ 工具、工具集系统、终端后端 |
+| [技能系统](https://hermes-agent.nousresearch.com/docs/user-guide/features/skills) | 过程记忆、技能中心、创建技能 |
+| [记忆](https://hermes-agent.nousresearch.com/docs/user-guide/features/memory) | 持久记忆、用户画像、最佳实践 |
+| [MCP 集成](https://hermes-agent.nousresearch.com/docs/user-guide/features/mcp) | 连接任意 MCP 服务器扩展能力 |
+| [定时调度](https://hermes-agent.nousresearch.com/docs/user-guide/features/cron) | 定时任务与平台投递 |
+| [上下文文件](https://hermes-agent.nousresearch.com/docs/user-guide/features/context-files) | 影响每次对话的项目上下文 |
+| [架构](https://hermes-agent.nousresearch.com/docs/developer-guide/architecture) | 项目结构、代理循环、关键类 |
+| [贡献](https://hermes-agent.nousresearch.com/docs/developer-guide/contributing) | 开发设置、PR 流程、代码风格 |
+| [CLI 参考](https://hermes-agent.nousresearch.com/docs/reference/cli-commands) | 所有命令和标志 |
+| [环境变量](https://hermes-agent.nousresearch.com/docs/reference/environment-variables) | 完整环境变量参考 |
 
-**Anytime after install:**
+---
+
+## 从 OpenClaw 迁移
+
+如果你来自 OpenClaw，Hermes 可以自动导入你的设置、记忆、技能和 API 密钥。
+
+**首次安装时：** 安装向导（`hermes setup`）会自动检测 `~/.openclaw` 并在配置开始前提供迁移选项。
+
+**安装后任意时间：**
 
 ```bash
-hermes claw migrate              # Interactive migration (full preset)
-hermes claw migrate --dry-run    # Preview what would be migrated
-hermes claw migrate --preset user-data   # Migrate without secrets
-hermes claw migrate --overwrite  # Overwrite existing conflicts
+hermes claw migrate              # 交互式迁移（完整预设）
+hermes claw migrate --dry-run    # 预览将要迁移的内容
+hermes claw migrate --preset user-data   # 仅迁移用户数据，不含密钥
+hermes claw migrate --overwrite  # 覆盖已有冲突
 ```
 
-What gets imported:
+导入内容：
+- **SOUL.md** — 人格文件
+- **记忆** — MEMORY.md 和 USER.md 条目
+- **技能** — 用户创建的技能 → `~/.hermes/skills/openclaw-imports/`
+- **命令白名单** — 审批模式
+- **消息设置** — 平台配置、允许用户、工作目录
+- **API 密钥** — 白名单中的密钥（Telegram、OpenRouter、OpenAI、Anthropic、ElevenLabs）
+- **TTS 资产** — 工作区音频文件
+- **工作区指令** — AGENTS.md（使用 `--workspace-target`）
 
-- **SOUL.md** — persona file
-- **Memories** — MEMORY.md and USER.md entries
-- **Skills** — user-created skills → `~/.hermes/skills/openclaw-imports/`
-- **Command allowlist** — approval patterns
-- **Messaging settings** — platform configs, allowed users, working directory
-- **API keys** — allowlisted secrets (Telegram, OpenRouter, OpenAI, Anthropic, ElevenLabs)
-- **TTS assets** — workspace audio files
-- **Workspace instructions** — AGENTS.md (with `--workspace-target`)
-
-See `hermes claw migrate --help` for all options, or use the `openclaw-migration` skill for an interactive agent-guided migration with dry-run previews.
+使用 `hermes claw migrate --help` 查看所有选项，或使用 `openclaw-migration` 技能进行交互式代理引导迁移（含干运行预览）。
 
 ---
 
-## Contributing
+## 贡献
 
-We welcome contributions! See the [Contributing Guide](https://hermes-agent.nousresearch.com/docs/developer-guide/contributing) for development setup, code style, and PR process.
+欢迎贡献！请参阅 [贡献指南](https://hermes-agent.nousresearch.com/docs/developer-guide/contributing) 了解开发设置、代码风格和 PR 流程。
 
-Quick start for contributors — use the standard installer, then work from the
-full git checkout it creates at `$HERMES_HOME/hermes-agent` (usually
-`~/.hermes/hermes-agent`). This matches the layout used by `hermes update`, the
-managed venv, lazy dependencies, gateway, and docs tooling.
+贡献者快速开始——使用标准安装器，然后在它创建的完整 git checkout 中开发：
+`$HERMES_HOME/hermes-agent`（通常是 `~/.hermes/hermes-agent`）。这会匹配
+`hermes update`、托管 venv、lazy dependencies、gateway 和 docs tooling 使用的布局。
 
 ```bash
 curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash
@@ -350,35 +205,30 @@ uv pip install -e ".[all,dev]"
 scripts/run_tests.sh
 ```
 
-Manual clone fallback (for throwaway clones/CI where you intentionally do not
-want the managed install layout):
-
-Create the venv outside the cloned source tree — a venv inside the directory
-the agent operates from can be wiped by a relative-path command the agent runs
-against its own checkout, destroying the running runtime mid-session.
+手动克隆备用路径（用于一次性 clone / CI，或你明确不想使用 managed install layout 时）：
 
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
-uv venv ~/.hermes/venvs/hermes-dev --python 3.11
-source ~/.hermes/venvs/hermes-dev/bin/activate
+uv venv venv --python 3.11
+source venv/bin/activate
 uv pip install -e ".[all,dev]"
-scripts/run_tests.sh
+python -m pytest tests/ -q
 ```
 
 ---
 
-## Community
+## 社区
 
 - 💬 [Discord](https://discord.gg/NousResearch)
-- 📚 [Skills Hub](https://agentskills.io)
-- 🐛 [Issues](https://github.com/NousResearch/hermes-agent/issues)
-- 🔌 [computer-use-linux](https://github.com/avifenesh/computer-use-linux) — Linux desktop-control MCP server for Hermes and other MCP hosts, with AT-SPI accessibility trees, Wayland/X11 input, screenshots, and compositor window targeting.
-- 🔌 [HermesClaw](https://github.com/AaronWong1999/hermesclaw) — Community WeChat bridge: Run Hermes Agent and OpenClaw on the same WeChat account.
+- 📚 [技能中心](https://agentskills.io)
+- 🐛 [问题反馈](https://github.com/NousResearch/hermes-agent/issues)
+- 💡 [讨论区](https://github.com/NousResearch/hermes-agent/discussions)
+- 🔌 [HermesClaw](https://github.com/AaronWong1999/hermesclaw) — 社区微信桥接：在同一微信账号上运行 Hermes Agent 和 OpenClaw。
 
 ---
 
-## License
+## 许可证
 
-MIT — see [LICENSE](LICENSE).
+MIT — 详见 [LICENSE](LICENSE)。
 
-Built by [Nous Research](https://nousresearch.com).
+由 [Nous Research](https://nousresearch.com) 构建。

@@ -1,11 +1,11 @@
+<div dir="rtl">
+
 <p align="center">
   <img src="assets/banner.png" alt="Hermes Agent" width="100%">
 </p>
 
-# Hermes Agent - Second Brain Edition
-<p align="center">
-  <a href="https://hermes-agent.nousresearch.com/">Hermes Agent</a> | <a href="https://hermes-agent.nousresearch.com/">Hermes Desktop</a>
-</p>
+# ہرمیس ایجنٹ ☤ (Hermes Agent)
+
 <p align="center">
   <a href="https://github.com/ahlfs/hermes-agent"><img src="https://img.shields.io/badge/Modified%20by-Ahlfs-blueviolet?style=for-the-badge" alt="Modified by Ahlfs"></a>
   <a href="https://github.com/NousResearch/hermes-agent/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License: MIT"></a>
@@ -15,370 +15,273 @@
   <a href="README.es.md"><img src="https://img.shields.io/badge/Lang-Español-orange?style=for-the-badge" alt="Español"></a>
 </p>
 
-> **⚠️ CUSTOM FORK FOR LAM-CYBERLAB**
+> **⚠️ LAM-CYBERLAB کے لیے اپنی مرضی کا کانٹا (CUSTOM FORK)**
 >
-> This repository is a heavily modified version of Hermes Agent by **Ahlfs**. It is specifically designed to be fully compatible as the backend intelligence engine for **[LAM-Cyberlab](https://github.com/ahlfs/LAM-Cyberlab)**. See the [Second Brain Edition](#-second-brain-edition-custom-fork) section below for details on custom features.
+> یہ ریپوزٹری ہرمیس ایجنٹ کا ایک انتہائی تبدیل شدہ ورژن ہے جسے **Ahlfs** نے تیار کیا ہے۔ اسے خاص طور پر **[LAM-Cyberlab](https://github.com/ahlfs/LAM-Cyberlab)** کے لیے بیک اینڈ انٹیلی جنس انجن کے طور پر مکمل طور پر ہم آہنگ ہونے کے لیے ڈیزائن کیا گیا ہے۔ حسب ضرورت خصوصیات کی تفصیلات کے لیے نیچے [Second Brain Edition](#-second-brain-edition-اپنی-مرضی-کا-کانٹا) سیکشن دیکھیں۔
 
-**The self-improving AI agent built by [Nous Research](https://nousresearch.com).** It's the only agent with a built-in learning loop — it creates skills from experience, improves them during use, nudges itself to persist knowledge, searches its own past conversations, and builds a deepening model of who you are across sessions. Run it on a $5 VPS, a GPU cluster, or serverless infrastructure that costs nearly nothing when idle. It's not tied to your laptop — talk to it from Telegram while it works on a cloud VM.
+**[نوس ریسرچ (Nous Research)](https://nousresearch.com) کا تیار کردہ خود کو بہتر بنانے والا اے آئی (AI) ایجنٹ۔** یہ واحد ایجنٹ ہے جس میں سیکھنے کا عمل (learning loop) پہلے سے موجود ہے — یہ اپنے تجربات سے نئی مہارتیں (skills) بناتا ہے، استعمال کے دوران ان کو بہتر کرتا ہے، معلومات کو محفوظ رکھنے کے لیے خود کو یاد دہانی کرواتا ہے، اپنی پرانی بات چیت کو تلاش کر سکتا ہے، اور مختلف سیشنز کے دوران آپ کے بارے میں ایک گہری سمجھ پیدا کرتا ہے۔ اسے $5 والے VPS پر چلائیں، GPU کلسٹر پر، یا سرور لیس (serverless) انفراسٹرکچر پر جس کی قیمت استعمال نہ ہونے پر تقریباً صفر ہے۔ یہ آپ کے لیپ ٹاپ تک محدود نہیں ہے — آپ ٹیلی گرام (Telegram) سے اس کے ساتھ بات چیت کر سکتے ہیں جبکہ یہ کلاؤڈ VM پر کام کر رہا ہو۔
 
-Use any model you want — [Nous Portal](https://portal.nousresearch.com), OpenRouter, OpenAI, your own endpoint, and [many others](https://hermes-agent.nousresearch.com/docs/integrations/providers). Switch with `hermes model` — no code changes, no lock-in.
+آپ اپنی مرضی کا کوئی بھی ماڈل استعمال کر سکتے ہیں — [Nous Portal](https://portal.nousresearch.com)، [OpenRouter](https://openrouter.ai) (200 سے زائد ماڈلز)، [NovitaAI](https://novita.ai) (ماڈل API، ایجنٹ سینڈ باکس، اور GPU کلاؤڈ کے لیے اے آئی مقامی کلاؤڈ)، [NVIDIA NIM](https://build.nvidia.com) (Nemotron)، [Xiaomi MiMo](https://platform.xiaomimimo.com)، [z.ai/GLM](https://z.ai)، [Kimi/Moonshot](https://platform.moonshot.ai)، [MiniMax](https://www.minimax.io)، [Hugging Face](https://huggingface.co)، OpenAI، یا اپنا حسب ضرورت اینڈ پوائنٹ (endpoint) استعمال کریں۔ ماڈل تبدیل کرنے کے لیے صرف `hermes model` استعمال کریں — کسی کوڈ کو تبدیل کرنے کی ضرورت نہیں، کوئی پابندی نہیں۔
 
 <table>
-<tr><td><b>A real terminal interface</b></td><td>Full TUI with multiline editing, slash-command autocomplete, conversation history, interrupt-and-redirect, and streaming tool output.</td></tr>
-<tr><td><b>Lives where you do</b></td><td>Telegram, Discord, Slack, WhatsApp, Signal, and CLI — all from a single gateway process. Voice memo transcription, cross-platform conversation continuity.</td></tr>
-<tr><td><b>A closed learning loop</b></td><td>Agent-curated memory with periodic nudges. Autonomous skill creation after complex tasks. Skills self-improve during use. FTS5 session search with LLM summarization for cross-session recall. <a href="https://github.com/plastic-labs/honcho">Honcho</a> dialectic user modeling. Compatible with the <a href="https://agentskills.io">agentskills.io</a> open standard.</td></tr>
-<tr><td><b>Scheduled automations</b></td><td>Built-in cron scheduler with delivery to any platform. Daily reports, nightly backups, weekly audits — all in natural language, running unattended.</td></tr>
-<tr><td><b>Delegates and parallelizes</b></td><td>Spawn isolated subagents for parallel workstreams. Write Python scripts that call tools via RPC, collapsing multi-step pipelines into zero-context-cost turns.</td></tr>
-<tr><td><b>Runs anywhere, not just your laptop</b></td><td>Six terminal backends — local, Docker, SSH, Singularity, Modal, and Daytona. Daytona and Modal offer serverless persistence — your agent's environment hibernates when idle and wakes on demand, costing nearly nothing between sessions. Run it on a $5 VPS or a GPU cluster.</td></tr>
-<tr><td><b>Research-ready</b></td><td>Batch trajectory generation, trajectory compression for training the next generation of tool-calling models.</td></tr>
+<tr><td><b>حقیقی ٹرمینل انٹرفیس</b></td><td>مکمل TUI جس میں ملٹی لائن ایڈیٹنگ، سلیش-کمانڈ آٹو کمپلیٹ، بات چیت کی ہسٹری، انٹرپٹ اور ری ڈائریکٹ، اور سٹریمنگ ٹول آؤٹ پٹ شامل ہے۔</td></tr>
+<tr><td><b>یہ وہاں موجود ہے جہاں آپ ہیں</b></td><td>ٹیلی گرام، ڈسکارڈ (Discord)، سلیک (Slack)، واٹس ایپ (WhatsApp)، سگنل (Signal)، اور CLI — سب ایک ہی گیٹ وے پروسیس سے کام کرتے ہیں۔ وائس میمو (Voice memo) ٹرانسکرپشن، کراس پلیٹ فارم بات چیت کا تسلسل۔</td></tr>
+<tr><td><b>سیکھنے کا ایک مکمل عمل</b></td><td>ایجنٹ کی اپنی ترتیب دی گئی میموری، جس میں وہ خود کو وقتاً فوقتاً یاد دہانی کرواتا ہے۔ پیچیدہ کاموں کے بعد خود کار طریقے سے مہارت (skill) کی تخلیق۔ استعمال کے دوران مہارتوں میں بہتری۔ LLM سمرائزیشن کے ساتھ FTS5 سیشن سرچ تاکہ پرانے سیشنز کی یاددہانی کی جا سکے۔ <a href="https://github.com/plastic-labs/honcho">Honcho</a> کے ذریعے صارف کی ماڈلنگ۔ <a href="https://agentskills.io">agentskills.io</a> اوپن سٹینڈرڈ کے ساتھ مکمل مطابقت۔</td></tr>
+<tr><td><b>شیڈول کی گئی خودکار کارروائیاں</b></td><td>بلٹ ان (Built-in) کرون (cron) شیڈیولر جو کسی بھی پلیٹ فارم پر ڈیلیوری کے لیے استعمال ہو سکتا ہے۔ روزانہ کی رپورٹس، رات کے بیک اپس، ہفتہ وار آڈٹس — یہ سب کچھ قدرتی زبان (natural language) میں اور بغیر کسی نگرانی کے کام کرتا ہے۔</td></tr>
+<tr><td><b>کام کی تقسیم اور متوازی عمل</b></td><td>متوازی (parallel) کاموں کے لیے الگ سے ذیلی ایجنٹس (subagents) بنائیں۔ پائتھون (Python) سکرپٹس لکھیں جو RPC کے ذریعے ٹولز کو استعمال کریں، تاکہ کئی مراحل پر مشتمل کاموں کو بغیر کسی سیاق و سباق (context) کے خرچ کے، ایک ہی باری میں انجام دیا جا سکے۔</td></tr>
+<tr><td><b>کہیں بھی چلائیں، صرف اپنے لیپ ٹاپ پر نہیں</b></td><td>چھ (Six) ٹرمینل بیک اینڈز — لوکل، Docker، SSH، Singularity، Modal، اور Daytona۔ ڈیٹونا (Daytona) اور موڈل (Modal) سرور لیس (serverless) فعالیت پیش کرتے ہیں — جب آپ کا ایجنٹ فارغ ہوتا ہے تو اس کا ماحول سلیپ (hibernate) ہو جاتا ہے اور ضرورت پڑنے پر خود بخود جاگ جاتا ہے، جس کی وجہ سے سیشنز کے درمیان لاگت تقریباً صفر رہتی ہے۔ اسے $5 والے VPS یا GPU کلسٹر پر چلائیں۔</td></tr>
+<tr><td><b>تحقیق کے لیے تیار</b></td><td>بیچ (Batch) ٹریجیکٹری (trajectory) جنریشن، اگلی نسل کے ٹول کالنگ ماڈلز کی تربیت کے لیے ٹریجیکٹری کمپریشن۔</td></tr>
 </table>
 
 ---
 
-## 🧠 Second Brain Edition (Custom Fork)
+## 🧠 Second Brain Edition (اپنی مرضی کا کانٹا)
 
-This is a custom fork of Hermes Agent **modified and maintained by Ahlfs**, featuring an autonomous **Second Brain** pipeline and automated GitHub configuration backups.
+یہ ہرمیس ایجنٹ کا اپنی مرضی کا کانٹا (custom fork) ہے جسے **Ahlfs نے تبدیل کیا اور برقرار رکھا ہے**، جس میں ایک خود مختار **Second Brain** پائپ لائن اور خودکار گٹ ہب (GitHub) کنفیگریشن بیک اپ شامل ہیں۔
 
-### Features
-1. **Automated Second Brain Pipeline**
-   - **Audio Transcription**: Drops an `.mp3` into `01-Audio` and Hermes automatically transcribes it using Whisper.
-   - **Document Parsing**: Parses `.pdf` and performs OCR on images dropped into `02-Documents`.
-   - **Wiki Generation**: Synthesizes transcripts and documents into interlinked Wikipedia-style markdown files in `04-Wiki`.
-   - **Git Backup**: Automatically commits and pushes new knowledge to a private GitHub repository.
-   - **Full Source Cleanup Cascade**: Safely deletes the raw source files (`.mp3`, `.pdf`, etc.) from `01-Audio` and `02-Documents` *only after* the final knowledge has been successfully backed up to GitHub, keeping your vault lean.
-2. **Automated Config Backup**
-   - Backs up your `~/.hermes` configs, custom skills, and memories to a separate private GitHub repo via a scheduled cron job (default: every 24h).
-3. **Dynamic Swarm Router (Intent-Based Routing)**
-   - Automatically intercepts and routes incoming messages to the most capable specialist sub-agent (`builder`, `researcher`, `writer`).
-   - Uses zero-latency keyword classification to infer user intent, providing a frictionless swarm experience without manual profile switching.
-4. **LAM-Cyberlab Native Integration**
-   - **Real-time Streaming**: Full support for progressive token streaming via SSE/WebSockets (`stream_events.py`), making it a zero-friction, plug-and-play intelligence backend for the LAM-Cyberlab UI.
-   - **Closed-Loop Learning**: Synergizes flawlessly with the native Self-Healing Skill Generator. When faced with complex tasks from the Cyberlab UI, the agent can autonomously write, test, and save its own new `.md` skills for future use.
+### خصوصیات
+1. **خودکار سیکنڈ برین پائپ لائن**
+   - **آڈیو ٹرانسکرپشن**: `.mp3` کو `01-Audio` میں رکھیں اور ہرمیس اسے وہسپر (Whisper) کا استعمال کرتے ہوئے خود بخود ٹرانسکرائب کرے گا۔
+   - **دستاویز کی تجزیہ کاری**: `.pdf` کا تجزیہ کرتا ہے اور `02-Documents` میں رکھی گئی تصاویر پر OCR انجام دیتا ہے۔
+   - **ویکی جنریشن**: ٹرانسکرپٹس اور دستاویزات کو `04-Wiki` میں وکی پیڈیا طرز کی آپس میں جڑی ہوئی مارک ڈاؤن فائلوں میں مرتب کرتا ہے۔
+   - **گٹ بیک اپ**: نئے علم کو خود بخود پرائیویٹ گٹ ہب ریپوزٹری میں کمٹ (commit) اور پش (push) کرتا ہے۔
+   - **فل سورس کلین اپ کاسکیڈ**: خام سورس فائلوں (`.mp3`، `.pdf`، وغیرہ) کو `01-Audio` اور `02-Documents` سے محفوظ طریقے سے حذف کرتا ہے *صرف اس وقت* جب حتمی علم گٹ ہب میں کامیابی کے ساتھ بیک اپ ہو جائے، تاکہ آپ کا والٹ ہلکا رہے۔
+2. **خودکار کنفیگریشن بیک اپ**
+   - آپ کی `~/.hermes` کنفیگریشنز، حسب ضرورت مہارتوں (skills)، اور یادوں (memories) کو ایک شیڈولڈ کرون جاب (طے شدہ: ہر 24 گھنٹے) کے ذریعے ایک علیحدہ پرائیویٹ گٹ ہب ریپوزٹری میں بیک اپ کرتا ہے۔
+3. **ڈائنامک سوارم راؤٹر (ارادے پر مبنی روٹنگ)**
+   - آنے والے پیغامات کو خود بخود روکے گا اور سب سے زیادہ قابل ماہر ذیلی ایجنٹ (`builder`, `researcher`, `writer`) کو بھیجے گا۔
+   - صارف کے ارادے کا اندازہ لگانے کے لیے صفر لیٹنسی (zero-latency) کلیدی الفاظ کی درجہ بندی کا استعمال کرتا ہے، جس سے پروفائل کو دستی طور پر تبدیل کیے بغیر ایک ہموار تجربہ ملتا ہے۔
+4. **LAM-Cyberlab آبائی انضمام**
+   - **ریئل ٹائم سٹریمنگ**: SSE/WebSockets (`stream_events.py`) کے ذریعے پروگریسو ٹوکن سٹریمنگ کے لیے مکمل تعاون، جو اسے LAM-Cyberlab UI کے لیے ایک پلگ اینڈ پلے انٹیلی جنس بیک اینڈ بناتا ہے۔
+   - **کلوزڈ لوپ لرننگ**: آبائی سیلف ہیلنگ اسکل جنریٹر کے ساتھ بے عیب طریقے سے کام کرتا ہے۔ جب سائبر لیب UI سے پیچیدہ کاموں کا سامنا کرنا پڑتا ہے، تو ایجنٹ خود مختار طور پر مستقبل کے استعمال کے لیے اپنی نئی `.md` مہارتیں لکھ، جانچ اور محفوظ کر سکتا ہے۔
 
-## Quick Install & Setup
+---
 
-Follow these steps to install the LAM-Cyberlab compatible version of Hermes Agent.
+## فوری انسٹالیشن (Quick Install)
 
-> **⚠️ WINDOWS USERS**: This project heavily relies on Linux packages (like `apt install ffmpeg`) and Bash scripts. Git Bash or native PowerShell will **not** work for the Second Brain pipeline. You **must** install and use **[WSL2 (Windows Subsystem for Linux)](https://learn.microsoft.com/en-us/windows/wsl/install)** to follow these steps.
+### لینکس (Linux)، میک او ایس (macOS)، ڈبلیو ایس ایل ٹو (WSL2)، ٹرمکس (Termux)
 
-### 1. Install OS Dependencies
-The Second Brain pipeline requires `ffmpeg` (for audio) and `tesseract-ocr` (for images). Run the command appropriate for your system:
+<div dir="ltr">
 
-**Ubuntu / Debian / WSL2 (Default):**
 ```bash
-sudo apt update && sudo apt install ffmpeg tesseract-ocr
-```
-
-**macOS (via Homebrew):**
-```bash
-brew install ffmpeg tesseract
-```
-
-**Fedora / RHEL:**
-```bash
-sudo dnf install ffmpeg tesseract
-```
-
-**Arch Linux:**
-```bash
-sudo pacman -S ffmpeg tesseract
-```
-
-### 2. Install Hermes Base & Swap to Custom Fork
-First, use the official installer to set up the necessary runtimes (Node.js, uv, PATH wrapper), then replace the source code with this custom repository.
-
-**Linux / macOS / WSL2:**
-```bash
-# Install the base environment
 curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash
-
-# Replace official repo with the Ahlfs custom fork
-rm -rf ~/.hermes/hermes-agent
-git clone https://github.com/ahlfs/hermes-agent.git ~/.hermes/hermes-agent
-
-# Re-sync dependencies
-cd ~/.hermes/hermes-agent
-~/.hermes/bin/uv pip install -e ".[all]"
 ```
 
-> **Windows Native:** Run `iex (irm https://hermes-agent.nousresearch.com/install.ps1)` in PowerShell, then delete `%LOCALAPPDATA%\hermes\hermes-agent` and `git clone https://github.com/ahlfs/hermes-agent.git` in its place.
+</div>
 
-### 3. Initialize Second Brain Environment
-Run the setup script to create an isolated virtual environment specifically for the Second Brain tools:
-```bash
-bash scripts/second-brain/setup-venv.sh
-```
+### ونڈوز (نیٹو، پاور شیل)
 
-### 4. Configure Environment Variables
-Open your `~/.hermes/.env` file and add the following settings at the bottom:
-```ini
-# Directory of your Obsidian Vault (Second Brain)
-OBSIDIAN_VAULT_DIR=/home/user/obsidian/memo
+> **توجہ فرمائیں:** مقامی ونڈوز (Native Windows) پر ہرمیس بغیر WSL کے چلتا ہے — CLI، گیٹ وے، TUI، اور ٹولز سب مقامی طور پر کام کرتے ہیں۔ اگر آپ WSL2 استعمال کرنا پسند کرتے ہیں، تو اوپر دی گئی لینکس/میک او ایس کی کمانڈ وہاں بھی کام کرے گی۔ کوئی مسئلہ نظر آیا؟ براہ کرم [مسائل (issues) درج کریں](https://github.com/NousResearch/hermes-agent/issues)۔
 
-# GitHub Backup Settings (Optional: for automated cloud backup)
-GITHUB_USERNAME=your_github_username
-GITHUB_REPO_CONFIG=hermes-config
-GITHUB_REPO_SECONDBRAIN=second-brain
-```
+اسے پاور شیل (PowerShell) میں چلائیں:
 
-### 5. Connect GitHub via SSH (Optional)
-If you configured the GitHub Backup Settings above, ensure your machine is connected to GitHub via SSH. The automated backups rely on SSH keys to push changes without requiring passwords.
-```bash
-ssh-keygen -t ed25519
-# Add the public key (~/.ssh/id_ed25519.pub) to your GitHub account
-```
-
-### 6. Start Using It!
-Reload your shell and start the agent:
-```bash
-source ~/.bashrc    # reload shell (or: source ~/.zshrc)
-hermes              # start chatting!
-```
-### 7. Teaching Your Second Brain (Ingesting Knowledge)
-To provide your agent with new knowledge (meeting recordings, books, research papers, etc.), simply place the raw files into your designated Obsidian Vault directory (`OBSIDIAN_VAULT_DIR`):
-
-1. **Audio Files (`.mp3`, `.m4a`, `.wav`)**: Move them into the `01-Audio/` folder.
-2. **Documents & Images (`.pdf`, `.png`, `.jpg`)**: Move them into the `02-Documents/` folder.
-
-**What happens next?**
-- The agent automatically detects new files and runs the ingestion pipeline in the background. You can also force this manually by telling the agent: *"Learn from my new files in the vault."*
-- Audio is transcribed via Whisper; Documents and Images are parsed and OCR-ed.
-- The extracted information is synthesized into Wikipedia-style interconnected `.md` pages in your `04-Wiki/` folder.
-- **Auto-Cleanup**: Once the knowledge has been successfully converted into Wiki pages and safely backed up to your GitHub repository, the agent's **Full Source Cleanup Cascade** kicks in. It will automatically delete the large raw source files (`.mp3`, `.pdf`, etc.) from your `01-Audio` and `02-Documents` folders to keep your server lightweight.
-
----
-
-## 📦 Backup & Auto-Backup System
-
-This custom edition of Hermes Agent features an Auto-Backup system (fully synced to the cloud/GitHub) to ensure your configurations, agent memories, custom skills, and knowledge base are secure even if your server/VPS goes down.
-
-### 1. What Gets Backed Up?
-The system separates backups into two repositories to keep things organized:
-- **`second-brain` (Knowledge Base):** Stores your entire Obsidian Vault structure (extracted notes, transcripts, `.md` wiki pages).
-- **`hermes-config` (Agent Brain):** Stores your agent's core identity. This includes the `~/.hermes/` directory (`config.yaml`, `skills/` folder, `profiles/` folder, `MEMORY.md`, `SOUL.md`).
-
-### 2. Repository Preparation & Access
-To allow the automated features to run without intervention, set up SSH access for Git:
-1. Create 2 empty **Private** repositories on GitHub (e.g., `second-brain` and `hermes-config`).
-2. Generate an SSH Key on your machine (if you haven't already):
-   ```bash
-   ssh-keygen -t ed25519 -C "your_email@example.com"
-   ```
-3. Copy your public key (`cat ~/.ssh/id_ed25519.pub`) and add it to your GitHub account (**Settings > SSH and GPG keys > New SSH key**).
-
-### 3. Environment Variable Configuration
-To tell Hermes where to back up your data, you must add the following variables to your `~/.hermes/.env` file:
-```ini
-# GitHub Backup Settings
-GITHUB_USERNAME=your_github_username
-GITHUB_REPO_CONFIG=hermes-config
-GITHUB_REPO_SECONDBRAIN=second-brain
-```
-
-### 4. How Auto-Backup Works
-- **Second Brain Auto-Sync:** Orchestrated via a Bash script (`sync-second-brain.sh`). This script can be run manually, or it will execute automatically on a schedule (cron) / whenever the agent receives an *ingest* command. During **Pass 6**, the agent automatically runs `git add`, `git commit`, and `git push` to the `second-brain` repository.
-- **Config Auto-Backup:** Runs automatically in the background via cron job every 24 hours. The agent checks for changes in custom skills, newly added memories, or modified profiles, and syncs them to the `hermes-config` repository.
-
-### 5. Manual Backup
-If you want to force a backup immediately, you can command the agent directly in the chat:
-> *"Sync my Second Brain to GitHub now"* or *"Backup your config and skills to GitHub right away."*
-
----
-
-### Troubleshooting
-
-#### Windows Defender or antivirus flags `uv.exe` as malware
-
-If your antivirus (Bitdefender, Windows Defender, etc.) quarantines `uv.exe` from the Hermes `bin` folder (`%LOCALAPPDATA%\hermes\bin\uv.exe`), this is a **false positive**. The file is Astral's `uv` — the Rust Python package manager Hermes bundles to manage its Python environment. ML-based antivirus engines commonly flag unsigned Rust binaries that download and install packages.
-
-**To verify your copy is authentic:**
+<div dir="ltr">
 
 ```powershell
-# Install GitHub CLI if needed
-winget install --id GitHub.cli
-
-# Login to GitHub
-gh auth login
-
-# Run verification
-$uv = "$env:LOCALAPPDATA\hermes\bin\uv.exe"
-$ver = (& $uv --version).Split(' ')[1]
-[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-$zip = "$env:TEMP\uv.zip"
-Invoke-WebRequest "https://github.com/astral-sh/uv/releases/download/$ver/uv-x86_64-pc-windows-msvc.zip" -OutFile $zip -UseBasicParsing
-gh attestation verify $zip --repo astral-sh/uv
-Expand-Archive $zip "$env:TEMP\uv_x" -Force
-(Get-FileHash "$env:TEMP\uv_x\uv.exe").Hash -eq (Get-FileHash $uv).Hash
+iex (irm https://hermes-agent.nousresearch.com/install.ps1)
 ```
 
-If attestation says "Verification succeeded" and the last line prints `True`, you're good.
+</div>
 
-**To whitelist Hermes:**
-- **Windows Defender:** Run PowerShell as Admin → `Add-MpPreference -ExclusionPath "$env:LOCALAPPDATA\hermes\bin"`
-- **Bitdefender:** Add an exception in the Bitdefender console (Protection > Antivirus > Settings > Manage Exceptions)
-- Whitelist the **folder**, not the file hash — Hermes updates `uv` and the hash changes every version
+انسٹالر سب کچھ خود سنبھالتا ہے: uv، Python 3.11، Node.js، ripgrep، ffmpeg، **اور ایک پورٹ ایبل (portable) گٹ بیش (Git Bash)** (یعنی MinGit، جو `%LOCALAPPDATA%\hermes\git` میں ان پیک ہوتا ہے — اس کے لیے ایڈمن کی اجازت درکار نہیں، اور یہ سسٹم کے کسی بھی گٹ انسٹال سے بالکل الگ ہے)۔ ہرمیس اس بنڈل شدہ گٹ بیش کو شیل کمانڈز چلانے کے لیے استعمال کرتا ہے۔
 
-For more context, see the upstream Astral reports: [astral-sh/uv#13553](https://github.com/astral-sh/uv/issues/13553), [astral-sh/uv#15011](https://github.com/astral-sh/uv/issues/15011), [astral-sh/uv#10079](https://github.com/astral-sh/uv/issues/10079).
+اگر آپ کے پاس پہلے سے گٹ (Git) انسٹال ہے، تو انسٹالر اسے شناخت کر لیتا ہے اور اسے ہی استعمال کرتا ہے۔ بصورت دیگر آپ کو صرف ~45MB کے MinGit ڈاؤنلوڈ کی ضرورت ہوگی — یہ آپ کے سسٹم کے گٹ پر کوئی اثر نہیں ڈالے گا۔
 
----
+> **اینڈرائیڈ (Android) / ٹرمکس (Termux):** ٹیسٹ کیا گیا مینوئل طریقہ [Termux گائیڈ](https://hermes-agent.nousresearch.com/docs/getting-started/termux) میں موجود ہے۔ ٹرمکس پر ہرمیس ایک مخصوص `.[termux]` ایکسٹرا انسٹال کرتا ہے کیونکہ مکمل `.[all]` ایکسٹرا میں ایسی وائس ڈیپینڈینسیز شامل ہیں جو اینڈرائیڈ کے ساتھ مطابقت نہیں رکھتیں۔
+>
+> **ونڈوز (Windows):** مقامی ونڈوز کی مکمل سپورٹ موجود ہے — اوپر دی گئی پاور شیل کی کمانڈ سب کچھ انسٹال کر دیتی ہے۔ اگر آپ WSL2 استعمال کرنا چاہتے ہیں، تو لینکس کی کمانڈ وہاں کام کرتی ہے۔ مقامی ونڈوز میں انسٹالیشن `%LOCALAPPDATA%\hermes` میں ہوتی ہے؛ جبکہ WSL2 میں لینکس کی طرح `~/.hermes` میں ہوتی ہے۔ ہرمیس کا وہ واحد فیچر جسے فی الحال خاص طور پر WSL2 کی ضرورت ہے وہ براؤزر پر مبنی ڈیش بورڈ چیٹ پین ہے (یہ POSIX PTY استعمال کرتا ہے — کلاسک CLI اور گیٹ وے دونوں مقامی طور پر چلتے ہیں)۔
 
-## Getting Started
+انسٹالیشن کے بعد:
+
+<div dir="ltr">
 
 ```bash
-hermes              # Interactive CLI — start a conversation
-hermes model        # Choose your LLM provider and model
-hermes tools        # Configure which tools are enabled
-hermes config set   # Set individual config values
-hermes config get   # Print individual config values
-hermes gateway      # Start the messaging gateway (Telegram, Discord, etc.)
-hermes setup        # Run the full setup wizard (configures everything at once)
-hermes claw migrate # Migrate from OpenClaw (if coming from OpenClaw)
-hermes update       # Update to the latest version
-hermes doctor       # Diagnose any issues
+source ~/.bashrc    # شیل کو ری لوڈ کریں (یا: source ~/.zshrc)
+hermes              # بات چیت شروع کریں!
 ```
 
-📖 **[Full documentation →](https://hermes-agent.nousresearch.com/docs/)**
+</div>
 
 ---
 
-## Skip the API-key collection — Nous Portal
+## آغاز کریں (Getting Started)
 
-Hermes works with whatever provider you want — that's not changing. But if you'd rather not collect five separate API keys for the model, web search, image generation, TTS, and a cloud browser, **[Nous Portal](https://portal.nousresearch.com)** covers all of them under one subscription:
+<div dir="ltr">
 
-- **300+ models** — pick any of them with `/model <name>`
-- **Tool Gateway** — web search (Firecrawl), image generation (FAL), text-to-speech (OpenAI), cloud browser (Browser Use), all routed through your sub. No extra accounts.
+```bash
+hermes              # انٹرایکٹو CLI — بات چیت شروع کریں
+hermes model        # اپنا LLM پرووائیڈر اور ماڈل منتخب کریں
+hermes tools        # کنفیگر کریں کہ کون سے ٹولز ایکٹو ہیں
+hermes config set   # انفرادی کنفگ (config) ویلیوز سیٹ کریں
+hermes gateway      # میسجنگ گیٹ وے شروع کریں (ٹیلی گرام، ڈسکارڈ، وغیرہ)
+hermes setup        # مکمل سیٹ اپ وزرڈ چلائیں (یہ سب کچھ ایک ساتھ کنفیگر کر دے گا)
+hermes claw migrate # OpenClaw سے مائیگریٹ کریں (اگر آپ OpenClaw سے آ رہے ہیں)
+hermes update       # لیٹسٹ ورژن پر اپ ڈیٹ کریں
+hermes doctor       # کسی بھی مسئلے کی تشخیص کریں
+```
 
-One command from a fresh install:
+</div>
+
+📖 **[مکمل دستاویزات →](https://hermes-agent.nousresearch.com/docs/)**
+
+---
+
+## API-کیز اکٹھی کرنے سے بچیں — Nous Portal
+
+ہرمیس آپ کے پسندیدہ پرووائیڈر کے ساتھ کام کرتا ہے — یہ چیز تبدیل نہیں ہو رہی۔ لیکن اگر آپ ماڈل، ویب سرچ، امیج جنریشن، TTS، اور کلاؤڈ براؤزر کے لیے پانچ الگ الگ API کیز جمع نہیں کرنا چاہتے، تو **[Nous Portal](https://portal.nousresearch.com)** ان سب کو ایک ہی سبسکرپشن کے تحت کور کرتا ہے:
+
+- **300+ ماڈلز** — ان میں سے کوئی بھی ماڈل `/model <name>` کے ذریعے منتخب کریں
+- **ٹول گیٹ وے (Tool Gateway)** — ویب سرچ (Firecrawl)، امیج جنریشن (FAL)، ٹیکسٹ ٹو سپیچ (OpenAI)، کلاؤڈ براؤزر (Browser Use)، یہ سب آپ کی سبسکرپشن کے ذریعے چلتے ہیں۔ کسی اضافی اکاؤنٹ کی ضرورت نہیں۔
+
+نئی انسٹالیشن کے بعد بس ایک کمانڈ کی ضرورت ہے:
+
+<div dir="ltr">
 
 ```bash
 hermes setup --portal
 ```
 
-That logs you in via OAuth, sets Nous as your provider, and turns on the Tool Gateway. Check what's wired up any time with `hermes portal info`. Full details on the [Tool Gateway docs page](https://hermes-agent.nousresearch.com/docs/user-guide/features/tool-gateway).
+</div>
 
-You can still bring your own keys per-tool whenever you want — the gateway is per-backend, not all-or-nothing.
+یہ آپ کو OAuth کے ذریعے لاگ ان کرواتا ہے، Nous کو آپ کا پرووائیڈر مقرر کرتا ہے، اور ٹول گیٹ وے کو آن کر دیتا ہے۔ `hermes portal info` کمانڈ استعمال کر کے آپ کسی بھی وقت چیک کر سکتے ہیں کہ کون کون سی سروسز منسلک ہیں۔ مکمل تفصیلات [Tool Gateway دستاویزات کے صفحے](https://hermes-agent.nousresearch.com/docs/user-guide/features/tool-gateway) پر موجود ہیں۔
 
----
-
-## CLI vs Messaging Quick Reference
-
-Hermes has two entry points: start the terminal UI with `hermes`, or run the gateway and talk to it from Telegram, Discord, Slack, WhatsApp, Signal, or Email. Once you're in a conversation, many slash commands are shared across both interfaces.
-
-| Action                         | CLI                                           | Messaging platforms                                                              |
-| ------------------------------ | --------------------------------------------- | -------------------------------------------------------------------------------- |
-| Start chatting                 | `hermes`                                      | Run `hermes gateway setup` + `hermes gateway start`, then send the bot a message |
-| Start fresh conversation       | `/new` or `/reset`                            | `/new` or `/reset`                                                               |
-| Change model                   | `/model [provider:model]`                     | `/model [provider:model]`                                                        |
-| Set a personality              | `/personality [name]`                         | `/personality [name]`                                                            |
-| Retry or undo the last turn    | `/retry`, `/undo`                             | `/retry`, `/undo`                                                                |
-| Compress context / check usage | `/compress`, `/usage`, `/insights [--days N]` | `/compress`, `/usage`, `/insights [days]`                                        |
-| Browse skills                  | `/skills` or `/<skill-name>`                  | `/<skill-name>`                                                                  |
-| Interrupt current work         | `Ctrl+C` or send a new message                | `/stop` or send a new message                                                    |
-| Platform-specific status       | `/platforms`                                  | `/status`, `/sethome`                                                            |
-
-For the full command lists, see the [CLI guide](https://hermes-agent.nousresearch.com/docs/user-guide/cli) and the [Messaging Gateway guide](https://hermes-agent.nousresearch.com/docs/user-guide/messaging).
+آپ اب بھی کسی بھی ٹول کے لیے اپنی مرضی کی API کیز استعمال کر سکتے ہیں — گیٹ وے ہر سروس کے لیے الگ الگ کام کرتا ہے، ایسا نہیں کہ یا تو سب کچھ استعمال کریں یا کچھ بھی نہیں۔
 
 ---
 
-## Documentation
+## CLI بمقابلہ میسجنگ فوری حوالہ
 
-All documentation lives at **[hermes-agent.nousresearch.com/docs](https://hermes-agent.nousresearch.com/docs/)**:
+ہرمیس کے دو بنیادی انٹر فیس ہیں: آپ ٹرمینل UI کو `hermes` کے ساتھ شروع کریں، یا گیٹ وے چلا کر اس کے ساتھ ٹیلی گرام، ڈسکارڈ، سلیک، واٹس ایپ، سگنل، یا ای میل کے ذریعے بات کریں۔ جب آپ کسی بات چیت میں ہوتے ہیں، تو بہت سی سلیش (slash) کمانڈز دونوں انٹرفیسز میں ایک جیسی ہوتی ہیں۔
 
-| Section                                                                                             | What's Covered                                             |
+<div dir="ltr">
+
+| کارروائی (Action)                         | سی ایل آئی (CLI)                              | میسجنگ پلیٹ فارمز (Messaging platforms)                                          |
+| --------------------------------------- | --------------------------------------------- | -------------------------------------------------------------------------------- |
+| بات چیت شروع کریں                       | `hermes`                                      | `hermes gateway setup` اور `hermes gateway start` چلائیں، پھر بوٹ کو میسج بھیجیں |
+| نئی بات چیت شروع کریں                   | `/new` یا `/reset`                            | `/new` یا `/reset`                                                               |
+| ماڈل تبدیل کریں                         | `/model [provider:model]`                     | `/model [provider:model]`                                                        |
+| پرسنلٹی (Personality) سیٹ کریں           | `/personality [name]`                         | `/personality [name]`                                                            |
+| پچھلی باری کو دوبارہ یا منسوخ (undo) کریں | `/retry`، `/undo`                             | `/retry`، `/undo`                                                                |
+| کانٹیکسٹ (context) کمپریس کریں / استعمال چیک کریں | `/compress`، `/usage`، `/insights [--days N]` | `/compress`، `/usage`، `/insights [days]`                                        |
+| مہارتیں (Skills) براؤز کریں             | `/skills` یا `/<skill-name>`                  | `/<skill-name>`                                                                  |
+| موجودہ کام کو روکیں                     | `Ctrl+C` دبائیں یا نیا میسج بھیجیں            | `/stop` یا نیا میسج بھیجیں                                                       |
+| پلیٹ فارم کے لحاظ سے سٹیٹس              | `/platforms`                                  | `/status`، `/sethome`                                                            |
+
+</div>
+
+مکمل کمانڈ لسٹ کے لیے، [CLI گائیڈ](https://hermes-agent.nousresearch.com/docs/user-guide/cli) اور [میسجنگ گیٹ وے گائیڈ](https://hermes-agent.nousresearch.com/docs/user-guide/messaging) دیکھیں۔
+
+---
+
+## دستاویزات (Documentation)
+
+تمام دستاویزات **[hermes-agent.nousresearch.com/docs](https://hermes-agent.nousresearch.com/docs/)** پر موجود ہیں:
+
+<div dir="ltr">
+
+| سیکشن (Section)                                                                                     | تفصیل (What's Covered)                                     |
 | --------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
-| [Quickstart](https://hermes-agent.nousresearch.com/docs/getting-started/quickstart)                 | Install → setup → first conversation in 2 minutes          |
-| [CLI Usage](https://hermes-agent.nousresearch.com/docs/user-guide/cli)                              | Commands, keybindings, personalities, sessions             |
-| [Configuration](https://hermes-agent.nousresearch.com/docs/user-guide/configuration)                | Config file, providers, models, all options                |
-| [Messaging Gateway](https://hermes-agent.nousresearch.com/docs/user-guide/messaging)                | Telegram, Discord, Slack, WhatsApp, Signal, Home Assistant |
-| [Security](https://hermes-agent.nousresearch.com/docs/user-guide/security)                          | Command approval, DM pairing, container isolation          |
-| [Tools & Toolsets](https://hermes-agent.nousresearch.com/docs/user-guide/features/tools)            | 40+ tools, toolset system, terminal backends               |
-| [Skills System](https://hermes-agent.nousresearch.com/docs/user-guide/features/skills)              | Procedural memory, Skills Hub, creating skills             |
-| [Memory](https://hermes-agent.nousresearch.com/docs/user-guide/features/memory)                     | Persistent memory, user profiles, best practices           |
-| [MCP Integration](https://hermes-agent.nousresearch.com/docs/user-guide/features/mcp)               | Connect any MCP server for extended capabilities           |
-| [Cron Scheduling](https://hermes-agent.nousresearch.com/docs/user-guide/features/cron)              | Scheduled tasks with platform delivery                     |
-| [Context Files](https://hermes-agent.nousresearch.com/docs/user-guide/features/context-files)       | Project context that shapes every conversation             |
-| [Architecture](https://hermes-agent.nousresearch.com/docs/developer-guide/architecture)             | Project structure, agent loop, key classes                 |
-| [Contributing](https://hermes-agent.nousresearch.com/docs/developer-guide/contributing)             | Development setup, PR process, code style                  |
-| [CLI Reference](https://hermes-agent.nousresearch.com/docs/reference/cli-commands)                  | All commands and flags                                     |
-| [Environment Variables](https://hermes-agent.nousresearch.com/docs/reference/environment-variables) | Complete env var reference                                 |
+| [فوری آغاز (Quickstart)](https://hermes-agent.nousresearch.com/docs/getting-started/quickstart)     | انسٹالیشن → سیٹ اپ → 2 منٹ میں پہلی بات چیت شروع کریں       |
+| [CLI کا استعمال](https://hermes-agent.nousresearch.com/docs/user-guide/cli)                         | کمانڈز، کی بائنڈنگز (keybindings)، پرسنلٹیز (personalities)، سیشنز |
+| [کنفیگریشن (Configuration)](https://hermes-agent.nousresearch.com/docs/user-guide/configuration)    | کنفگ فائل، پرووائیڈرز، ماڈلز، اور تمام آپشنز               |
+| [میسجنگ گیٹ وے](https://hermes-agent.nousresearch.com/docs/user-guide/messaging)                    | ٹیلی گرام، ڈسکارڈ، سلیک، واٹس ایپ، سگنل، ہوم اسسٹنٹ         |
+| [سیکیورٹی (Security)](https://hermes-agent.nousresearch.com/docs/user-guide/security)              | کمانڈ کی منظوری، DM پیئرنگ (pairing)، کنٹینر آئسولیشن       |
+| [ٹولز اور ٹول سیٹس](https://hermes-agent.nousresearch.com/docs/user-guide/features/tools)          | 40 سے زائد ٹولز، ٹول سیٹ سسٹم، ٹرمینل بیک اینڈز             |
+| [مہارتوں کا سسٹم (Skills System)](https://hermes-agent.nousresearch.com/docs/user-guide/features/skills)| پروسیجرل (Procedural) میموری، سکلز ہب، نئی مہارتیں بنانا    |
+| [میموری (Memory)](https://hermes-agent.nousresearch.com/docs/user-guide/features/memory)            | مستقل میموری، یوزر پروفائلز، بہترین طریقہ کار              |
+| [MCP انضمام (Integration)](https://hermes-agent.nousresearch.com/docs/user-guide/features/mcp)      | صلاحیتوں کو بڑھانے کے لیے کسی بھی MCP سرور کو جوڑیں        |
+| [کرون (Cron) شیڈیولنگ](https://hermes-agent.nousresearch.com/docs/user-guide/features/cron)         | پلیٹ فارم ڈیلیوری کے ساتھ شیڈول کیے گئے کام                 |
+| [کانٹیکسٹ (Context) فائلز](https://hermes-agent.nousresearch.com/docs/user-guide/features/context-files)| پروجیکٹ کا سیاق و سباق (context) جو ہر بات چیت پر اثر انداز ہوتا ہے |
+| [آرکیٹیکچر (Architecture)](https://hermes-agent.nousresearch.com/docs/developer-guide/architecture) | پروجیکٹ کا ڈھانچہ، ایجنٹ لوپ، اہم کلاسز                    |
+| [تعاون (Contributing)](https://hermes-agent.nousresearch.com/docs/developer-guide/contributing)     | ڈیویلپمنٹ سیٹ اپ، PR کا طریقہ کار، کوڈنگ کا انداز          |
+| [CLI حوالہ جات (Reference)](https://hermes-agent.nousresearch.com/docs/reference/cli-commands)      | تمام کمانڈز اور فلیگز (flags)                              |
+| [انوائرمنٹ ویری ایبلز](https://hermes-agent.nousresearch.com/docs/reference/environment-variables)  | مکمل انوائرمنٹ ویری ایبل حوالہ جات                         |
+
+</div>
 
 ---
 
-## Migrating from OpenClaw
+## OpenClaw سے منتقلی
 
-If you're coming from OpenClaw, Hermes can automatically import your settings, memories, skills, and API keys.
+اگر آپ OpenClaw سے منتقل ہو رہے ہیں، تو ہرمیس آپ کی سیٹنگز، یادیں (memories)، مہارتیں (skills)، اور API کیز کو خود بخود امپورٹ کر سکتا ہے۔
 
-**During first-time setup:** The setup wizard (`hermes setup`) automatically detects `~/.openclaw` and offers to migrate before configuration begins.
+**پہلی بار سیٹ اپ کے دوران:** سیٹ اپ وزرڈ (`hermes setup`) خود بخود `~/.openclaw` کو پہچان لیتا ہے اور کنفیگریشن شروع ہونے سے پہلے مائیگریٹ (migrate) کرنے کا آپشن دیتا ہے۔
 
-**Anytime after install:**
+**انسٹالیشن کے بعد کسی بھی وقت:**
+
+<div dir="ltr">
 
 ```bash
-hermes claw migrate              # Interactive migration (full preset)
-hermes claw migrate --dry-run    # Preview what would be migrated
-hermes claw migrate --preset user-data   # Migrate without secrets
-hermes claw migrate --overwrite  # Overwrite existing conflicts
+hermes claw migrate              # انٹرایکٹو مائیگریشن (مکمل پری سیٹ)
+hermes claw migrate --dry-run    # جائزہ لیں کہ کیا کیا مائیگریٹ ہوگا
+hermes claw migrate --preset user-data   # حساس معلومات (secrets) کے بغیر مائیگریٹ کریں
+hermes claw migrate --overwrite  # موجودہ متصادم فائلوں کو اوور رائٹ کریں
 ```
 
-What gets imported:
+</div>
 
-- **SOUL.md** — persona file
-- **Memories** — MEMORY.md and USER.md entries
-- **Skills** — user-created skills → `~/.hermes/skills/openclaw-imports/`
-- **Command allowlist** — approval patterns
-- **Messaging settings** — platform configs, allowed users, working directory
-- **API keys** — allowlisted secrets (Telegram, OpenRouter, OpenAI, Anthropic, ElevenLabs)
-- **TTS assets** — workspace audio files
-- **Workspace instructions** — AGENTS.md (with `--workspace-target`)
+جو چیزیں امپورٹ ہوتی ہیں:
 
-See `hermes claw migrate --help` for all options, or use the `openclaw-migration` skill for an interactive agent-guided migration with dry-run previews.
+- **SOUL.md** — پرسونا (persona) فائل
+- **میموریز (Memories)** — MEMORY.md اور USER.md کی اندراجات
+- **مہارتیں (Skills)** — صارف کی بنائی گئی مہارتیں → `~/.hermes/skills/openclaw-imports/`
+- **کمانڈ الاؤ لسٹ (allowlist)** — منظوری کے پیٹرنز (approval patterns)
+- **میسجنگ سیٹنگز** — پلیٹ فارم کنفیگریشنز، اجازت یافتہ صارفین، ورکنگ ڈائریکٹری
+- **API کیز** — الاؤ لسٹ شدہ حساس معلومات (ٹیلی گرام، OpenRouter، OpenAI، Anthropic، ElevenLabs)
+- **TTS اثاثے** — ورک اسپیس کی آڈیو فائلیں
+- **ورک اسپیس کی ہدایات** — AGENTS.md (`--workspace-target` کے ساتھ)
+
+تمام آپشنز دیکھنے کے لیے `hermes claw migrate --help` استعمال کریں، یا انٹرایکٹو ایجنٹ کی مدد سے مائیگریٹ کرنے کے لیے `openclaw-migration` سکل کا استعمال کریں (جس میں ڈرائی رن (dry-run) پریویوز شامل ہیں)۔
 
 ---
 
-## Contributing
+## تعاون کریں (Contributing)
 
-We welcome contributions! See the [Contributing Guide](https://hermes-agent.nousresearch.com/docs/developer-guide/contributing) for development setup, code style, and PR process.
+ہم آپ کے تعاون کا خیرمقدم کرتے ہیں! ڈیویلپمنٹ سیٹ اپ، کوڈ کے انداز اور PR کے طریقہ کار کے لیے براہ کرم ہماری [Contributing گائیڈ](https://hermes-agent.nousresearch.com/docs/developer-guide/contributing) دیکھیں۔
 
-Quick start for contributors — use the standard installer, then work from the
-full git checkout it creates at `$HERMES_HOME/hermes-agent` (usually
-`~/.hermes/hermes-agent`). This matches the layout used by `hermes update`, the
-managed venv, lazy dependencies, gateway, and docs tooling.
+معاونین (contributors) کے لیے فوری آغاز — کلون (clone) کریں اور `setup-hermes.sh` چلائیں:
+
+<div dir="ltr">
 
 ```bash
-curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash
-cd "${HERMES_HOME:-$HOME/.hermes}/hermes-agent"
-uv pip install -e ".[all,dev]"
-scripts/run_tests.sh
+git clone https://github.com/NousResearch/hermes-agent.git
+cd hermes-agent
+./setup-hermes.sh     # uv کو انسٹال کرتا ہے، venv بناتا ہے، .[all] کو انسٹال کرتا ہے، اور ~/.local/bin/hermes کا سیم لنک (symlink) بناتا ہے
+./hermes              # خود بخود venv کی شناخت کرتا ہے، پہلے `source` کرنے کی ضرورت نہیں
 ```
 
-Manual clone fallback (for throwaway clones/CI where you intentionally do not
-want the managed install layout):
+</div>
 
-Create the venv outside the cloned source tree — a venv inside the directory
-the agent operates from can be wiped by a relative-path command the agent runs
-against its own checkout, destroying the running runtime mid-session.
+مینوئل طریقہ (اوپر والے طریقے کے مساوی):
+
+<div dir="ltr">
 
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
-uv venv ~/.hermes/venvs/hermes-dev --python 3.11
-source ~/.hermes/venvs/hermes-dev/bin/activate
+uv venv .venv --python 3.11
+source .venv/bin/activate
 uv pip install -e ".[all,dev]"
 scripts/run_tests.sh
 ```
 
----
-
-## Community
-
-- 💬 [Discord](https://discord.gg/NousResearch)
-- 📚 [Skills Hub](https://agentskills.io)
-- 🐛 [Issues](https://github.com/NousResearch/hermes-agent/issues)
-- 🔌 [computer-use-linux](https://github.com/avifenesh/computer-use-linux) — Linux desktop-control MCP server for Hermes and other MCP hosts, with AT-SPI accessibility trees, Wayland/X11 input, screenshots, and compositor window targeting.
-- 🔌 [HermesClaw](https://github.com/AaronWong1999/hermesclaw) — Community WeChat bridge: Run Hermes Agent and OpenClaw on the same WeChat account.
+</div>
 
 ---
 
-## License
+## کمیونٹی (Community)
 
-MIT — see [LICENSE](LICENSE).
+- 💬 [ڈسکارڈ (Discord)](https://discord.gg/NousResearch)
+- 📚 [سکلز ہب (Skills Hub)](https://agentskills.io)
+- 🐛 [مسائل (Issues)](https://github.com/NousResearch/hermes-agent/issues)
+- 🔌 [computer-use-linux](https://github.com/avifenesh/computer-use-linux) — ہرمیس اور دیگر MCP ہوسٹس کے لیے لینکس (Linux) ڈیسک ٹاپ کنٹرول MCP سرور، جس میں AT-SPI ایکسیسیبلٹی ٹریز، Wayland/X11 ان پٹ، سکرین شاٹس، اور کمپوزیٹر ونڈو ٹارگیٹنگ شامل ہے۔
+- 🔌 [HermesClaw](https://github.com/AaronWong1999/hermesclaw) — کمیونٹی وی چیٹ (WeChat) برج: ہرمیس ایجنٹ اور OpenClaw کو ایک ہی وی چیٹ اکاؤنٹ پر چلائیں۔
 
-Built by [Nous Research](https://nousresearch.com).
+---
+
+## لائسنس (License)
+
+MIT — تفصیلات کے لیے [LICENSE](LICENSE) دیکھیں۔
+
+[نوس ریسرچ (Nous Research)](https://nousresearch.com) کی جانب سے تیار کردہ۔
+
+</div>
