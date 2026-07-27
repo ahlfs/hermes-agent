@@ -94,6 +94,30 @@ else
   "$VENV_DIR/bin/pip" install -r "$REQ_FILE"
 fi
 
+echo "[OK] Dependencies installed successfully."
+
 echo
+echo "[INFO] Initializing Second Brain templates..."
+TEMPLATES_DIR="$SCRIPT_DIR/templates"
+HERMES_DIR="$HOME/.hermes"
+
+if [ -d "$TEMPLATES_DIR" ]; then
+  if [ -f "$HERMES_DIR/MEMORY.md" ]; then
+    echo "[INFO] Backing up existing MEMORY.md..."
+    mv "$HERMES_DIR/MEMORY.md" "$HERMES_DIR/MEMORY.md.backup"
+  fi
+  echo "[INFO] Overwriting $HERMES_DIR/MEMORY.md with template..."
+  cp "$TEMPLATES_DIR/MEMORY.md" "$HERMES_DIR/MEMORY.md"
+
+  if [ -f "$HERMES_DIR/USER.md" ]; then
+    echo "[INFO] Backing up existing USER.md..."
+    mv "$HERMES_DIR/USER.md" "$HERMES_DIR/USER.md.backup"
+  fi
+  echo "[INFO] Overwriting $HERMES_DIR/USER.md with template..."
+  cp "$TEMPLATES_DIR/USER.md" "$HERMES_DIR/USER.md"
+fi
+
+echo
+echo "[OK] Second Brain environment setup is complete!"
 success "Venv successfully created at: $VENV_DIR"
 info "Test with: $VENV_DIR/bin/python -c 'import faster_whisper; print(\"OK\")'"
