@@ -117,6 +117,36 @@ hermes              # start chatting!
 - Tell Hermes: *"Learn from this [link] and add it to my Second Brain."*
 - Or drop files directly into your Obsidian Vault's `01-Audio` or `02-Documents` folders. Hermes will automatically run the synchronization pipeline every 30 minutes in the background!
 
+---
+
+## 📦 Backup & Auto-Backup System
+
+This custom edition of Hermes Agent features an Auto-Backup system (fully synced to the cloud/GitHub) to ensure your configurations, agent memories, custom skills, and knowledge base are secure even if your server/VPS goes down.
+
+### 1. What Gets Backed Up?
+The system separates backups into two repositories to keep things organized:
+- **`second-brain` (Knowledge Base):** Stores your entire Obsidian Vault structure (extracted notes, transcripts, `.md` wiki pages).
+- **`hermes-config` (Agent Brain):** Stores your agent's core identity. This includes the `~/.hermes/` directory (`config.yaml`, `skills/` folder, `profiles/` folder, `MEMORY.md`, `SOUL.md`).
+
+### 2. Repository Preparation & Access
+To allow the automated features to run without intervention, set up SSH access for Git:
+1. Create 2 empty **Private** repositories on GitHub (e.g., `second-brain` and `hermes-config`).
+2. Generate an SSH Key on your machine (if you haven't already):
+   ```bash
+   ssh-keygen -t ed25519 -C "your_email@example.com"
+   ```
+3. Copy your public key (`cat ~/.ssh/id_ed25519.pub`) and add it to your GitHub account (**Settings > SSH and GPG keys > New SSH key**).
+
+### 3. How Auto-Backup Works
+- **Second Brain Auto-Sync:** Orchestrated via a Bash script (`sync-second-brain.sh`). This script can be run manually, or it will execute automatically on a schedule (cron) / whenever the agent receives an *ingest* command. During **Pass 6**, the agent automatically runs `git add`, `git commit`, and `git push` to the `second-brain` repository.
+- **Config Auto-Backup:** Runs automatically in the background via cron job every 24 hours. The agent checks for changes in custom skills, newly added memories, or modified profiles, and syncs them to the `hermes-config` repository.
+
+### 4. Manual Backup
+If you want to force a backup immediately, you can command the agent directly in the chat:
+> *"Sync my Second Brain to GitHub now"* or *"Backup your config and skills to GitHub right away."*
+
+---
+
 ### Troubleshooting
 
 #### Windows Defender or antivirus flags `uv.exe` as malware
