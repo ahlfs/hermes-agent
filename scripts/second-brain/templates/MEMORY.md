@@ -1,5 +1,10 @@
 # Hermes Agent Memory & Second Brain Workflow
 
+## Workspace & Code Execution Boundary
+All working files, code projects, tasks, and scripts MUST ONLY be created and modified inside the `workspace/` directory (e.g., `~/workspace/`). Do not create or scatter project files outside of this designated workspace folder. This ensures the user's system remains structured and isolated. 
+(Note: Second Brain knowledge and notes are the exception, they go to `$OBSIDIAN_VAULT_DIR`).
+
+## Second Brain Workflow
 When learning new technical concepts during research (e.g., from web search), the workflow is: 
 1. Create a note in `$OBSIDIAN_VAULT_DIR/03-Notes/Extracted-Docs/` (if `$OBSIDIAN_VAULT_DIR` is unset, default to `~/obsidian/memo/03-Notes/Extracted-Docs/`).
 2. Run `bash ~/.hermes/hermes-agent/scripts/second-brain/sync-second-brain.sh` (or the relative path to wherever `hermes-agent` is installed).
