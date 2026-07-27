@@ -34,9 +34,19 @@ fi
 # Check: python3 or uv available
 HAS_UV=false
 HAS_PYTHON3=false
+UV_CMD=""
+
 if command -v uv >/dev/null 2>&1; then
   HAS_UV=true
+  UV_CMD="uv"
+elif [ -x "$HOME/.hermes/bin/uv" ]; then
+  HAS_UV=true
+  UV_CMD="$HOME/.hermes/bin/uv"
+elif [ -x "$HOME/.cargo/bin/uv" ]; then
+  HAS_UV=true
+  UV_CMD="$HOME/.cargo/bin/uv"
 fi
+
 if command -v python3 >/dev/null 2>&1; then
   HAS_PYTHON3=true
 fi
@@ -63,11 +73,17 @@ info "Creating virtual environment at $VENV_DIR..."
 
 if [ "$HAS_UV" = true ]; then
   info "Using 'uv' (faster)..."
-  uv venv "$VENV_DIR"
-  uv pip install -r "$REQ_FILE" --python "$VENV_DIR"
+  "$UV_CMD" venv "$VENV_DIR"
+  "$UV_CMD" pip install -r "$REQ_FILE" --python "$VENV_DIR"
 else
   info "Using 'python3 -m venv'..."
-  python3 -m venv "$VENV_DIR"
+  if ! python3 -m venv "$VENV_DIR" 2>/dev/null; then
+    error "Failed to create venv using python3. You are likely missing the python3-venv package."
+    error "Try running: sudo apt install python3-venv (or python3.x-venv for your version)"
+    rm -rf "$VENV_DIR"
+    exit 1
+  fi
+  
   if [ ! -x "$VENV_DIR/bin/pip" ]; then
     error "pip is not available inside the venv. Try installing python3-venv:"
     echo "  Ubuntu/Debian: sudo apt install python3-venv"
