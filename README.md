@@ -137,11 +137,20 @@ To allow the automated features to run without intervention, set up SSH access f
    ```
 3. Copy your public key (`cat ~/.ssh/id_ed25519.pub`) and add it to your GitHub account (**Settings > SSH and GPG keys > New SSH key**).
 
-### 3. How Auto-Backup Works
+### 3. Environment Variable Configuration
+To tell Hermes where to back up your data, you must add the following variables to your `~/.hermes/.env` file:
+```ini
+# GitHub Backup Settings
+GITHUB_USERNAME=your_github_username
+GITHUB_REPO_CONFIG=hermes-config
+GITHUB_REPO_SECONDBRAIN=second-brain
+```
+
+### 4. How Auto-Backup Works
 - **Second Brain Auto-Sync:** Orchestrated via a Bash script (`sync-second-brain.sh`). This script can be run manually, or it will execute automatically on a schedule (cron) / whenever the agent receives an *ingest* command. During **Pass 6**, the agent automatically runs `git add`, `git commit`, and `git push` to the `second-brain` repository.
 - **Config Auto-Backup:** Runs automatically in the background via cron job every 24 hours. The agent checks for changes in custom skills, newly added memories, or modified profiles, and syncs them to the `hermes-config` repository.
 
-### 4. Manual Backup
+### 5. Manual Backup
 If you want to force a backup immediately, you can command the agent directly in the chat:
 > *"Sync my Second Brain to GitHub now"* or *"Backup your config and skills to GitHub right away."*
 
