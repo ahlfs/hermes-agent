@@ -52,6 +52,9 @@ This is a custom fork of Hermes Agent **modified and maintained by Ahlfs**, feat
 3. **Dynamic Swarm Router (Intent-Based Routing)**
    - Automatically intercepts and routes incoming messages to the most capable specialist sub-agent (`builder`, `researcher`, `writer`).
    - Uses zero-latency keyword classification to infer user intent, providing a frictionless swarm experience without manual profile switching.
+4. **LAM-Cyberlab Native Integration**
+   - **Real-time Streaming**: Full support for progressive token streaming via SSE/WebSockets (`stream_events.py`), making it a zero-friction, plug-and-play intelligence backend for the LAM-Cyberlab UI.
+   - **Closed-Loop Learning**: Synergizes flawlessly with the native Self-Healing Skill Generator. When faced with complex tasks from the Cyberlab UI, the agent can autonomously write, test, and save its own new `.md` skills for future use.
 
 ## Quick Install & Setup
 
