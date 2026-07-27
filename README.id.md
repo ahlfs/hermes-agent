@@ -144,14 +144,7 @@ Agar agen dapat melakukan *push* otomatis di latar belakang:
 2. Buat kunci SSH di VPS Anda: `ssh-keygen -t ed25519 -C "email_anda@example.com"`
 3. Tampilkan kuncinya dengan `cat ~/.ssh/id_ed25519.pub` lalu salin dan tambahkan ke akun GitHub Anda (**Settings > SSH and GPG keys > New SSH key**).
 
-### 6. Memulihkan dari Pencadangan / Mesin Baru (Opsional)
-Jika Anda menyiapkan VPS baru dan *sudah* memiliki data yang dicadangkan di GitHub, unduh semuanya **sebelum** melakukan sinkronisasi pertama:
-```bash
-cd ~/.hermes/hermes-agent
-bash scripts/second-brain/restore-from-cloud.sh
-```
-
-### 7. Inisialisasi Struktur Vault & Sinkronisasi Pertama
+### 6. Inisialisasi Struktur Vault & Sinkronisasi Pertama
 Biarkan Hermes membangun struktur folder kosong dan menginisialisasi repositori Git secara otomatis. Jalankan skrip sinkronisasi ini secara manual untuk pertama kalinya:
 ```bash
 cd ~/.hermes/hermes-agent
@@ -159,20 +152,20 @@ bash scripts/second-brain/sync-second-brain.sh
 ```
 *(Setelah selesai, Anda akan melihat folder `01-Audio`, `02-Documents`, dll telah siap).*
 
-### 8. Mengotomatiskan Sinkronisasi (Tugas Cron) (Opsional)
+### 7. Mengotomatiskan Sinkronisasi (Tugas Cron) (Opsional)
 Agar VPS Anda secara otomatis menyinkronkan dan mencadangkan Second Brain **dan** Custom Skills Anda setiap jam di latar belakang, cukup jalankan skrip instalasinya:
 ```bash
 cd ~/.hermes/hermes-agent
 bash scripts/second-brain/install-cron.sh
 ```
 
-### 9. Mulai Gunakan!
+### 8. Mulai Gunakan!
 Muat ulang *shell* Anda dan mulai agen:
 ```bash
 source ~/.bashrc    # muat ulang shell (atau: source ~/.zshrc)
 hermes              # mulai mengobrol!
 ```
-### 10. Mengajarkan Second Brain Anda (Mengonsumsi Pengetahuan)
+### 9. Mengajarkan Second Brain Anda (Mengonsumsi Pengetahuan)
 Untuk memberi agen Anda pengetahuan baru (rekaman rapat, buku, makalah penelitian, dll.), cukup letakkan file mentah ke dalam direktori Vault Obsidian yang Anda tentukan (`OBSIDIAN_VAULT_DIR`):
 
 1. **File Audio (`.mp3`, `.m4a`, `.wav`)**: Pindahkan ke dalam folder `01-Audio/`.

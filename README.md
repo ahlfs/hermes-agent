@@ -148,14 +148,7 @@ To allow the agent to automatically push backups in the background:
 2. Generate an SSH key on your VPS: `ssh-keygen -t ed25519 -C "your_email@example.com"`
 3. Display the public key with `cat ~/.ssh/id_ed25519.pub` and add it to your GitHub account (**Settings > SSH and GPG keys > New SSH key**).
 
-### 6. Restoring from Backup / New Machine (Optional)
-If you're setting up a new VPS and *already* have backed-up data on GitHub, pull it all down **before** initializing:
-```bash
-cd ~/.hermes/hermes-agent
-bash scripts/second-brain/restore-from-cloud.sh
-```
-
-### 7. Initialize the Vault Structure & First Sync
+### 6. Initialize the Vault Structure & First Sync
 Let Hermes automatically build the empty folder structure and initialize the Git repositories. Run the sync script manually for the first time:
 ```bash
 cd ~/.hermes/hermes-agent
@@ -163,20 +156,20 @@ bash scripts/second-brain/sync-second-brain.sh
 ```
 *(After this completes, you will find the `01-Audio`, `02-Documents`, etc. folders ready).*
 
-### 8. Automating the Sync (Cron Job) (Optional)
+### 7. Automating the Sync (Cron Job) (Optional)
 To make your VPS automatically sync and backup your Second Brain **and** Custom Skills every hour in the background, simply run the installation script:
 ```bash
 cd ~/.hermes/hermes-agent
 bash scripts/second-brain/install-cron.sh
 ```
 
-### 9. Start Using It!
+### 8. Start Using It!
 Reload your shell and start the agent:
 ```bash
 source ~/.bashrc    # reload shell (or: source ~/.zshrc)
 hermes              # start chatting!
 ```
-### 10. Teaching Your Second Brain (Ingesting Knowledge)
+### 9. Teaching Your Second Brain (Ingesting Knowledge)
 To provide your agent with new knowledge (meeting recordings, books, research papers, etc.), simply place the raw files into your designated Obsidian Vault directory (`OBSIDIAN_VAULT_DIR`):
 
 1. **Audio Files (`.mp3`, `.m4a`, `.wav`)**: Move them into the `01-Audio/` folder.
