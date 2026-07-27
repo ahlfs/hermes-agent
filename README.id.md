@@ -119,11 +119,13 @@ cd ~/.hermes/hermes-agent
 ```
 
 ### 3. Inisialisasi Lingkungan Second Brain
-Jalankan skrip pengaturan untuk membuat lingkungan virtual terisolasi khusus untuk alat Second Brain:
+Jalankan skrip *setup* untuk membuat *virtual environment* Python yang terisolasi khusus untuk alat Second Brain:
 ```bash
 cd ~/.hermes/hermes-agent
 bash scripts/second-brain/setup-venv.sh
 ```
+> **✨ BARU (Plug-and-Play):** Skrip ini sekarang juga akan secara otomatis menginisialisasi memori permanen Agen Anda (`MEMORY.md` dan `USER.md`) dengan aturan *workflow* Second Brain yang sangat optimal. Anda tidak perlu lagi mengonfigurasi perilaku dasar AI secara manual!
+
 
 ### 4. Konfigurasi Variabel Lingkungan
 Buka file `~/.hermes/.env` Anda dan tambahkan pengaturan berikut di bagian bawah:

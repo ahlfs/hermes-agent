@@ -127,6 +127,8 @@ Run the setup script to create an isolated virtual environment specifically for 
 cd ~/.hermes/hermes-agent
 bash scripts/second-brain/setup-venv.sh
 ```
+> **✨ NEW (Plug-and-Play):** This script will now also automatically initialize your Agent's persistent memory (`MEMORY.md` and `USER.md`) with highly-optimized Second Brain workflow rules. You don't need to configure the AI's core behavior manually!
+
 
 ### 4. Configure Environment Variables
 Open your `~/.hermes/.env` file and add the following settings at the bottom:
