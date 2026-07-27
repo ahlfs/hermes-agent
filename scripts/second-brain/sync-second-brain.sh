@@ -93,6 +93,9 @@ mkdir -p "$OBSIDIAN_VAULT_DIR/02-Documents"
 mkdir -p "$OBSIDIAN_VAULT_DIR/03-Notes/Transcripts"
 mkdir -p "$OBSIDIAN_VAULT_DIR/03-Notes/Extracted-Docs"
 mkdir -p "$OBSIDIAN_VAULT_DIR/04-Wiki"
+mkdir -p "$OBSIDIAN_VAULT_DIR/05-Projects"
+mkdir -p "$OBSIDIAN_VAULT_DIR/06-Tasks"
+mkdir -p "$OBSIDIAN_VAULT_DIR/07-Daily"
 
 echo
 info "== Pass 1: audio transcription =="
