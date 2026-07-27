@@ -148,13 +148,14 @@ To allow the agent to automatically push backups in the background:
 2. Generate an SSH key on your VPS: `ssh-keygen -t ed25519 -C "your_email@example.com"`
 3. Display the public key with `cat ~/.ssh/id_ed25519.pub` and add it to your GitHub account (**Settings > SSH and GPG keys > New SSH key**).
 
-### 6. Initialize the Vault Structure & First Sync
-Let Hermes automatically build the empty folder structure and initialize the Git repositories. Run the sync script manually for the first time:
+### 6. Initialize Data Structures & First Sync
+Let Hermes automatically build the empty folder structures and initialize the Git repositories. Run the sync scripts manually for the first time:
 ```bash
 cd ~/.hermes/hermes-agent
 bash scripts/second-brain/sync-second-brain.sh
+bash scripts/second-brain/sync-skills.sh
 ```
-*(After this completes, you will find the `01-Audio`, `02-Documents`, etc. folders ready).*
+*(After this completes, you will find your `01-Audio`, `02-Documents`, etc. folders ready in the Vault, and your custom skills will be synced).*
 
 ### 7. Automating the Sync (Cron Job) (Optional)
 To make your VPS automatically sync and backup your Second Brain **and** Custom Skills every 12 hours in the background, simply run the installation script:

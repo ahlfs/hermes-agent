@@ -144,13 +144,14 @@ Agar agen dapat melakukan *push* otomatis di latar belakang:
 2. Buat kunci SSH di VPS Anda: `ssh-keygen -t ed25519 -C "email_anda@example.com"`
 3. Tampilkan kuncinya dengan `cat ~/.ssh/id_ed25519.pub` lalu salin dan tambahkan ke akun GitHub Anda (**Settings > SSH and GPG keys > New SSH key**).
 
-### 6. Inisialisasi Struktur Vault & Sinkronisasi Pertama
+### 6. Inisialisasi Struktur Data & Sinkronisasi Pertama
 Biarkan Hermes membangun struktur folder kosong dan menginisialisasi repositori Git secara otomatis. Jalankan skrip sinkronisasi ini secara manual untuk pertama kalinya:
 ```bash
 cd ~/.hermes/hermes-agent
 bash scripts/second-brain/sync-second-brain.sh
+bash scripts/second-brain/sync-skills.sh
 ```
-*(Setelah selesai, Anda akan melihat folder `01-Audio`, `02-Documents`, dll telah siap).*
+*(Setelah selesai, Anda akan melihat folder `01-Audio`, `02-Documents`, dll telah siap di Vault Anda, dan custom skills Anda berhasil disinkronisasi).*
 
 ### 7. Mengotomatiskan Sinkronisasi (Tugas Cron) (Opsional)
 Agar VPS Anda secara otomatis menyinkronkan dan mencadangkan Second Brain **dan** Custom Skills Anda setiap 12 jam di latar belakang, cukup jalankan skrip instalasinya:
