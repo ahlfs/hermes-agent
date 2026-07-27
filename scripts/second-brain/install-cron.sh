@@ -23,14 +23,15 @@ if [ ! -f "$SYNC_SCRIPT" ]; then
     exit 1
 fi
 
-CRON_JOB="0 * * * * bash \"$SYNC_SCRIPT\" >> \"$LOG_FILE\" 2>&1 && bash \"$SKILLS_SCRIPT\" >> \"$LOG_FILE\" 2>&1"
+CRON_JOB="0 */12 * * * bash \"$SYNC_SCRIPT\" >> \"$LOG_FILE\" 2>&1 && bash \"$SKILLS_SCRIPT\" >> \"$LOG_FILE\" 2>&1"
 
-# Check if cron job already exists
+# Remove existing cron job if it exists (so we can safely update it)
 if crontab -l 2>/dev/null | grep -q "sync-second-brain.sh"; then
-    echo -e "${YELLOW}[WARN]${NC} Cron job already exists! Skipping installation."
-else
-    # Append the new cron job to existing crontab
-    (crontab -l 2>/dev/null; echo "$CRON_JOB") | crontab -
-    echo -e "${GREEN}[OK]${NC} Auto-Backup successfully scheduled every hour!"
-    echo -e "       Log file will be written to: $LOG_FILE"
+    (crontab -l 2>/dev/null | grep -v "sync-second-brain.sh") | crontab -
+    echo -e "${YELLOW}[INFO]${NC} Existing auto-backup cron job found. Updating it..."
 fi
+
+# Append the new cron job to existing crontab
+(crontab -l 2>/dev/null; echo "$CRON_JOB") | crontab -
+echo -e "${GREEN}[OK]${NC} Auto-Backup (Second Brain + Skills) successfully scheduled every 12 hours!"
+echo -e "       Log file will be written to: $LOG_FILE"

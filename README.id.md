@@ -153,7 +153,7 @@ bash scripts/second-brain/sync-second-brain.sh
 *(Setelah selesai, Anda akan melihat folder `01-Audio`, `02-Documents`, dll telah siap).*
 
 ### 7. Mengotomatiskan Sinkronisasi (Tugas Cron) (Opsional)
-Agar VPS Anda secara otomatis menyinkronkan dan mencadangkan Second Brain **dan** Custom Skills Anda setiap jam di latar belakang, cukup jalankan skrip instalasinya:
+Agar VPS Anda secara otomatis menyinkronkan dan mencadangkan Second Brain **dan** Custom Skills Anda setiap 12 jam di latar belakang, cukup jalankan skrip instalasinya:
 ```bash
 cd ~/.hermes/hermes-agent
 bash scripts/second-brain/install-cron.sh

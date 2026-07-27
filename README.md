@@ -157,7 +157,7 @@ bash scripts/second-brain/sync-second-brain.sh
 *(After this completes, you will find the `01-Audio`, `02-Documents`, etc. folders ready).*
 
 ### 7. Automating the Sync (Cron Job) (Optional)
-To make your VPS automatically sync and backup your Second Brain **and** Custom Skills every hour in the background, simply run the installation script:
+To make your VPS automatically sync and backup your Second Brain **and** Custom Skills every 12 hours in the background, simply run the installation script:
 ```bash
 cd ~/.hermes/hermes-agent
 bash scripts/second-brain/install-cron.sh
