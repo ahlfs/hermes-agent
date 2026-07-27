@@ -161,6 +161,12 @@ if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
     git remote add origin "$REMOTE_URL"
   fi
 
+  # Ensure git author identity is set so commits don't fail
+  if ! git config user.name >/dev/null; then
+    git config user.name "Hermes Agent"
+    git config user.email "hermes@secondbrain.local"
+  fi
+
   git add -A
   if git diff --cached --quiet; then
     info "No local changes to commit."
