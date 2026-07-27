@@ -87,6 +87,34 @@ info "Vault: $OBSIDIAN_VAULT_DIR"
 info "Python: $VENV_PYTHON"
 echo
 
+echo
+info "== Pass 0: git auto-pull =="
+cd "$OBSIDIAN_VAULT_DIR"
+GH_USER="${GITHUB_USERNAME:-}"
+GH_REPO="${GITHUB_REPO_SECONDBRAIN:-second-brain}"
+
+if [ -n "$GH_USER" ]; then
+  if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    info "Initializing Vault as a Git repository..."
+    git init
+    git branch -M main
+  fi
+
+  if ! git remote get-url origin >/dev/null 2>&1; then
+    REMOTE_URL="git@github.com:${GH_USER}/${GH_REPO}.git"
+    info "Adding remote origin: $REMOTE_URL"
+    git remote add origin "$REMOTE_URL"
+  fi
+
+  # Ensure we have the latest cloud data BEFORE we generate local schemas or run passes
+  info "Pulling latest changes from GitHub..."
+  git pull origin main --rebase --autostash || warn "Pull failed (maybe empty repo or conflict). Continuing anyway."
+else
+  info "GITHUB_USERNAME not set in .env — skipping cloud sync."
+fi
+
+echo
+
 # Auto-initialize Second Brain folder structure
 mkdir -p "$OBSIDIAN_VAULT_DIR/01-Audio"
 mkdir -p "$OBSIDIAN_VAULT_DIR/02-Documents"
@@ -136,31 +164,10 @@ python3 "$SCRIPT_DIR/wiki_lint.py" --no-llm --save-report || true
 # cleanup moved to after git push (Pass 7) to ensure backup exists
 
 echo
-info "== Pass 6: git auto-sync =="
+info "== Pass 6: git push =="
 cd "$OBSIDIAN_VAULT_DIR"
 
-GH_USER="${GITHUB_USERNAME:-}"
-GH_REPO="${GITHUB_REPO_SECONDBRAIN:-second-brain}"
-
-if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-  if [ -n "$GH_USER" ]; then
-    info "Initializing Vault as a Git repository..."
-    git init
-    git branch -M main
-  else
-    warn "Vault is not initialized as a Git repo. Skipping auto-sync."
-    warn "To enable, configure GITHUB_USERNAME in ~/.hermes/.env or run manually:"
-    echo "  cd $OBSIDIAN_VAULT_DIR && git init && git remote add origin <url>"
-  fi
-fi
-
 if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-  if [ -n "$GH_USER" ] && ! git remote get-url origin >/dev/null 2>&1; then
-    REMOTE_URL="git@github.com:${GH_USER}/${GH_REPO}.git"
-    info "Adding remote origin: $REMOTE_URL"
-    git remote add origin "$REMOTE_URL"
-  fi
-
   # Ensure git author identity is set so commits don't fail
   if ! git config user.name >/dev/null; then
     git config user.name "Hermes Agent"
@@ -177,10 +184,7 @@ if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
     HAS_CHANGES=true
   fi
 
-  if git remote get-url origin >/dev/null 2>&1; then
-    info "Pulling latest changes from GitHub..."
-    git pull origin main --rebase --autostash || warn "Pull failed or conflict occurred."
-
+  if [ -n "${GITHUB_USERNAME:-}" ]; then
     if [ "$HAS_CHANGES" = true ] || [ $(git rev-list HEAD...origin/main --count 2>/dev/null || echo 0) -gt 0 ]; then
       info "Pushing to GitHub..."
       if git push origin main 2>/dev/null; then
@@ -188,7 +192,7 @@ if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
       else
         warn "Push failed. Possible causes:"
         warn "  1. SSH key not configured (run: ssh-keygen -t ed25519)"
-        warn "  2. Repository '${GH_REPO}' does not exist on GitHub"
+        warn "  2. Repository '${GITHUB_REPO_SECONDBRAIN:-second-brain}' does not exist on GitHub"
         warn "  3. No internet connection"
       fi
     else
