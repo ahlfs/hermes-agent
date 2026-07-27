@@ -114,7 +114,8 @@ git clone https://github.com/ahlfs/hermes-agent.git ~/.hermes/hermes-agent
 
 # Sinkronisasi ulang dependensi
 cd ~/.hermes/hermes-agent
-~/.hermes/bin/uv pip install -e ".[all]"
+~/.hermes/bin/uv venv venv
+~/.hermes/bin/uv pip install --python venv -e ".[all]"
 ```
 
 ### 3. Inisialisasi Lingkungan Second Brain

@@ -115,7 +115,8 @@ git clone https://github.com/ahlfs/hermes-agent.git ~/.hermes/hermes-agent
 
 # Re-sync dependencies
 cd ~/.hermes/hermes-agent
-~/.hermes/bin/uv pip install -e ".[all]"
+~/.hermes/bin/uv venv venv
+~/.hermes/bin/uv pip install --python venv -e ".[all]"
 ```
 
 > **Windows Native:** Run `iex (irm https://hermes-agent.nousresearch.com/install.ps1)` in PowerShell, then delete `%LOCALAPPDATA%\hermes\hermes-agent` and `git clone https://github.com/ahlfs/hermes-agent.git` in its place.
