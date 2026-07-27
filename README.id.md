@@ -104,6 +104,7 @@ cd ~/.hermes/hermes-agent
 ### 3. Inisialisasi Lingkungan Second Brain
 Jalankan skrip pengaturan untuk membuat lingkungan virtual terisolasi khusus untuk alat Second Brain:
 ```bash
+cd ~/.hermes/hermes-agent
 bash scripts/second-brain/setup-venv.sh
 ```
 
@@ -122,6 +123,7 @@ GITHUB_REPO_SECONDBRAIN=second-brain
 ### 5. Inisialisasi Struktur Vault
 Untuk membiarkan Hermes membangun kerangka folder kosong Anda secara otomatis dan memverifikasi lingkungan Anda, jalankan skrip sinkronisasi secara manual untuk pertama kalinya:
 ```bash
+cd ~/.hermes/hermes-agent
 bash scripts/second-brain/sync-second-brain.sh
 ```
 *(Setelah ini selesai, Anda akan menemukan folder `01-Audio`, `02-Documents`, dan `04-Wiki` telah siap di dalam Vault Anda.)*
@@ -191,6 +193,7 @@ Jika Anda ingin memaksakan pencadangan segera, Anda dapat memerintahkan agen sec
 ### 6. Memulihkan dari Pencadangan (Mesin Baru / Instal Ulang)
 Jika Anda menyiapkan Hermes di server baru atau menginstal ulang, Anda dapat secara otomatis mengunduh semua data yang telah dicadangkan (konfigurasi, keterampilan, memori, dan seluruh Second Brain Anda) dari GitHub dengan satu perintah:
 ```bash
+cd ~/.hermes/hermes-agent
 bash scripts/second-brain/restore-from-cloud.sh
 ```
 

@@ -107,6 +107,7 @@ cd ~/.hermes/hermes-agent
 ### 3. Initialize Second Brain Environment
 Run the setup script to create an isolated virtual environment specifically for the Second Brain tools:
 ```bash
+cd ~/.hermes/hermes-agent
 bash scripts/second-brain/setup-venv.sh
 ```
 
@@ -125,6 +126,7 @@ GITHUB_REPO_SECONDBRAIN=second-brain
 ### 5. Initialize the Vault Structure
 To let Hermes automatically build the empty folder structure for you and verify your environment, run the sync script manually for the first time:
 ```bash
+cd ~/.hermes/hermes-agent
 bash scripts/second-brain/sync-second-brain.sh
 ```
 *(After this completes, you will find the `01-Audio`, `02-Documents`, and `04-Wiki` folders ready in your Vault.)*
@@ -194,6 +196,7 @@ If you want to force a backup immediately, you can command the agent directly in
 ### 6. Restoring from Backup (New Machine / Reinstall)
 If you're setting up Hermes on a new server or reinstalling, you can automatically pull all your backed-up data (configs, skills, memories, and your entire Second Brain) from GitHub with a single command:
 ```bash
+cd ~/.hermes/hermes-agent
 bash scripts/second-brain/restore-from-cloud.sh
 ```
 
