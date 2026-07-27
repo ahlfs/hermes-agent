@@ -181,7 +181,7 @@ if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
     info "Pulling latest changes from GitHub..."
     git pull origin main --rebase --autostash || warn "Pull failed or conflict occurred."
 
-    if [ "$HAS_CHANGES" = true ] || [ $(git rev-list HEAD...origin/main --count) -gt 0 ]; then
+    if [ "$HAS_CHANGES" = true ] || [ $(git rev-list HEAD...origin/main --count 2>/dev/null || echo 0) -gt 0 ]; then
       info "Pushing to GitHub..."
       if git push origin main 2>/dev/null; then
         success "Knowledge successfully synced with GitHub!"
