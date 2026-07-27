@@ -67,11 +67,11 @@ Sebelum memulai, pastikan Anda telah menginstal hal-hal berikut di sistem Anda:
 
 | Kebutuhan | Wajib? | Kegunaan | Cara Instal |
 |---|---|---|---|
-| **[Git](https://git-scm.com/downloads)** | ✅ Wajib | Clone repo, sistem backup | `sudo apt install git` |
-| **[Python 3.10+](https://www.python.org/downloads/)** | ✅ Wajib | Menjalankan skrip Second Brain | `sudo apt install python3 python3-venv` |
+| **[Git](https://git-scm.com/downloads)** | ✅ Wajib | Clone repo, sistem backup | [Panduan Instal](https://git-scm.com/downloads) |
+| **[Python 3.10+](https://www.python.org/downloads/)** | ✅ Wajib | Menjalankan skrip Second Brain | [Panduan Instal](https://www.python.org/downloads/) |
 | **[curl](https://curl.se/)** | ✅ Wajib | Mengunduh installer Hermes | Sudah terinstal di kebanyakan sistem |
-| **[FFmpeg](https://ffmpeg.org/download.html)** | ✅ Wajib | Transkripsi audio (Whisper) | `sudo apt install ffmpeg` |
-| **[Tesseract OCR](https://github.com/tesseract-ocr/tesseract)** | ✅ Wajib | Ekstraksi teks gambar/PDF | `sudo apt install tesseract-ocr` |
+| **[FFmpeg](https://ffmpeg.org/download.html)** | ✅ Wajib | Transkripsi audio (Whisper) | [Panduan Instal](https://ffmpeg.org/download.html) |
+| **[Tesseract OCR](https://github.com/tesseract-ocr/tesseract)** | ✅ Wajib | Ekstraksi teks gambar/PDF | [Panduan Instal](https://github.com/tesseract-ocr/tesseract#installing-tesseract) |
 | **[Obsidian](https://obsidian.md/)** | ⭐ Opsional | Penampil markdown visual untuk Second Brain Anda | [Unduh](https://obsidian.md/download) |
 | **Akun GitHub + Kunci SSH** | ⭐ Opsional | Pencadangan cloud otomatis | [Panduan](https://docs.github.com/en/authentication/connecting-to-github-with-ssh) |
 

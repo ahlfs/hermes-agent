@@ -68,11 +68,11 @@ Before you begin, make sure you have the following installed on your system:
 
 | Requirement | Required? | Purpose | Install |
 |---|---|---|---|
-| **[Git](https://git-scm.com/downloads)** | ✅ Required | Clone repos, backup system | `sudo apt install git` |
-| **[Python 3.10+](https://www.python.org/downloads/)** | ✅ Required | Run Second Brain scripts | `sudo apt install python3 python3-venv` |
+| **[Git](https://git-scm.com/downloads)** | ✅ Required | Clone repos, backup system | [Install Guide](https://git-scm.com/downloads) |
+| **[Python 3.10+](https://www.python.org/downloads/)** | ✅ Required | Run Second Brain scripts | [Install Guide](https://www.python.org/downloads/) |
 | **[curl](https://curl.se/)** | ✅ Required | Download Hermes installer | Pre-installed on most systems |
-| **[FFmpeg](https://ffmpeg.org/download.html)** | ✅ Required | Audio transcription (Whisper) | `sudo apt install ffmpeg` |
-| **[Tesseract OCR](https://github.com/tesseract-ocr/tesseract)** | ✅ Required | Image/PDF text extraction | `sudo apt install tesseract-ocr` |
+| **[FFmpeg](https://ffmpeg.org/download.html)** | ✅ Required | Audio transcription (Whisper) | [Install Guide](https://ffmpeg.org/download.html) |
+| **[Tesseract OCR](https://github.com/tesseract-ocr/tesseract)** | ✅ Required | Image/PDF text extraction | [Install Guide](https://github.com/tesseract-ocr/tesseract#installing-tesseract) |
 | **[Obsidian](https://obsidian.md/)** | ⭐ Optional | Visual markdown viewer for your Second Brain | [Download](https://obsidian.md/download) |
 | **GitHub Account + SSH Key** | ⭐ Optional | Automated cloud backup | [Guide](https://docs.github.com/en/authentication/connecting-to-github-with-ssh) |
 
