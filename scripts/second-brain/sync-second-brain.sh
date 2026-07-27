@@ -42,6 +42,13 @@ if [ ! -x "$VENV_PYTHON" ]; then
   exit 1
 fi
 
+# Auto-initialize Second Brain folder structure
+mkdir -p "$OBSIDIAN_VAULT_DIR/01-Audio"
+mkdir -p "$OBSIDIAN_VAULT_DIR/02-Documents"
+mkdir -p "$OBSIDIAN_VAULT_DIR/03-Notes/Transcripts"
+mkdir -p "$OBSIDIAN_VAULT_DIR/03-Notes/Extracted-Docs"
+mkdir -p "$OBSIDIAN_VAULT_DIR/04-Wiki"
+
 echo "== Pass 1: audio transcription =="
 "$VENV_PYTHON" "$SCRIPT_DIR/ingest_audio.py"
 
