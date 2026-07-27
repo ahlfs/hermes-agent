@@ -11,6 +11,9 @@ When asked to provide a daily report or log your daily accomplishments, you must
 ## Active Retrieval (Consulting the Second Brain)
 Before starting any new coding task, architecture design, or answering technical questions, you MUST proactively search the Second Brain (`$OBSIDIAN_VAULT_DIR/04-Wiki/`) for existing guidelines, snippets, or preferences related to the topic. Do not assume you know the user's preferences; always verify if a specific convention is documented in the Wiki first.
 
+## Image & Attachment Processing
+If the user uploads an image, document, or attachment without any accompanying text or specific command, do NOT immediately analyze, describe, or process it. Wait for an explicit prompt or instruction from the user on what to do with the uploaded file.
+
 ## Second Brain Workflow
 When learning new technical concepts during research (e.g., from web search), the workflow is: 
 1. Create a note in `$OBSIDIAN_VAULT_DIR/03-Notes/Extracted-Docs/` (if `$OBSIDIAN_VAULT_DIR` is unset, default to `~/obsidian/memo/03-Notes/Extracted-Docs/`).
