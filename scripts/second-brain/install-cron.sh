@@ -15,6 +15,7 @@ echo -e "${CYAN}[INFO]${NC} Setting up Auto-Backup Cron Job..."
 # Get absolute path to the sync script
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 SYNC_SCRIPT="$SCRIPT_DIR/sync-second-brain.sh"
+SKILLS_SCRIPT="$SCRIPT_DIR/sync-skills.sh"
 LOG_FILE="$HOME/.hermes/sync-secondbrain.log"
 
 if [ ! -f "$SYNC_SCRIPT" ]; then
@@ -22,7 +23,7 @@ if [ ! -f "$SYNC_SCRIPT" ]; then
     exit 1
 fi
 
-CRON_JOB="0 * * * * bash \"$SYNC_SCRIPT\" >> \"$LOG_FILE\" 2>&1"
+CRON_JOB="0 * * * * bash \"$SYNC_SCRIPT\" >> \"$LOG_FILE\" 2>&1 && bash \"$SKILLS_SCRIPT\" >> \"$LOG_FILE\" 2>&1"
 
 # Check if cron job already exists
 if crontab -l 2>/dev/null | grep -q "sync-second-brain.sh"; then

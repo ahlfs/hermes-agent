@@ -138,13 +138,13 @@ OBSIDIAN_VAULT_DIR=/home/user/obsidian/memo
 
 # GitHub Backup Settings
 GITHUB_USERNAME=your_github_username
-GITHUB_REPO_CONFIG=hermes-config
+GITHUB_REPO_SKILLS=hermes-skills
 GITHUB_REPO_SECONDBRAIN=second-brain
 ```
 
 ### 5. Setup GitHub Repositories & SSH Keys (Optional)
 To allow the agent to automatically push backups in the background:
-1. Create 2 empty **Private** repositories on GitHub (e.g., `second-brain` and `hermes-config`).
+1. Create 2 empty **Private** repositories on GitHub (e.g., `second-brain` and `hermes-skills`).
 2. Generate an SSH key on your VPS: `ssh-keygen -t ed25519 -C "your_email@example.com"`
 3. Display the public key with `cat ~/.ssh/id_ed25519.pub` and add it to your GitHub account (**Settings > SSH and GPG keys > New SSH key**).
 
@@ -164,7 +164,7 @@ bash scripts/second-brain/sync-second-brain.sh
 *(After this completes, you will find the `01-Audio`, `02-Documents`, etc. folders ready).*
 
 ### 8. Automating the Sync (Cron Job) (Optional)
-To make your VPS automatically sync and backup your Second Brain every hour in the background, simply run the installation script:
+To make your VPS automatically sync and backup your Second Brain **and** Custom Skills every hour in the background, simply run the installation script:
 ```bash
 cd ~/.hermes/hermes-agent
 bash scripts/second-brain/install-cron.sh

@@ -134,13 +134,13 @@ OBSIDIAN_VAULT_DIR=/home/user/obsidian/memo
 
 # GitHub Backup Settings
 GITHUB_USERNAME=your_github_username
-GITHUB_REPO_CONFIG=hermes-config
+GITHUB_REPO_SKILLS=hermes-skills
 GITHUB_REPO_SECONDBRAIN=second-brain
 ```
 
 ### 5. Siapkan Repositori & SSH GitHub (Opsional)
 Agar agen dapat melakukan *push* otomatis di latar belakang:
-1. Buat 2 repositori **Privat** kosong di GitHub (misalnya: `second-brain` dan `hermes-config`).
+1. Buat 2 repositori **Privat** kosong di GitHub (misalnya: `second-brain` dan `hermes-skills`).
 2. Buat kunci SSH di VPS Anda: `ssh-keygen -t ed25519 -C "email_anda@example.com"`
 3. Tampilkan kuncinya dengan `cat ~/.ssh/id_ed25519.pub` lalu salin dan tambahkan ke akun GitHub Anda (**Settings > SSH and GPG keys > New SSH key**).
 
@@ -160,7 +160,7 @@ bash scripts/second-brain/sync-second-brain.sh
 *(Setelah selesai, Anda akan melihat folder `01-Audio`, `02-Documents`, dll telah siap).*
 
 ### 8. Mengotomatiskan Sinkronisasi (Tugas Cron) (Opsional)
-Agar VPS Anda secara otomatis menyinkronkan dan mencadangkan Second Brain Anda setiap jam di latar belakang, cukup jalankan skrip instalasinya:
+Agar VPS Anda secara otomatis menyinkronkan dan mencadangkan Second Brain **dan** Custom Skills Anda setiap jam di latar belakang, cukup jalankan skrip instalasinya:
 ```bash
 cd ~/.hermes/hermes-agent
 bash scripts/second-brain/install-cron.sh
