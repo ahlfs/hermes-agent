@@ -62,6 +62,22 @@ Follow these steps to install the LAM-Cyberlab compatible version of Hermes Agen
 
 > **⚠️ WINDOWS USERS**: This project heavily relies on Linux packages (like `apt install ffmpeg`) and Bash scripts. Git Bash or native PowerShell will **not** work for the Second Brain pipeline. You **must** install and use **[WSL2 (Windows Subsystem for Linux)](https://learn.microsoft.com/en-us/windows/wsl/install)** to follow these steps.
 
+### Prerequisites
+
+Before you begin, make sure you have the following installed on your system:
+
+| Requirement | Required? | Purpose | Install |
+|---|---|---|---|
+| **[Git](https://git-scm.com/downloads)** | ✅ Required | Clone repos, backup system | `sudo apt install git` |
+| **[Python 3.10+](https://www.python.org/downloads/)** | ✅ Required | Run Second Brain scripts | `sudo apt install python3 python3-venv` |
+| **[curl](https://curl.se/)** | ✅ Required | Download Hermes installer | Pre-installed on most systems |
+| **[FFmpeg](https://ffmpeg.org/download.html)** | ✅ Required | Audio transcription (Whisper) | `sudo apt install ffmpeg` |
+| **[Tesseract OCR](https://github.com/tesseract-ocr/tesseract)** | ✅ Required | Image/PDF text extraction | `sudo apt install tesseract-ocr` |
+| **[Obsidian](https://obsidian.md/)** | ⭐ Optional | Visual markdown viewer for your Second Brain | [Download](https://obsidian.md/download) |
+| **GitHub Account + SSH Key** | ⭐ Optional | Automated cloud backup | [Guide](https://docs.github.com/en/authentication/connecting-to-github-with-ssh) |
+
+> **Note:** You do **not** need Obsidian installed to use the Second Brain pipeline. The "Vault" is simply a folder of `.md` files on your disk. Any text editor (VS Code, Notepad, etc.) can read them. Obsidian is recommended for the best browsing experience with interlinked notes and graph view.
+
 ### 1. Install OS Dependencies
 The Second Brain pipeline requires `ffmpeg` (for audio) and `tesseract-ocr` (for images). Run the command appropriate for your system:
 

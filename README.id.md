@@ -61,6 +61,22 @@ Ikuti langkah-langkah ini untuk menginstal versi Hermes Agent yang kompatibel de
 
 > **⚠️ PENGGUNA WINDOWS**: Proyek ini sangat bergantung pada paket Linux (seperti `apt install ffmpeg`) dan skrip Bash. Git Bash atau PowerShell asli **tidak** akan berfungsi untuk pipeline Second Brain. Anda **harus** menginstal dan menggunakan **[WSL2 (Windows Subsystem for Linux)](https://learn.microsoft.com/en-us/windows/wsl/install)** untuk mengikuti langkah-langkah ini.
 
+### Prasyarat
+
+Sebelum memulai, pastikan Anda telah menginstal hal-hal berikut di sistem Anda:
+
+| Kebutuhan | Wajib? | Kegunaan | Cara Instal |
+|---|---|---|---|
+| **[Git](https://git-scm.com/downloads)** | ✅ Wajib | Clone repo, sistem backup | `sudo apt install git` |
+| **[Python 3.10+](https://www.python.org/downloads/)** | ✅ Wajib | Menjalankan skrip Second Brain | `sudo apt install python3 python3-venv` |
+| **[curl](https://curl.se/)** | ✅ Wajib | Mengunduh installer Hermes | Sudah terinstal di kebanyakan sistem |
+| **[FFmpeg](https://ffmpeg.org/download.html)** | ✅ Wajib | Transkripsi audio (Whisper) | `sudo apt install ffmpeg` |
+| **[Tesseract OCR](https://github.com/tesseract-ocr/tesseract)** | ✅ Wajib | Ekstraksi teks gambar/PDF | `sudo apt install tesseract-ocr` |
+| **[Obsidian](https://obsidian.md/)** | ⭐ Opsional | Penampil markdown visual untuk Second Brain Anda | [Unduh](https://obsidian.md/download) |
+| **Akun GitHub + Kunci SSH** | ⭐ Opsional | Pencadangan cloud otomatis | [Panduan](https://docs.github.com/en/authentication/connecting-to-github-with-ssh) |
+
+> **Catatan:** Anda **tidak** perlu menginstal Obsidian untuk menggunakan pipeline Second Brain. "Vault" hanyalah sebuah folder berisi file `.md` di disk Anda. Editor teks apa pun (VS Code, Notepad, dll.) dapat membacanya. Obsidian direkomendasikan untuk pengalaman menjelajah terbaik dengan catatan yang saling terhubung dan tampilan graf.
+
 ### 1. Instal Dependensi OS
 Pipeline Second Brain membutuhkan `ffmpeg` (untuk audio) dan `tesseract-ocr` (untuk gambar). Jalankan perintah yang sesuai untuk sistem Anda:
 
