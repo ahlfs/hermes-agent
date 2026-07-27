@@ -99,11 +99,26 @@ mkdir -p "$OBSIDIAN_VAULT_DIR/07-Daily"
 
 echo
 info "== Pass 0: profile injection =="
+
+# 1. Inject to root MEMORY.md
+ROOT_MEMORY="$HOME/.hermes/MEMORY.md"
+if [ ! -f "$ROOT_MEMORY" ]; then
+  touch "$ROOT_MEMORY"
+fi
+if ! grep -q "Second Brain Directive" "$ROOT_MEMORY"; then
+  info "Injecting Second Brain directive into root MEMORY.md"
+  cat <<EOF >> "$ROOT_MEMORY"
+
+## Second Brain Directive
+Whenever the user asks you to "learn", "save", or "remember" something new, DO NOT just save it to your internal memory. You MUST proactively use your file tools to create a new \`.md\` file summarizing the knowledge and save it directly into the user's Obsidian Vault at: \`${OBSIDIAN_VAULT_DIR}/04-Wiki/\`
+EOF
+fi
+
+# 2. Inject to any specific profiles
 if [ -d "$HOME/.hermes/profiles" ]; then
   for profile_dir in "$HOME/.hermes/profiles"/*; do
     if [ -d "$profile_dir" ]; then
       MEMORY_FILE="$profile_dir/MEMORY.md"
-      # If MEMORY.md doesn't exist yet, we'll create it to ensure the directive is there
       if [ ! -f "$MEMORY_FILE" ]; then
         touch "$MEMORY_FILE"
       fi
@@ -117,8 +132,6 @@ EOF
       fi
     fi
   done
-else
-  warn "Hermes profiles directory not found yet (start Hermes at least once)."
 fi
 
 echo
