@@ -63,10 +63,26 @@ Follow these steps to install the LAM-Cyberlab compatible version of Hermes Agen
 > **⚠️ WINDOWS USERS**: This project heavily relies on Linux packages (like `apt install ffmpeg`) and Bash scripts. Git Bash or native PowerShell will **not** work for the Second Brain pipeline. You **must** install and use **[WSL2 (Windows Subsystem for Linux)](https://learn.microsoft.com/en-us/windows/wsl/install)** to follow these steps.
 
 ### 1. Install OS Dependencies
-The Second Brain pipeline requires `ffmpeg` (for audio) and `tesseract-ocr` (for images).
+The Second Brain pipeline requires `ffmpeg` (for audio) and `tesseract-ocr` (for images). Run the command appropriate for your system:
+
+**Ubuntu / Debian / WSL2 (Default):**
 ```bash
-sudo apt update
-sudo apt install ffmpeg tesseract-ocr
+sudo apt update && sudo apt install ffmpeg tesseract-ocr
+```
+
+**macOS (via Homebrew):**
+```bash
+brew install ffmpeg tesseract
+```
+
+**Fedora / RHEL:**
+```bash
+sudo dnf install ffmpeg tesseract
+```
+
+**Arch Linux:**
+```bash
+sudo pacman -S ffmpeg tesseract
 ```
 
 ### 2. Install Hermes Base & Swap to Custom Fork
