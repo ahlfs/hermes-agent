@@ -55,6 +55,9 @@ This is a custom fork of Hermes Agent **modified and maintained by Ahlfs**, feat
 4. **LAM-Cyberlab Native Integration**
    - **Real-time Streaming**: Full support for progressive token streaming via SSE/WebSockets (`stream_events.py`), making it a zero-friction, plug-and-play intelligence backend for the LAM-Cyberlab UI.
    - **Closed-Loop Learning**: Synergizes flawlessly with the native Self-Healing Skill Generator. When faced with complex tasks from the Cyberlab UI, the agent can autonomously write, test, and save its own new `.md` skills for future use.
+5. **Dynamic OS Memory Injection**
+   - Automatically detects your operating system, installed tools (Docker, PHP, Node, etc.), and `sudo` capabilities during setup.
+   - Injects these hardware/OS facts directly into the Agent's permanent memory (`MEMORY.md`), completely eliminating AI hallucinations regarding your environment specifications.
 
 ## Quick Install & Setup
 
@@ -127,7 +130,7 @@ Run the setup script to create an isolated virtual environment specifically for 
 cd ~/.hermes/hermes-agent
 bash scripts/second-brain/setup-venv.sh
 ```
-> **✨ NEW (Plug-and-Play):** This script will now also automatically initialize your Agent's persistent memory (`MEMORY.md` and `USER.md`) with highly-optimized Second Brain workflow rules. You don't need to configure the AI's core behavior manually!
+> **✨ NEW (Plug-and-Play):** This script will now automatically initialize your Agent's persistent memory (`MEMORY.md` and `USER.md`) with highly-optimized Second Brain workflow rules **AND dynamically inject your exact system environment specs (OS, Docker, PHP, sudo status) so the AI instantly understands your machine!**
 
 
 ### 4. Configure Environment Variables & Auto-Backup (Optional)

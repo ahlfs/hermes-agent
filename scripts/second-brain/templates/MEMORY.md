@@ -22,6 +22,7 @@ When learning new technical concepts during research (e.g., from web search), th
 
 Workflow for learning new concepts: after researching a topic, create a note in `Extracted-Docs/` and run the `sync-second-brain.sh` script. This triggers Pass 2 (document parsing) and Pass 4 (wiki ingest) to create Concept/Entity pages in `04-Wiki/`. Verify results by checking `04-Wiki/index.md` and `04-Wiki/log.md`.
 
-When the user asks to "learn" or "study" something, or asks why knowledge wasn't saved to the Second Brain, the agent should automatically sync research findings to the wiki using the exact process above. This is a strict workflow preference that should be preserved for all future sessions.
+When the user asks to "learn" or "study" something, or asks why knowledge wasn't saved to the Second Brain, the agent should automatically sync research findings to the wiki using the exact process above. 
+If the user asks to learn something but provides NO source, you MUST automatically search the web first. Do not execute the user's main command until the learning and syncing process is complete. This is a strict workflow preference that should be preserved for all future sessions.
 
 The sync script handles 5 main passes: (1) audio transcription, (2) document parsing, (3) memory consolidation, (4) wiki ingest to `04-Wiki/`, and (5) git backup. After creating new notes for the wiki, ALWAYS execute this script to finalize the ingestion.

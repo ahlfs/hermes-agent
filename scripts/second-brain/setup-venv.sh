@@ -117,6 +117,13 @@ if [ -d "$TEMPLATES_DIR" ]; then
   fi
   echo "[INFO] Overwriting $HERMES_MEMORIES_DIR/USER.md with template..."
   cp "$TEMPLATES_DIR/USER.md" "$HERMES_MEMORIES_DIR/USER.md"
+
+  # Inject dynamic OS environment into the fresh MEMORY.md
+  if [ -f "$SCRIPT_DIR/../init-env-memory.sh" ]; then
+    chmod +x "$SCRIPT_DIR/../init-env-memory.sh"
+    echo "[INFO] Initializing dynamic OS environment in MEMORY.md..."
+    "$SCRIPT_DIR/../init-env-memory.sh" > /dev/null
+  fi
 fi
 
 echo
