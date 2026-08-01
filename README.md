@@ -38,7 +38,7 @@ Use any model you want — [Nous Portal](https://portal.nousresearch.com), OpenR
 
 ## 🧠 Second Brain Edition (Custom Fork)
 
-This is a custom fork of Hermes Agent **modified and maintained by Ahlfs**, featuring an autonomous **Second Brain** pipeline and automated GitHub configuration backups.
+This is a custom fork of Hermes Agent **modified and maintained by Ahlfs**, featuring an autonomous **Second Brain** pipeline and automated GitHub skills backups.
 
 ### Features
 1. **Automated Second Brain Pipeline**
@@ -47,8 +47,8 @@ This is a custom fork of Hermes Agent **modified and maintained by Ahlfs**, feat
    - **Wiki Generation**: Synthesizes transcripts and documents into interlinked Wikipedia-style markdown files in `04-Wiki`.
    - **Git Backup**: Automatically commits and pushes new knowledge to a private GitHub repository.
    - **Full Source Cleanup Cascade**: Safely deletes the raw source files (`.mp3`, `.pdf`, etc.) from `01-Audio` and `02-Documents` *only after* the final knowledge has been successfully backed up to GitHub, keeping your vault lean.
-2. **Automated Config Backup**
-   - Backs up your `~/.hermes` configs, custom skills, and memories to a separate private GitHub repo via a scheduled cron job (default: every 24h).
+2. **Automated Skills Backup**
+   - Backs up your custom skills to a separate private GitHub repo via a scheduled cron job (default: every 24h).
 3. **Dynamic Swarm Router (Intent-Based Routing)**
    - Automatically intercepts and routes incoming messages to the most capable specialist sub-agent (`builder`, `researcher`, `writer`).
    - Uses zero-latency keyword classification to infer user intent, providing a frictionless swarm experience without manual profile switching.
@@ -134,7 +134,7 @@ bash scripts/second-brain/setup-venv.sh
 
 
 ### 4. Configure Environment Variables & Auto-Backup (Optional)
-If you want to enable the Auto-Backup system (synced to cloud/GitHub) to secure your configurations and knowledge base, open your `~/.hermes/.env` file and add the following settings:
+If you want to enable the Auto-Backup system (synced to cloud/GitHub) to secure your custom skills and knowledge base, open your `~/.hermes/.env` file and add the following settings:
 ```ini
 # Directory of your Obsidian Vault (Second Brain)
 OBSIDIAN_VAULT_DIR=/home/user/obsidian/memo
@@ -161,7 +161,7 @@ bash scripts/second-brain/sync-skills.sh
 *(After this completes, you will find your `01-Audio`, `02-Documents`, etc. folders ready in the Vault, and your custom skills will be synced).*
 
 ### 7. Automating the Sync (Cron Job) (Optional)
-To make your VPS automatically sync and backup your Second Brain **and** Custom Skills every 12 hours in the background, simply run the installation script:
+To make your VPS automatically sync and backup your Second Brain (every 12 hours) **and** Custom Skills (every 24 hours) in the background, simply run the installation script:
 ```bash
 cd ~/.hermes/hermes-agent
 bash scripts/second-brain/install-cron.sh

@@ -23,15 +23,17 @@ if [ ! -f "$SYNC_SCRIPT" ]; then
     exit 1
 fi
 
-CRON_JOB="0 */12 * * * bash \"$SYNC_SCRIPT\" >> \"$LOG_FILE\" 2>&1 && bash \"$SKILLS_SCRIPT\" >> \"$LOG_FILE\" 2>&1"
+CRON_JOB_SECONDBRAIN="0 */12 * * * bash \"$SYNC_SCRIPT\" >> \"$LOG_FILE\" 2>&1"
+CRON_JOB_SKILLS="0 0 * * * bash \"$SKILLS_SCRIPT\" >> \"$LOG_FILE\" 2>&1"
 
 # Remove existing cron job if it exists (so we can safely update it)
-if crontab -l 2>/dev/null | grep -q "sync-second-brain.sh"; then
-    (crontab -l 2>/dev/null | grep -v "sync-second-brain.sh") | crontab -
+if crontab -l 2>/dev/null | grep -q -e "sync-second-brain.sh" -e "sync-skills.sh"; then
+    (crontab -l 2>/dev/null | grep -v -e "sync-second-brain.sh" -e "sync-skills.sh") | crontab -
     echo -e "${YELLOW}[INFO]${NC} Existing auto-backup cron job found. Updating it..."
 fi
 
-# Append the new cron job to existing crontab
-(crontab -l 2>/dev/null; echo "$CRON_JOB") | crontab -
-echo -e "${GREEN}[OK]${NC} Auto-Backup (Second Brain + Skills) successfully scheduled every 12 hours!"
+# Append the new cron jobs to existing crontab
+(crontab -l 2>/dev/null; echo "$CRON_JOB_SECONDBRAIN"; echo "$CRON_JOB_SKILLS") | crontab -
+echo -e "${GREEN}[OK]${NC} Second Brain Auto-Backup successfully scheduled every 12 hours!"
+echo -e "${GREEN}[OK]${NC} Skills Auto-Backup successfully scheduled every 24 hours!"
 echo -e "       Log file will be written to: $LOG_FILE"
