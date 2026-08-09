@@ -1,0 +1,5 @@
+name: antigravity-provider
+kind: model-provider
+version: 1.0.0
+description: 9router Antigravity with Hermes system-prompt bypass
+author: Nous Research

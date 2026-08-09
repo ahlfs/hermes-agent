@@ -38,6 +38,49 @@ class TestChatCompletionsBasic:
         )
         assert kw["extra_body"]["reasoning"] == {"enabled": True, "effort": "max"}
 
+    def test_antigravity_moves_blocked_system_identity_to_user(self, transport):
+        from providers import get_provider_profile
+
+        profile = get_provider_profile("antigravity")
+        kw = transport.build_kwargs(
+            model="ag/gemini-3.6-flash-high",
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You are Hermes Agent, an intelligent AI assistant created by Nous Research.",
+                },
+                {"role": "user", "content": "test"},
+            ],
+            provider_profile=profile,
+        )
+
+        assert kw["messages"][0] == {
+            "role": "system",
+            "content": "You are a helpful AI assistant.",
+        }
+        assert kw["messages"][1]["role"] == "user"
+        assert kw["messages"][1]["content"].startswith(
+            "[System Context: You are Hermes Agent, an intelligent AI assistant created by Nous Research.]"
+        )
+        assert kw["messages"][1]["content"].endswith("\n\ntest")
+
+    def test_antigravity_leaves_safe_system_prompt_unchanged(self, transport):
+        from providers import get_provider_profile
+
+        profile = get_provider_profile("antigravity")
+        messages = [
+            {"role": "system", "content": "You are Hermes Agent."},
+            {"role": "user", "content": "test"},
+        ]
+
+        kw = transport.build_kwargs(
+            model="ag/gemini-3.6-flash-high",
+            messages=messages,
+            provider_profile=profile,
+        )
+
+        assert kw["messages"] == messages
+
     def test_convert_tools_identity(self, transport):
         tools = [{"type": "function", "function": {"name": "test", "parameters": {}}}]
         assert transport.convert_tools(tools) is tools
