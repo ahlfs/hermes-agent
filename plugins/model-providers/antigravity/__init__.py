@@ -103,7 +103,7 @@ antigravity = AntigravityProfile(
     display_name="Antigravity (9router bypass)",
     description="9router Antigravity models with Hermes system-prompt bypass",
     signup_url="https://9router.rkhyg.my.id/",
-    base_url="https://9router.rkhyg.my.id/v1",
+    base_url="http://localhost:20128/v1",
     fallback_models=(
         "ag/gemini-pro-agent",
         "ag/gemini-3.6-flash-high",
