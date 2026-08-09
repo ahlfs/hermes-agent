@@ -185,6 +185,19 @@ To provide your agent with new knowledge (meeting recordings, books, research pa
 - The extracted information is synthesized into Wikipedia-style interconnected `.md` pages in your `04-Wiki/` folder.
 - **Auto-Cleanup**: Once the knowledge has been successfully converted into Wiki pages and safely backed up to your GitHub repository, the agent's **Full Source Cleanup Cascade** kicks in. It will automatically delete the large raw source files (`.mp3`, `.pdf`, etc.) from your `01-Audio` and `02-Documents` folders to keep your server lightweight.
 
+### 10. System Prompt Bypass (Anti-Gravity Models)
+Sometimes you may want to completely bypass Hermes's built-in system prompts for specific models (e.g., when using custom roleplay models or models that require their own strict system instructions), without affecting your normal models.
+
+We provide a non-destructive Monkey-Patch bypass script to achieve this:
+```bash
+bash ~/.hermes/hermes-agent/scripts/setup-bypass.sh
+```
+**How it works:**
+- It dynamically intercepts the provider configuration in memory. It **does not** create new providers, ensuring your model lists and configurations remain 100% intact.
+- Models containing the string `ag` in their name (e.g., `ag/gemini-pro-agent`) will have the default system prompt completely bypassed.
+- All other models (e.g., `Kiroo`, `claude-sonnet`) remain **normal** and will continue to use the standard Hermes system prompts.
+- You only need to run this script **once**. Any future custom providers you add will automatically inherit this intelligent routing!
+
 ---
 
 ### Troubleshooting
