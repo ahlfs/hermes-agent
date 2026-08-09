@@ -1318,6 +1318,22 @@ def run_conversation(
         if effective_system:
             api_messages = [{"role": "system", "content": effective_system}] + api_messages
 
+        # ponytail: local Antigravity Gemini bridge appears to return empty
+        # content when the full Hermes system prompt is present. Keep this
+        # narrowly scoped to that local bridge/model family; if the provider
+        # later accepts normal prompts, delete this block.
+        if (
+            str(getattr(agent, "model", "") or "").lower().startswith("ag/gemini")
+            and str(getattr(agent, "base_url", "") or "").rstrip("/").lower()
+            == "http://localhost:20128/v1"
+            and api_messages
+            and api_messages[0].get("role") == "system"
+        ):
+            api_messages[0]["content"] = (
+                "You are a concise coding assistant. Use available tools when needed. "
+                "Answer the user directly."
+            )
+
         if moa_config:
             try:
                 from agent.message_content import flatten_message_text as _flatten_mt

@@ -2583,8 +2583,8 @@ class APIServerAdapter(BasePlatformAdapter):
         )
 
         agent_kwargs = {
-            "model": model,
             **runtime_kwargs,
+            "model": model,
             **_checkpoint_agent_kwargs(user_config),
             "max_iterations": max_iterations,
             "quiet_mode": True,
