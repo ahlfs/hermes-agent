@@ -178,11 +178,11 @@ Untuk memberi agen Anda pengetahuan baru (rekaman rapat, buku, makalah penelitia
 - Informasi yang diekstraksi disintesis menjadi halaman `.md` yang saling terhubung bergaya Wikipedia di folder `04-Wiki/` Anda.
 - **Pembersihan Otomatis**: Setelah pengetahuan berhasil diubah menjadi halaman Wiki dan dengan aman dicadangkan ke repositori GitHub Anda, **Kaskade Pembersihan Sumber Penuh** agen akan bekerja. Ini akan secara otomatis menghapus file sumber mentah besar (`.mp3`, `.pdf`, dll.) dari folder `01-Audio` dan `02-Documents` Anda untuk menjaga server Anda tetap ringan.
 
-### 10. Bypass System Prompt (Model Antigravity & Bridge 9router)
+### 10. Local Proxy & Prompt Sanitizer (Gateway Lokal Custom)
 
-Saat menggunakan model Antigravity / 9router (seperti `ag/gemini-3.6-flash-high`), penyedia upstream memblokir *system prompt* yang mengandung kata *"Hermes Agent"* atau *"Nous Research"*, sehingga menyebabkan error `429 RESOURCE_EXHAUSTED`.
+Saat menggunakan gateway model lokal kustom atau bridge kompatibel OpenAI pihak ketiga, filter keamanan upstream tertentu dapat memicu pembatasan konteks atau error pada *system prompt*.
 
-Kami menyediakan **AG Proxy Bypass** transparan yang secara otomatis membersihkan kata kunci identitas dari *system prompt*, menyuntikkannya ke konteks pengguna (*user message*), dan meneruskan request ke bridge lokal Anda (default: port 3031).
+Kami menyediakan **Local Proxy & Prompt Sanitizer** (`ag_proxy`) transparan yang secara otomatis membersihkan kata kunci identitas pada *system prompt*, memindahkan konteks secara aman ke pesan pengguna, dan meneruskan request ke bridge lokal Anda.
 
 #### Langkah Setup Cepat (Salin & Tempel):
 
@@ -198,11 +198,11 @@ bash scripts/route-provider.sh
 hermes dashboard
 ```
 
-#### Cara Kerjanya:
-- **Service Systemd Otomatis:** Menjalankan `ag-proxy` di port `8900` sebagai *background user service* (otomatis aktif saat booting/login).
-- **Routing Path Dinamis:** Mendukung *routing* ke server upstream mana pun menggunakan path `/proxy/<host:port>/v1`.
-- **Streaming Tanpa Latensi:** Meneruskan respon sepotong demi sepotong secara *real-time* untuk mencegah koneksi *timeout*.
-- **Konfigurasi Otomatis:** Mengatur `providers.antigravity` di `config.yaml` secara otomatis untuk me-routing lewat port `8900`.
+#### Fitur:
+- **Service Latar Belakang Otomatis:** Menjalankan `ag-proxy` di port `8900` sebagai *systemd user service* (otomatis aktif saat booting/login).
+- **Routing Path Dinamis:** Mendukung *routing* ke server mana pun menggunakan path `/proxy/<host:port>/v1`.
+- **Streaming Tanpa Latensi:** Meneruskan respon *real-time* sepotong demi sepotong untuk mencegah koneksi *timeout*.
+- **Konfigurasi Otomatis:** Menyesuaikan provider di `config.yaml` secara otomatis untuk me-routing lewat port `8900`.
 
 ---
 
