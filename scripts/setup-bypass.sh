@@ -1,279 +1,268 @@
 #!/bin/bash
 # ===================================================================
-# Auto-Injector: Monkey-Patch Bypass untuk Custom Provider
+# Setup AG Proxy Bypass untuk Hermes Agent
 # ===================================================================
-# Strategi: BUKAN mengganti provider, melainkan MENYADAP (monkey-patch)
-# method prepare_messages() milik CustomProfile yang sudah ada.
-# Dengan cara ini, semua fungsi asli (daftar model, config, dll) tetap utuh.
+# Menyiapkan ag_proxy.py (port 8900 -> 3031), mengonfigurasi systemd
+# user service ag-proxy, serta mengatur provider config Hermes.
 # ===================================================================
 
+set -e
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+HERMES_DIR="$HOME/.hermes"
+AG_PROXY_SCRIPT="$SCRIPT_DIR/ag_proxy.py"
+SERVICE_FILE="$HOME/.config/systemd/user/ag-proxy.service"
+
 echo "==================================================================="
-echo "🧙‍♂️ HERMES HACK: BYPASS INJECTOR v3.0"
+echo "🧙‍♂️ HERMES SETUP: AG PROXY BYPASS"
 echo "==================================================================="
-echo "Script ini menyadap (monkey-patch) provider yang sudah ada."
-echo "Model tanpa kata 'ag' = NORMAL. Model dengan 'ag' = BYPASS."
-echo "Daftar model TIDAK akan hilang!"
+echo "Script ini mengonfigurasi Proxy Transparan (port 8900 -> port 3031)"
+echo "untuk mem-bypass pembatasan identitas Hermes Agent di Antigravity."
 echo "==================================================================="
 echo ""
 
-# Set paths
-HERMES_DIR="$HOME/.hermes"
-PLUGIN_DIR="$HERMES_DIR/plugins/model-providers/ag-bypass-patch"
+# 1. Pastikan ag_proxy.py ada di folder scripts/
+if [ ! -f "$AG_PROXY_SCRIPT" ]; then
+    echo "📄 Membuat scripts/ag_proxy.py..."
+    cat << 'PYEOF' > "$AG_PROXY_SCRIPT"
+#!/usr/bin/env python3
+"""AG Bypass Proxy — transparent proxy that removes Hermes identity from system prompts.
 
-echo "⏳ Memasang patch bypass..."
-
-# Buat Direktori Plugin
-mkdir -p "$PLUGIN_DIR"
-
-# Generate plugin.yaml
-cat << 'EOF' > "$PLUGIN_DIR/plugin.yaml"
-name: ag-bypass-patch
-kind: model-provider
-version: 3.0.0
-description: Monkey-patches CustomProfile to bypass system prompt for ag models
-author: Hermes Hacker
-EOF
-
-# Generate __init__.py — ini TIDAK register provider baru!
-# Ia hanya menyadap prepare_messages milik CustomProfile yang sudah ada.
-cat << 'PYEOF' > "$PLUGIN_DIR/__init__.py"
-"""AG Bypass Patch — monkey-patches CustomProfile.prepare_messages.
-
-This plugin does NOT register a new provider. Instead, it patches the
-existing CustomProfile so that models containing 'ag' in their name
-get their system prompt bypassed, while all other models pass through
-completely untouched. Model lists, config, and everything else stays
-100% intact.
+Listens on port 8900 and forwards to the upstream 9router Antigravity endpoint (port 3031).
+Detects "Hermes Agent" + "Nous Research" in the system role and moves the
+identity to a user message as [System Context: ...].
 """
 
-from __future__ import annotations
-from typing import Any
+import json
+import logging
+import re
+import sys
+from http.server import HTTPServer, BaseHTTPRequestHandler
+from urllib.request import Request, urlopen
+from urllib.error import HTTPError
 
-# ── Bypass helpers ────────────────────────────────────────────────────
+LISTEN_HOST = "127.0.0.1"
+LISTEN_PORT = 8900
+UPSTREAM_BASE = "http://localhost:3031/v1"
 
-_TRIGGER_TERMS = ("hermes agent", "nous research")
-_SAFE_SYSTEM_PROMPT = "You are a helpful AI assistant."
-_CONTEXT_PREFIX = "[System Context: "
+TRIGGER_TERMS = ("hermes agent", "nous research")
+SAFE_SYSTEM_PROMPT = "You are a helpful AI assistant."
+CONTEXT_PREFIX = "[System Context: "
 
-def _content_text(content: Any) -> str:
-    if isinstance(content, str):
-        return content
-    if isinstance(content, list):
-        parts = []
-        for item in content:
-            if isinstance(item, dict):
-                text = item.get("text")
-                if isinstance(text, str):
-                    parts.append(text)
-            elif isinstance(item, str):
-                parts.append(item)
-        return "\n".join(parts)
-    return ""
-
-
-def _has_blocked_identity(content: Any) -> bool:
-    text = _content_text(content).lower()
-    matches = all(term in text for term in _TRIGGER_TERMS)
-    import sys
-    sys.stderr.write(f"\n[AG-BYPASS] 🔍 Check identity. Matches: {matches}. Text preview: {text[:120]}\n")
-    sys.stderr.flush()
-    return matches
+logging.basicConfig(
+    level=logging.INFO,
+    format="[%(asctime)s] %(levelname)s %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+    handlers=[
+        logging.StreamHandler(sys.stderr),
+        logging.FileHandler("/tmp/ag_proxy.log"),
+    ],
+)
+log = logging.getLogger("ag-proxy")
 
 
-_IDENTITY_REPLACEMENTS = {
-    "hermes agent": "Asa",
-    "hermes": "Asa",
-    "nous research": "CyberLab",
-    "nousresearch": "CyberLab",
-    "nous": "CyberLab",
-}
-
-def _sanitize_identity(text: str) -> str:
-    """Ganti semua trigger terms dan identitas terkait dengan nama samaran."""
-    import re
-    result = text
-    for original, replacement in _IDENTITY_REPLACEMENTS.items():
-        result = re.sub(re.escape(original), replacement, result, flags=re.IGNORECASE)
-    return result
+def _has_blocked_identity(text: str) -> bool:
+    lower = text.lower()
+    return all(term in lower for term in TRIGGER_TERMS)
 
 
-def _inject_system_context(content: Any, system_text: str) -> Any:
-    sanitized_text = _sanitize_identity(system_text)
-    injected = f"{_CONTEXT_PREFIX}{sanitized_text}]"
-    if isinstance(content, str):
-        return f"{injected}\n\n{content}" if content else injected
-    if isinstance(content, list):
-        return [{"type": "text", "text": injected}, *content]
-    return injected
+def _bypass_messages(messages: list) -> tuple[list, bool]:
+    system_idx = None
+    for i, msg in enumerate(messages):
+        if isinstance(msg, dict) and msg.get("role") == "system":
+            content = msg.get("content", "")
+            if isinstance(content, str) and _has_blocked_identity(content):
+                system_idx = i
+                break
+
+    if system_idx is None:
+        return messages, False
+
+    system_text = messages[system_idx].get("content", "").strip()
+    if not system_text:
+        return messages, False
+
+    rewritten = list(messages)
+    rewritten[system_idx] = {**messages[system_idx], "content": SAFE_SYSTEM_PROMPT}
+
+    user_idx = None
+    for i, msg in enumerate(rewritten):
+        if i > system_idx and isinstance(msg, dict) and msg.get("role") == "user":
+            user_idx = i
+            break
+
+    context_injection = f"{CONTEXT_PREFIX}{system_text}]"
+
+    if user_idx is None:
+        rewritten.append({"role": "user", "content": context_injection})
+    else:
+        user_content = rewritten[user_idx].get("content", "")
+        if isinstance(user_content, str):
+            rewritten[user_idx] = {
+                **rewritten[user_idx],
+                "content": f"{context_injection}\n\n{user_content}" if user_content else context_injection,
+            }
+        elif isinstance(user_content, list):
+            rewritten[user_idx] = {
+                **rewritten[user_idx],
+                "content": [{"type": "text", "text": context_injection}, *user_content],
+            }
+
+    return rewritten, True
 
 
-def _dump_prompt(messages, label=""):
-    """Simpan full prompt ke file untuk inspeksi."""
-    import json, os
-    from datetime import datetime
-    dump_dir = os.path.expanduser("~/.hermes/logs")
-    os.makedirs(dump_dir, exist_ok=True)
-    ts = datetime.now().strftime("%Y%m%d_%H%M%S")
-    dump_path = os.path.join(dump_dir, f"prompt_dump_{ts}.json")
-    with open(dump_path, "w", encoding="utf-8") as f:
-        json.dump({"label": label, "messages": messages}, f, indent=2, ensure_ascii=False)
-    import sys
-    sys.stderr.write(f"[AG-BYPASS] 📝 Full prompt disimpan ke: {dump_path}\n")
-    sys.stderr.flush()
+class ProxyHandler(BaseHTTPRequestHandler):
+    def do_POST(self):
+        content_length = int(self.headers.get("Content-Length", 0))
+        body = self.rfile.read(content_length)
 
-
-def _bypass_prepare_messages(original_fn):
-    """Wrapper yang menyadap prepare_messages milik CustomProfile."""
-
-    def patched_prepare_messages(self, messages: list[dict[str, Any]]) -> list[dict[str, Any]]:
-        if not messages:
-            return original_fn(self, messages)
-
-        # Intip stack frame untuk mendapatkan nama model
-        import inspect
-        import sys
-        
-        def dash_log(msg):
-            sys.stderr.write(msg + "\n")
-            sys.stderr.flush()
-            
-        model_name = ""
         try:
-            frame = inspect.currentframe().f_back
-            for _ in range(5):
-                if not frame:
-                    break
-                if "model" in frame.f_locals:
-                    model_name = str(frame.f_locals["model"]).lower()
-                    break
-                frame = frame.f_back
-        except Exception:
-            pass
-            
-        # Jika nama model TIDAK mengandung "ag", jalankan fungsi asli tanpa bypass
-        from datetime import datetime
-        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        
-        if "ag" not in model_name:
-            dash_log(f"[AG-BYPASS] [{timestamp}] REQUEST: Model = '{model_name}'. Status: SKIPPED (not an 'ag' model).")
-            return original_fn(self, messages)
+            payload = json.loads(body)
+        except json.JSONDecodeError:
+            payload = None
 
-        # === BYPASS AKTIF ===
-        log_msg = f"[AG-BYPASS] [{timestamp}] REQUEST: Model = '{model_name}'. Status: BYPASS ACTIVATED. "
-        
-        messages = original_fn(self, messages)
+        bypassed = False
+        if payload and "messages" in payload:
+            payload["messages"], bypassed = _bypass_messages(payload["messages"])
+            body = json.dumps(payload).encode("utf-8")
 
-        system_idx = next(
-            (
-                idx
-                for idx, msg in enumerate(messages)
-                if isinstance(msg, dict)
-                and msg.get("role") == "system"
-                and _has_blocked_identity(msg.get("content"))
-            ),
-            None,
-        )
-        
-        if system_idx is None:
-            dash_log(log_msg + "Result: Failed (No 'system' role or identity triggers not found).")
-            _dump_prompt(messages, "BYPASS_FAILED_no_triggers")
-            return messages
+        model = payload.get("model", "unknown") if payload else "unknown"
+        if bypassed:
+            log.info("BYPASS APPLIED: moved identity to user context [model=%s]", model)
+        else:
+            log.info("PASSTHROUGH: no bypass needed [model=%s]", model)
 
-        system_msg = messages[system_idx]
-        system_text = _content_text(system_msg.get("content")).strip()
-        if not system_text:
-            dash_log(log_msg + "Result: Failed (Empty system prompt).")
-            return messages
+        upstream_url = UPSTREAM_BASE + self.path
+        headers = {"Content-Type": "application/json"}
+        auth = self.headers.get("Authorization")
+        if auth:
+            headers["Authorization"] = auth
 
-        rewritten = list(messages)
-        rewritten[system_idx] = {**system_msg, "content": _SAFE_SYSTEM_PROMPT}
+        req = Request(upstream_url, data=body, headers=headers, method="POST")
 
-        user_idx = next(
-            (
-                idx
-                for idx, msg in enumerate(rewritten)
-                if idx > system_idx
-                and isinstance(msg, dict)
-                and msg.get("role") == "user"
-            ),
-            None,
-        )
+        try:
+            with urlopen(req, timeout=300) as resp:
+                resp_body = resp.read()
+                self.send_response(resp.status)
+                for key, val in resp.getheaders():
+                    if key.lower() not in ("transfer-encoding", "connection"):
+                        self.send_header(key, val)
+                self.end_headers()
+                self.wfile.write(resp_body)
+                log.info("SUCCESS [model=%s] status=%d bytes=%d", model, resp.status, len(resp_body))
+        except HTTPError as e:
+            error_body = e.read()
+            self.send_response(e.code)
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            self.wfile.write(error_body)
+            log.warning("UPSTREAM ERROR [model=%s] status=%d: %s", model, e.code, error_body[:200].decode(errors="replace"))
+        except Exception as e:
+            self.send_response(502)
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            err = json.dumps({"error": {"message": str(e), "type": "proxy_error"}}).encode()
+            self.wfile.write(err)
+            log.error("PROXY ERROR [model=%s]: %s", model, e)
 
-        if user_idx is None:
-            rewritten.append(
-                {"role": "user", "content": f"{_CONTEXT_PREFIX}{_sanitize_identity(system_text)}]"}
-            )
-            dash_log(log_msg + "Result: Success (Appended context to new user message).")
-            _dump_prompt(rewritten, "BYPASS_SUCCESS_appended")
-            return rewritten
+    def do_GET(self):
+        upstream_url = UPSTREAM_BASE + self.path
+        headers = {}
+        auth = self.headers.get("Authorization")
+        if auth:
+            headers["Authorization"] = auth
 
-        user_msg = rewritten[user_idx]
-        rewritten[user_idx] = {
-            **user_msg,
-            "content": _inject_system_context(user_msg.get("content"), system_text),
-        }
-        
-        dash_log(log_msg + "Result: Success (Injected context into existing user message).")
-        _dump_prompt(rewritten, "BYPASS_SUCCESS_injected")
-        return rewritten
+        req = Request(upstream_url, headers=headers, method="GET")
+        try:
+            with urlopen(req, timeout=30) as resp:
+                resp_body = resp.read()
+                self.send_response(resp.status)
+                for key, val in resp.getheaders():
+                    if key.lower() not in ("transfer-encoding", "connection"):
+                        self.send_header(key, val)
+                self.end_headers()
+                self.wfile.write(resp_body)
+        except HTTPError as e:
+            error_body = e.read()
+            self.send_response(e.code)
+            self.end_headers()
+            self.wfile.write(error_body)
+        except Exception as e:
+            self.send_response(502)
+            self.end_headers()
 
-    return patched_prepare_messages
-
-
-# ── Patch saat import ─────────────────────────────────────────────────
-# Ketika Hermes memuat plugin ini, kode di bawah langsung dieksekusi.
-# Ia mencari CustomProfile dan mengganti method-nya secara langsung.
-
-def _apply_patch():
-    import sys
-    sys.stderr.write("\n[AG-BYPASS] 🚀 Plugin bypass dimuat! Mencoba memasang patch ke provider...\n")
-    sys.stderr.flush()
-        
-    try:
-        from plugins import _loaded_model_providers  # noqa: F401
-    except ImportError:
+    def log_message(self, format, *args):
         pass
 
-    # Import CustomProfile dari plugin custom bawaan Hermes
+
+def main():
+    server = HTTPServer((LISTEN_HOST, LISTEN_PORT), ProxyHandler)
+    log.info("AG Bypass Proxy listening on %s:%d → %s", LISTEN_HOST, LISTEN_PORT, UPSTREAM_BASE)
     try:
-        # Path 1: Plugin-based custom provider
-        from importlib import import_module
-        custom_mod = import_module("plugins.model-providers.custom")
-        CustomProfile = custom_mod.CustomProfile
-        sys.stderr.write("[AG-BYPASS] ✅ Patch dipasang pada CustomProfile (Path 1)\n")
-        sys.stderr.flush()
-    except Exception:
-        try:
-            # Path 2: Langsung dari providers
-            from providers.base import ProviderProfile
-            CustomProfile = ProviderProfile
-            sys.stderr.write("[AG-BYPASS] ✅ Patch dipasang pada ProviderProfile (Path 2)\n")
-            sys.stderr.flush()
-        except Exception:
-            sys.stderr.write("[AG-BYPASS] ❌ GAGAL: Tidak menemukan ProviderProfile atau CustomProfile!\n")
-            sys.stderr.flush()
-            return
-
-    # Simpan referensi fungsi asli
-    _original = CustomProfile.prepare_messages
-
-    # Tempelkan fungsi bypass sebagai pengganti
-    CustomProfile.prepare_messages = _bypass_prepare_messages(_original)
+        server.serve_forever()
+    except KeyboardInterrupt:
+        log.info("Proxy stopped.")
+        server.server_close()
 
 
-_apply_patch()
+if __name__ == "__main__":
+    main()
 PYEOF
+    chmod +x "$AG_PROXY_SCRIPT"
+fi
 
-echo "✅ Patch bypass berhasil dipasang di: $PLUGIN_DIR"
+# 2. Buat systemd service unit
+echo "⚙️  Menyiapkan systemd service (ag-proxy.service)..."
+mkdir -p "$HOME/.config/systemd/user"
+cat << EOF > "$SERVICE_FILE"
+[Unit]
+Description=AG Bypass Proxy for Hermes (port 8900 -> 3031)
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 $AG_PROXY_SCRIPT
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=default.target
+EOF
+
+# Reload & Restart systemd service
+systemctl --user daemon-reload
+systemctl --user enable ag-proxy.service
+systemctl --user restart ag-proxy.service
+echo "✅ Service ag-proxy aktif di port 8900"
+
+# 3. Bersihkan plugin monkey-patch lama jika ada
+rm -rf "$HERMES_DIR/plugins/model-providers/ag-bypass-patch"
+
+# 4. Konfigurasi Hermes CLI jika binary hermes tersedia
+HERMES_BIN="$SCRIPT_DIR/venv/bin/hermes"
+if [ ! -x "$HERMES_BIN" ]; then
+    HERMES_BIN="$(which hermes 2>/dev/null || true)"
+fi
+
+if [ -x "$HERMES_BIN" ]; then
+    echo "🔧 Mengonfigurasi Hermes config..."
+    "$HERMES_BIN" config set providers.antigravity.base_url "http://127.0.0.1:8900/v1"
+    "$HERMES_BIN" config set providers.antigravity.key_env "HERMES_CUSTOM_9ROUTER_API_KEY"
+    "$HERMES_BIN" config set providers.antigravity.models '["ag/gemini-pro-agent", "ag/gemini-3.6-flash-high", "ag/gemini-3.6-flash-medium", "ag/gemini-3.6-flash-low"]'
+    "$HERMES_BIN" config set providers.antigravity.discover_models false
+fi
+
+# 5. Restart daemon hermes
+pkill -f hermes 2>/dev/null || true
+
 echo ""
 echo "==================================================================="
-echo "🎉 INJEKSI v3.0 SELESAI! 🎉"
+echo "🎉 SETUP AG PROXY SELESAI! 🎉"
 echo "==================================================================="
-echo "Plugin ini TIDAK membuat provider baru."
-echo "Ia hanya menyadap (monkey-patch) CustomProfile yang sudah ada."
-echo "- Daftar model Anda TETAP UTUH (tidak akan 0 models lagi!)."
-echo "- Model tanpa 'ag' = NORMAL, model dengan 'ag' = BYPASS."
+echo "Alur Koneksi:"
+echo "  Hermes → http://127.0.0.1:8900/v1 (Proxy) → http://localhost:3031/v1 (Bridge)"
 echo ""
-echo "Jalankan 'pkill -f hermes' untuk me-restart daemon sekarang."
+echo "Perintah berguna:"
+echo "  - Cek status proxy:  systemctl --user status ag-proxy"
+echo "  - Cek log proxy:     tail -f /tmp/ag_proxy.log"
 echo "==================================================================="
-echo ""
