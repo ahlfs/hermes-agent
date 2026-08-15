@@ -1925,29 +1925,8 @@ def run_conversation(
                 except Exception:
                     pass
 
-                # [AG-BYPASS] Dump final prompt sebelum dikirim ke model
-                try:
-                    _ag_model = (agent.model or "").lower()
-                    if "ag" in _ag_model:
-                        import json as _dj, os as _dos
-                        from datetime import datetime as _ddt
-                        _dump_dir = _dos.path.expanduser("~/.hermes/logs")
-                        _dos.makedirs(_dump_dir, exist_ok=True)
-                        _ts = _ddt.now().strftime("%Y%m%d_%H%M%S")
-                        _dump_path = _dos.path.join(_dump_dir, f"final_prompt_{_ts}.json")
-                        _final_msgs = api_kwargs.get("messages") or api_kwargs.get("input") or []
-                        with open(_dump_path, "w", encoding="utf-8") as _df:
-                            _dj.dump({
-                                "model": agent.model,
-                                "provider": agent.provider,
-                                "message_count": len(_final_msgs),
-                                "messages": _final_msgs,
-                            }, _df, indent=2, ensure_ascii=False, default=str)
-                        import sys as _ds
-                        _ds.stderr.write(f"[AG-BYPASS] 📝 FINAL prompt → {_dump_path}\n")
-                        _ds.stderr.flush()
-                except Exception:
-                    pass
+
+
 
                 # This object is private to the in-process MoA facade.  Add it
                 # only after middleware, hooks, and debug dumps so none of them
