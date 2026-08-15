@@ -127,14 +127,22 @@ class ProxyHandler(BaseHTTPRequestHandler):
 
         try:
             with urlopen(req, timeout=300) as resp:
-                resp_body = resp.read()
                 self.send_response(resp.status)
                 for key, val in resp.getheaders():
-                    if key.lower() not in ("transfer-encoding", "connection"):
+                    if key.lower() not in ("transfer-encoding", "connection", "content-length"):
                         self.send_header(key, val)
                 self.end_headers()
-                self.wfile.write(resp_body)
-                log.info("SUCCESS [model=%s] status=%d bytes=%d", model, resp.status, len(resp_body))
+
+                # Stream response immediately chunk by chunk to avoid client timeout
+                total_bytes = 0
+                while True:
+                    chunk = resp.read(8192)
+                    if not chunk:
+                        break
+                    self.wfile.write(chunk)
+                    self.wfile.flush()
+                    total_bytes += len(chunk)
+                log.info("SUCCESS [model=%s] status=%d bytes=%d", model, resp.status, total_bytes)
         except HTTPError as e:
             error_body = e.read()
             self.send_response(e.code)
