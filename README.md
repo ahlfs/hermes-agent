@@ -185,18 +185,31 @@ To provide your agent with new knowledge (meeting recordings, books, research pa
 - The extracted information is synthesized into Wikipedia-style interconnected `.md` pages in your `04-Wiki/` folder.
 - **Auto-Cleanup**: Once the knowledge has been successfully converted into Wiki pages and safely backed up to your GitHub repository, the agent's **Full Source Cleanup Cascade** kicks in. It will automatically delete the large raw source files (`.mp3`, `.pdf`, etc.) from your `01-Audio` and `02-Documents` folders to keep your server lightweight.
 
-### 10. System Prompt Bypass (Anti-Gravity Models)
-Sometimes you may want to completely bypass Hermes's built-in system prompts for specific models (e.g., when using custom roleplay models or models that require their own strict system instructions), without affecting your normal models.
+### 10. System Prompt Bypass (Antigravity Models & 9router Bridge)
 
-We provide a non-destructive Monkey-Patch bypass script to achieve this:
+When using Antigravity / 9router models (such as `ag/gemini-3.6-flash-high`), upstream providers block system prompts containing *"Hermes Agent"* or *"Nous Research"*, resulting in `429 RESOURCE_EXHAUSTED` errors.
+
+We provide a transparent **AG Proxy Bypass** that automatically strips blocked identity keywords from system prompts, injects them into user context, and routes requests to your local bridge (default: port 3031).
+
+#### Quick Setup (Copy & Paste):
+
 ```bash
-bash ~/.hermes/hermes-agent/scripts/setup-bypass.sh
+# 1. Run the automatic setup script
+cd ~/.hermes/hermes-agent
+bash scripts/setup-bypass.sh
+
+# 2. (Optional) Manage provider routing anytime
+bash scripts/route-provider.sh
+
+# 3. Launch Hermes Dashboard
+hermes dashboard
 ```
-**How it works:**
-- It dynamically intercepts the provider configuration in memory. It **does not** create new providers, ensuring your model lists and configurations remain 100% intact.
-- Models containing the string `ag` in their name (e.g., `ag/gemini-pro-agent`) will have the default system prompt completely bypassed.
-- All other models (e.g., `Kiroo`, `claude-sonnet`) remain **normal** and will continue to use the standard Hermes system prompts.
-- You only need to run this script **once**. Any future custom providers you add will automatically inherit this intelligent routing!
+
+#### How It Works:
+- **Automatic Systemd Service:** Runs `ag-proxy` on port `8900` as a background user service (auto-starts on boot/login).
+- **Dynamic Path Routing:** Supports routing to any upstream server using `/proxy/<host:port>/v1` paths.
+- **Zero-Latency Streaming:** Forwards response chunks in real-time to avoid connection timeouts.
+- **Auto-Configuration:** Automatically sets `providers.antigravity` in `config.yaml` to route through port `8900`.
 
 ---
 
