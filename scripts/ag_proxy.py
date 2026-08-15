@@ -1,18 +1,19 @@
 #!/usr/bin/env python3
 """AG Bypass Proxy — transparent proxy that removes Hermes identity from system prompts.
 
-Listens on port 8900 and forwards to the upstream 9router Antigravity endpoint.
-Detects "Hermes Agent" + "Nous Research" in the system role and moves the
-identity to a user message as [System Context: ...].
+Supports two routing modes:
+  1. Default:     /v1/...  → forwards to UPSTREAM_BASE (http://localhost:3031/v1)
+  2. Path-based:  /proxy/<host:port>/v1/...  → forwards to http://<host:port>/v1/...
+
+This allows a single proxy instance to serve multiple upstream providers.
 
 Usage:
-    python3 ~/ag_proxy.py
+    python3 ag_proxy.py
     # Or via systemd: systemctl --user start ag-proxy
 """
 
 import json
 import logging
-import re
 import sys
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from urllib.request import Request, urlopen
@@ -40,6 +41,29 @@ logging.basicConfig(
 log = logging.getLogger("ag-proxy")
 
 
+# ── Path-based routing ───────────────────────────────────────────────────
+
+def _resolve_upstream(path: str) -> tuple[str, str]:
+    """Resolve upstream base URL and remaining path.
+
+    /proxy/host:port/v1/chat/completions
+        → upstream = "http://host:port", remaining = "/v1/chat/completions"
+
+    /v1/chat/completions
+        → upstream = UPSTREAM_BASE, remaining = "/v1/chat/completions"
+    """
+    if path.startswith("/proxy/"):
+        rest = path[7:]  # strip "/proxy/"
+        # Find where the real API path begins (/v1/, /v2/, etc.)
+        slash_idx = rest.find("/")
+        if slash_idx > 0:
+            host_port = rest[:slash_idx]
+            remaining = rest[slash_idx:]
+            upstream = f"http://{host_port}"
+            return upstream, remaining
+    return UPSTREAM_BASE, path
+
+
 def _has_blocked_identity(text: str) -> bool:
     lower = text.lower()
     return all(term in lower for term in TRIGGER_TERMS)
@@ -65,7 +89,6 @@ def _bypass_messages(messages: list) -> tuple[list, bool]:
     rewritten = list(messages)
     rewritten[system_idx] = {**messages[system_idx], "content": SAFE_SYSTEM_PROMPT}
 
-    # Find first user message after system
     user_idx = None
     for i, msg in enumerate(rewritten):
         if i > system_idx and isinstance(msg, dict) and msg.get("role") == "user":
@@ -108,17 +131,17 @@ class ProxyHandler(BaseHTTPRequestHandler):
             body = json.dumps(payload).encode("utf-8")
 
         model = payload.get("model", "unknown") if payload else "unknown"
-        if bypassed:
-            log.info("BYPASS APPLIED: moved identity to user context [model=%s]", model)
-        else:
-            log.info("PASSTHROUGH: no bypass needed [model=%s]", model)
 
-        # Forward to upstream
-        upstream_url = UPSTREAM_BASE + self.path
-        headers = {
-            "Content-Type": "application/json",
-        }
-        # Forward auth header
+        # Resolve upstream (path-based or default)
+        upstream_base, api_path = _resolve_upstream(self.path)
+        upstream_url = upstream_base + api_path
+
+        if bypassed:
+            log.info("BYPASS APPLIED [model=%s] → %s", model, upstream_base)
+        else:
+            log.info("PASSTHROUGH [model=%s] → %s", model, upstream_base)
+
+        headers = {"Content-Type": "application/json"}
         auth = self.headers.get("Authorization")
         if auth:
             headers["Authorization"] = auth
@@ -142,25 +165,27 @@ class ProxyHandler(BaseHTTPRequestHandler):
                     self.wfile.write(chunk)
                     self.wfile.flush()
                     total_bytes += len(chunk)
-                log.info("SUCCESS [model=%s] status=%d bytes=%d", model, resp.status, total_bytes)
+                log.info("SUCCESS [model=%s] status=%d bytes=%d → %s", model, resp.status, total_bytes, upstream_base)
         except HTTPError as e:
             error_body = e.read()
             self.send_response(e.code)
             self.send_header("Content-Type", "application/json")
             self.end_headers()
             self.wfile.write(error_body)
-            log.warning("UPSTREAM ERROR [model=%s] status=%d: %s", model, e.code, error_body[:200].decode(errors="replace"))
+            log.warning("UPSTREAM ERROR [model=%s] status=%d → %s: %s", model, e.code, upstream_base, error_body[:200].decode(errors="replace"))
         except Exception as e:
             self.send_response(502)
             self.send_header("Content-Type", "application/json")
             self.end_headers()
             err = json.dumps({"error": {"message": str(e), "type": "proxy_error"}}).encode()
             self.wfile.write(err)
-            log.error("PROXY ERROR [model=%s]: %s", model, e)
+            log.error("PROXY ERROR [model=%s] → %s: %s", model, upstream_base, e)
 
     def do_GET(self):
         """Forward GET requests (e.g. /v1/models) to upstream."""
-        upstream_url = UPSTREAM_BASE + self.path
+        upstream_base, api_path = _resolve_upstream(self.path)
+        upstream_url = upstream_base + api_path
+
         headers = {}
         auth = self.headers.get("Authorization")
         if auth:
@@ -192,7 +217,8 @@ class ProxyHandler(BaseHTTPRequestHandler):
 
 def main():
     server = HTTPServer((LISTEN_HOST, LISTEN_PORT), ProxyHandler)
-    log.info("AG Bypass Proxy listening on %s:%d → %s", LISTEN_HOST, LISTEN_PORT, UPSTREAM_BASE)
+    log.info("AG Bypass Proxy listening on %s:%d (default upstream: %s)", LISTEN_HOST, LISTEN_PORT, UPSTREAM_BASE)
+    log.info("Path-based routing enabled: /proxy/<host:port>/v1/...")
     try:
         server.serve_forever()
     except KeyboardInterrupt:
