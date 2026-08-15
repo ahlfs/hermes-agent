@@ -38,8 +38,8 @@ After=network.target
 [Service]
 Type=simple
 ExecStart=/usr/bin/python3 $AG_PROXY_SCRIPT
-Restart=on-failure
-RestartSec=3
+Restart=always
+RestartSec=1
 
 [Install]
 WantedBy=default.target
