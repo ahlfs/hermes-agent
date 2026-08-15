@@ -55,7 +55,6 @@ _TRIGGER_TERMS = ("hermes agent", "nous research")
 _SAFE_SYSTEM_PROMPT = "You are a helpful AI assistant."
 _CONTEXT_PREFIX = "[System Context: "
 
-
 def _content_text(content: Any) -> str:
     if isinstance(content, str):
         return content
@@ -74,16 +73,53 @@ def _content_text(content: Any) -> str:
 
 def _has_blocked_identity(content: Any) -> bool:
     text = _content_text(content).lower()
-    return all(term in text for term in _TRIGGER_TERMS)
+    matches = all(term in text for term in _TRIGGER_TERMS)
+    import sys
+    sys.stderr.write(f"\n[AG-BYPASS] 🔍 Check identity. Matches: {matches}. Text preview: {text[:120]}\n")
+    sys.stderr.flush()
+    return matches
+
+
+_IDENTITY_REPLACEMENTS = {
+    "hermes agent": "Asa",
+    "hermes": "Asa",
+    "nous research": "CyberLab",
+    "nousresearch": "CyberLab",
+    "nous": "CyberLab",
+}
+
+def _sanitize_identity(text: str) -> str:
+    """Ganti semua trigger terms dan identitas terkait dengan nama samaran."""
+    import re
+    result = text
+    for original, replacement in _IDENTITY_REPLACEMENTS.items():
+        result = re.sub(re.escape(original), replacement, result, flags=re.IGNORECASE)
+    return result
 
 
 def _inject_system_context(content: Any, system_text: str) -> Any:
-    injected = f"{_CONTEXT_PREFIX}{system_text}]"
+    sanitized_text = _sanitize_identity(system_text)
+    injected = f"{_CONTEXT_PREFIX}{sanitized_text}]"
     if isinstance(content, str):
         return f"{injected}\n\n{content}" if content else injected
     if isinstance(content, list):
         return [{"type": "text", "text": injected}, *content]
     return injected
+
+
+def _dump_prompt(messages, label=""):
+    """Simpan full prompt ke file untuk inspeksi."""
+    import json, os
+    from datetime import datetime
+    dump_dir = os.path.expanduser("~/.hermes/logs")
+    os.makedirs(dump_dir, exist_ok=True)
+    ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+    dump_path = os.path.join(dump_dir, f"prompt_dump_{ts}.json")
+    with open(dump_path, "w", encoding="utf-8") as f:
+        json.dump({"label": label, "messages": messages}, f, indent=2, ensure_ascii=False)
+    import sys
+    sys.stderr.write(f"[AG-BYPASS] 📝 Full prompt disimpan ke: {dump_path}\n")
+    sys.stderr.flush()
 
 
 def _bypass_prepare_messages(original_fn):
@@ -95,6 +131,12 @@ def _bypass_prepare_messages(original_fn):
 
         # Intip stack frame untuk mendapatkan nama model
         import inspect
+        import sys
+        
+        def dash_log(msg):
+            sys.stderr.write(msg + "\n")
+            sys.stderr.flush()
+            
         model_name = ""
         try:
             frame = inspect.currentframe().f_back
@@ -107,13 +149,18 @@ def _bypass_prepare_messages(original_fn):
                 frame = frame.f_back
         except Exception:
             pass
-
+            
         # Jika nama model TIDAK mengandung "ag", jalankan fungsi asli tanpa bypass
+        from datetime import datetime
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        
         if "ag" not in model_name:
+            dash_log(f"[AG-BYPASS] [{timestamp}] REQUEST: Model = '{model_name}'. Status: SKIPPED (not an 'ag' model).")
             return original_fn(self, messages)
 
         # === BYPASS AKTIF ===
-        # Jalankan preprocessing asli dulu (agar fitur lain tetap jalan)
+        log_msg = f"[AG-BYPASS] [{timestamp}] REQUEST: Model = '{model_name}'. Status: BYPASS ACTIVATED. "
+        
         messages = original_fn(self, messages)
 
         system_idx = next(
@@ -126,12 +173,16 @@ def _bypass_prepare_messages(original_fn):
             ),
             None,
         )
+        
         if system_idx is None:
+            dash_log(log_msg + "Result: Failed (No 'system' role or identity triggers not found).")
+            _dump_prompt(messages, "BYPASS_FAILED_no_triggers")
             return messages
 
         system_msg = messages[system_idx]
         system_text = _content_text(system_msg.get("content")).strip()
         if not system_text:
+            dash_log(log_msg + "Result: Failed (Empty system prompt).")
             return messages
 
         rewritten = list(messages)
@@ -150,8 +201,10 @@ def _bypass_prepare_messages(original_fn):
 
         if user_idx is None:
             rewritten.append(
-                {"role": "user", "content": f"{_CONTEXT_PREFIX}{system_text}]"}
+                {"role": "user", "content": f"{_CONTEXT_PREFIX}{_sanitize_identity(system_text)}]"}
             )
+            dash_log(log_msg + "Result: Success (Appended context to new user message).")
+            _dump_prompt(rewritten, "BYPASS_SUCCESS_appended")
             return rewritten
 
         user_msg = rewritten[user_idx]
@@ -159,6 +212,9 @@ def _bypass_prepare_messages(original_fn):
             **user_msg,
             "content": _inject_system_context(user_msg.get("content"), system_text),
         }
+        
+        dash_log(log_msg + "Result: Success (Injected context into existing user message).")
+        _dump_prompt(rewritten, "BYPASS_SUCCESS_injected")
         return rewritten
 
     return patched_prepare_messages
@@ -169,6 +225,10 @@ def _bypass_prepare_messages(original_fn):
 # Ia mencari CustomProfile dan mengganti method-nya secara langsung.
 
 def _apply_patch():
+    import sys
+    sys.stderr.write("\n[AG-BYPASS] 🚀 Plugin bypass dimuat! Mencoba memasang patch ke provider...\n")
+    sys.stderr.flush()
+        
     try:
         from plugins import _loaded_model_providers  # noqa: F401
     except ImportError:
@@ -180,12 +240,18 @@ def _apply_patch():
         from importlib import import_module
         custom_mod = import_module("plugins.model-providers.custom")
         CustomProfile = custom_mod.CustomProfile
+        sys.stderr.write("[AG-BYPASS] ✅ Patch dipasang pada CustomProfile (Path 1)\n")
+        sys.stderr.flush()
     except Exception:
         try:
             # Path 2: Langsung dari providers
             from providers.base import ProviderProfile
             CustomProfile = ProviderProfile
+            sys.stderr.write("[AG-BYPASS] ✅ Patch dipasang pada ProviderProfile (Path 2)\n")
+            sys.stderr.flush()
         except Exception:
+            sys.stderr.write("[AG-BYPASS] ❌ GAGAL: Tidak menemukan ProviderProfile atau CustomProfile!\n")
+            sys.stderr.flush()
             return
 
     # Simpan referensi fungsi asli

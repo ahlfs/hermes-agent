@@ -1318,22 +1318,6 @@ def run_conversation(
         if effective_system:
             api_messages = [{"role": "system", "content": effective_system}] + api_messages
 
-        # ponytail: local Antigravity Gemini bridge appears to return empty
-        # content when the full Hermes system prompt is present. Keep this
-        # narrowly scoped to that local bridge/model family; if the provider
-        # later accepts normal prompts, delete this block.
-        if (
-            str(getattr(agent, "model", "") or "").lower().startswith("ag/gemini")
-            and str(getattr(agent, "base_url", "") or "").rstrip("/").lower()
-            == "http://localhost:20128/v1"
-            and api_messages
-            and api_messages[0].get("role") == "system"
-        ):
-            api_messages[0]["content"] = (
-                "You are a concise coding assistant. Use available tools when needed. "
-                "Answer the user directly."
-            )
-
         if moa_config:
             try:
                 from agent.message_content import flatten_message_text as _flatten_mt
@@ -1932,6 +1916,38 @@ def run_conversation(
 
                 if env_var_enabled("HERMES_DUMP_REQUESTS"):
                     agent._dump_api_request_debug(api_kwargs, reason="preflight")
+
+                # [AG-BYPASS] Override provider name untuk model ag/*
+                try:
+                    _ag_model = (agent.model or "").lower()
+                    if "ag" in _ag_model and agent.provider != "antigravity":
+                        agent.provider = "antigravity"
+                except Exception:
+                    pass
+
+                # [AG-BYPASS] Dump final prompt sebelum dikirim ke model
+                try:
+                    _ag_model = (agent.model or "").lower()
+                    if "ag" in _ag_model:
+                        import json as _dj, os as _dos
+                        from datetime import datetime as _ddt
+                        _dump_dir = _dos.path.expanduser("~/.hermes/logs")
+                        _dos.makedirs(_dump_dir, exist_ok=True)
+                        _ts = _ddt.now().strftime("%Y%m%d_%H%M%S")
+                        _dump_path = _dos.path.join(_dump_dir, f"final_prompt_{_ts}.json")
+                        _final_msgs = api_kwargs.get("messages") or api_kwargs.get("input") or []
+                        with open(_dump_path, "w", encoding="utf-8") as _df:
+                            _dj.dump({
+                                "model": agent.model,
+                                "provider": agent.provider,
+                                "message_count": len(_final_msgs),
+                                "messages": _final_msgs,
+                            }, _df, indent=2, ensure_ascii=False, default=str)
+                        import sys as _ds
+                        _ds.stderr.write(f"[AG-BYPASS] 📝 FINAL prompt → {_dump_path}\n")
+                        _ds.stderr.flush()
+                except Exception:
+                    pass
 
                 # This object is private to the in-process MoA facade.  Add it
                 # only after middleware, hooks, and debug dumps so none of them
