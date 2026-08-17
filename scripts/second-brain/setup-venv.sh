@@ -118,6 +118,16 @@ if [ -d "$TEMPLATES_DIR" ]; then
   echo "[INFO] Overwriting $HERMES_MEMORIES_DIR/USER.md with template..."
   cp "$TEMPLATES_DIR/USER.md" "$HERMES_MEMORIES_DIR/USER.md"
 
+  HERMES_ROOT_DIR="$HOME/.hermes"
+  if [ -f "$TEMPLATES_DIR/SOUL.md" ]; then
+    if [ -f "$HERMES_ROOT_DIR/SOUL.md" ]; then
+      echo "[INFO] Backing up existing SOUL.md..."
+      mv "$HERMES_ROOT_DIR/SOUL.md" "$HERMES_ROOT_DIR/SOUL.md.backup"
+    fi
+    echo "[INFO] Overwriting $HERMES_ROOT_DIR/SOUL.md with template..."
+    cp "$TEMPLATES_DIR/SOUL.md" "$HERMES_ROOT_DIR/SOUL.md"
+  fi
+
   # Inject dynamic OS environment into the fresh MEMORY.md
   if [ -f "$SCRIPT_DIR/../init-env-memory.sh" ]; then
     chmod +x "$SCRIPT_DIR/../init-env-memory.sh"
