@@ -29,13 +29,15 @@ CRON_JOB_SKILLS="0 0 * * * bash \"$SKILLS_SCRIPT\" >> \"$LOG_FILE\" 2>&1"
 CRON_JOB_REFLECTION="5 0 * * * bash \"$REFLECTION_SCRIPT\" >> \"$LOG_FILE\" 2>&1"
 
 # Remove existing cron jobs if they exist (so we can safely update them)
-if crontab -l 2>/dev/null | grep -q -e "sync-second-brain.sh" -e "sync-skills.sh" -e "cron-daily-reflection.sh"; then
-    (crontab -l 2>/dev/null | grep -v -e "sync-second-brain.sh" -e "sync-skills.sh" -e "cron-daily-reflection.sh") | crontab -
+CURRENT_CRON="$(crontab -l 2>/dev/null || true)"
+if echo "$CURRENT_CRON" | grep -q -e "sync-second-brain.sh" -e "sync-skills.sh" -e "cron-daily-reflection.sh"; then
+    echo "$CURRENT_CRON" | grep -v -e "sync-second-brain.sh" -e "sync-skills.sh" -e "cron-daily-reflection.sh" | crontab -
     echo -e "${YELLOW}[INFO]${NC} Existing cron jobs found. Updating them..."
 fi
 
 # Append the new cron jobs to existing crontab
-(crontab -l 2>/dev/null; echo "$CRON_JOB_SECONDBRAIN"; echo "$CRON_JOB_SKILLS"; echo "$CRON_JOB_REFLECTION") | crontab -
+CLEAN_CRON="$(crontab -l 2>/dev/null || true)"
+(echo "$CLEAN_CRON"; echo "$CRON_JOB_SECONDBRAIN"; echo "$CRON_JOB_SKILLS"; echo "$CRON_JOB_REFLECTION") | grep -v '^$' | crontab -
 echo -e "${GREEN}[OK]${NC} Second Brain Auto-Backup scheduled every 12 hours!"
 echo -e "${GREEN}[OK]${NC} Skills Auto-Backup scheduled every 24 hours (midnight)!"
 echo -e "${GREEN}[OK]${NC} Daily Reflection & Journaling scheduled daily at 00:05!"
