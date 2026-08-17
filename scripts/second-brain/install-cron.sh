@@ -16,6 +16,7 @@ echo -e "${CYAN}[INFO]${NC} Setting up Auto-Backup Cron Job..."
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 SYNC_SCRIPT="$SCRIPT_DIR/sync-second-brain.sh"
 SKILLS_SCRIPT="$SCRIPT_DIR/sync-skills.sh"
+REFLECTION_SCRIPT="$SCRIPT_DIR/cron-daily-reflection.sh"
 LOG_FILE="$HOME/.hermes/sync-secondbrain.log"
 
 if [ ! -f "$SYNC_SCRIPT" ]; then
@@ -25,15 +26,17 @@ fi
 
 CRON_JOB_SECONDBRAIN="0 */12 * * * bash \"$SYNC_SCRIPT\" >> \"$LOG_FILE\" 2>&1"
 CRON_JOB_SKILLS="0 0 * * * bash \"$SKILLS_SCRIPT\" >> \"$LOG_FILE\" 2>&1"
+CRON_JOB_REFLECTION="5 0 * * * bash \"$REFLECTION_SCRIPT\" >> \"$LOG_FILE\" 2>&1"
 
-# Remove existing cron job if it exists (so we can safely update it)
-if crontab -l 2>/dev/null | grep -q -e "sync-second-brain.sh" -e "sync-skills.sh"; then
-    (crontab -l 2>/dev/null | grep -v -e "sync-second-brain.sh" -e "sync-skills.sh") | crontab -
-    echo -e "${YELLOW}[INFO]${NC} Existing auto-backup cron job found. Updating it..."
+# Remove existing cron jobs if they exist (so we can safely update them)
+if crontab -l 2>/dev/null | grep -q -e "sync-second-brain.sh" -e "sync-skills.sh" -e "cron-daily-reflection.sh"; then
+    (crontab -l 2>/dev/null | grep -v -e "sync-second-brain.sh" -e "sync-skills.sh" -e "cron-daily-reflection.sh") | crontab -
+    echo -e "${YELLOW}[INFO]${NC} Existing cron jobs found. Updating them..."
 fi
 
 # Append the new cron jobs to existing crontab
-(crontab -l 2>/dev/null; echo "$CRON_JOB_SECONDBRAIN"; echo "$CRON_JOB_SKILLS") | crontab -
-echo -e "${GREEN}[OK]${NC} Second Brain Auto-Backup successfully scheduled every 12 hours!"
-echo -e "${GREEN}[OK]${NC} Skills Auto-Backup successfully scheduled every 24 hours!"
+(crontab -l 2>/dev/null; echo "$CRON_JOB_SECONDBRAIN"; echo "$CRON_JOB_SKILLS"; echo "$CRON_JOB_REFLECTION") | crontab -
+echo -e "${GREEN}[OK]${NC} Second Brain Auto-Backup scheduled every 12 hours!"
+echo -e "${GREEN}[OK]${NC} Skills Auto-Backup scheduled every 24 hours (midnight)!"
+echo -e "${GREEN}[OK]${NC} Daily Reflection & Journaling scheduled daily at 00:05!"
 echo -e "       Log file will be written to: $LOG_FILE"
