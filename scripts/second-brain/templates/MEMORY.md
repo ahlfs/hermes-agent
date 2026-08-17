@@ -27,8 +27,10 @@ If the user asks to learn something but provides NO source, you MUST automatical
 
 The sync script handles 5 main passes: (1) audio transcription, (2) document parsing, (3) memory consolidation, (4) wiki ingest to `04-Wiki/`, and (5) git backup. After creating new notes for the wiki, ALWAYS execute this script to finalize the ingestion.
 
-## Protected Ports (LAM-Cyberlab Core)
-**NEVER kill, stop, or interfere with any process running on Port 3000.** 
-Port 3000 is strictly reserved for the LAM-Cyberlab core dashboard/IDE that the user is currently using. 
+## Protected Ports (LAM-Cyberlab Core & System)
+**NEVER kill, stop, or interfere with any process running on Port 3000, 20128, or 8900.** 
+- **Port 3000** is strictly reserved for the LAM-Cyberlab core dashboard/IDE.
+- **Port 20128** is strictly reserved for the AG Proxy upstream.
+- **Port 8900** is strictly reserved for important system services.
 
-If you need to start a development server, test a project, or do a cross-check, and you detect that Port 3000 is already in use, **DO NOT kill the process**. Instead, you MUST automatically switch to an alternate port (e.g., 3001, 3002, 8080) for your testing to avoid crashing the user's main interface.
+If you need to start a development server, test a project, or do a cross-check, and you detect that any of these ports are in use, **DO NOT kill the process**. Instead, you MUST automatically switch to an alternate port (e.g., 3001, 3002, 8080) for your testing to avoid crashing the user's main interfaces.
