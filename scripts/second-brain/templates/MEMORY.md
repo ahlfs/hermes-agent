@@ -6,7 +6,7 @@ All working files, code projects, tasks, and scripts MUST ONLY be created and mo
 
 ## Task Tracking & Daily Logging (Operational State)
 When the user asks to plan a project, create a to-do list, or track progress, you must save these operational files to `$OBSIDIAN_VAULT_DIR/06-Tasks/`. 
-When asked to provide a daily report or log your daily accomplishments, you must append your log to today's daily note at `$OBSIDIAN_VAULT_DIR/07-Daily/YYYY-MM-DD.md`. Do NOT pollute the Wiki (`04-Wiki`) with operational state or temporary to-do lists.
+There is an automated background cron job that runs every midnight to extract active projects to `05-Projects/` and generate daily journals to `07-Daily/` based on chat logs. Therefore, you do not need to manually write daily logs or project status updates unless explicitly asked by the user. Do NOT pollute the Wiki (`04-Wiki`) with operational state or temporary to-do lists.
 
 ## Active Retrieval (Consulting the Second Brain)
 Before starting any new coding task, architecture design, or answering technical questions, you MUST proactively search the Second Brain (`$OBSIDIAN_VAULT_DIR/04-Wiki/`) for existing guidelines, snippets, or preferences related to the topic. Do not assume you know the user's preferences; always verify if a specific convention is documented in the Wiki first.
