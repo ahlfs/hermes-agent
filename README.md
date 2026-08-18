@@ -82,26 +82,30 @@ Before you begin, make sure you have the following installed on your system:
 > **Note:** You do **not** need Obsidian installed to use the Second Brain pipeline. The "Vault" is simply a folder of `.md` files on your disk. Any text editor (VS Code, Notepad, etc.) can read them. Obsidian is recommended for the best browsing experience with interlinked notes and graph view.
 
 ### 1. Install OS Dependencies
-The Second Brain pipeline requires `ffmpeg` (for audio) and `tesseract-ocr` (for images). Run the command appropriate for your system:
+The Second Brain pipeline requires `ffmpeg` (for audio), `tesseract-ocr` (for images), and `cron` (for automated background backups). Run the command appropriate for your system:
 
 **Ubuntu / Debian / WSL2 (Default):**
 ```bash
-sudo apt update && sudo apt install ffmpeg tesseract-ocr
+sudo apt update && sudo apt install ffmpeg tesseract-ocr cron -y
+sudo systemctl enable --now cron
 ```
 
 **macOS (via Homebrew):**
 ```bash
 brew install ffmpeg tesseract
+# cron is usually pre-installed on macOS
 ```
 
-**Fedora / RHEL:**
+**Fedora / RHEL / AlmaLinux:**
 ```bash
-sudo dnf install ffmpeg tesseract
+sudo dnf install ffmpeg tesseract cronie -y
+sudo systemctl enable --now crond
 ```
 
 **Arch Linux:**
 ```bash
-sudo pacman -S ffmpeg tesseract
+sudo pacman -S ffmpeg tesseract cronie
+sudo systemctl enable --now cronie
 ```
 
 ### 2. Install Hermes Base & Swap to Custom Fork
