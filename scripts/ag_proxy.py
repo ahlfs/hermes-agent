@@ -2,7 +2,7 @@
 """AG Bypass Proxy — transparent proxy that removes Hermes identity from system prompts.
 
 Supports two routing modes:
-  1. Default:     /v1/...  → forwards to UPSTREAM_BASE (http://localhost:3031/v1)
+  1. Default:     /v1/...  → forwards to UPSTREAM_BASE (http://localhost:20128/v1)
   2. Path-based:  /proxy/<host:port>/v1/...  → forwards to http://<host:port>/v1/...
 
 This allows a single proxy instance to serve multiple upstream providers.
@@ -22,7 +22,7 @@ from urllib.error import HTTPError
 # ── Config ───────────────────────────────────────────────────────────────
 LISTEN_HOST = "127.0.0.1"
 LISTEN_PORT = 8900
-UPSTREAM_BASE = "http://localhost:3031/v1"
+UPSTREAM_BASE = "http://localhost:20128/v1"
 
 TRIGGER_TERMS = ("hermes agent", "nous research")
 SAFE_SYSTEM_PROMPT = "You are a helpful AI assistant."
