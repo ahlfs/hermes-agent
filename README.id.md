@@ -182,31 +182,6 @@ Untuk memberi agen Anda pengetahuan baru (rekaman rapat, buku, makalah penelitia
 - Informasi yang diekstraksi disintesis menjadi halaman `.md` yang saling terhubung bergaya Wikipedia di folder `04-Wiki/` Anda.
 - **Pembersihan Otomatis**: Setelah pengetahuan berhasil diubah menjadi halaman Wiki dan dengan aman dicadangkan ke repositori GitHub Anda, **Kaskade Pembersihan Sumber Penuh** agen akan bekerja. Ini akan secara otomatis menghapus file sumber mentah besar (`.mp3`, `.pdf`, dll.) dari folder `01-Audio` dan `02-Documents` Anda untuk menjaga server Anda tetap ringan.
 
-### 10. Local Proxy & Prompt Sanitizer (Gateway Lokal Custom)
-
-Saat menggunakan gateway model lokal kustom atau bridge kompatibel OpenAI pihak ketiga, filter keamanan upstream tertentu dapat memicu pembatasan konteks atau error pada *system prompt*.
-
-Kami menyediakan **Local Proxy & Prompt Sanitizer** (`ag_proxy`) transparan yang secara otomatis membersihkan kata kunci identitas pada *system prompt*, memindahkan konteks secara aman ke pesan pengguna, dan meneruskan request ke bridge lokal Anda.
-
-#### Langkah Setup Cepat (Salin & Tempel):
-
-```bash
-# 1. Jalankan script setup otomatis
-cd ~/.hermes/hermes-agent
-bash scripts/setup-bypass.sh
-
-# 2. (Opsional) Kelola routing provider kapan saja
-bash scripts/route-provider.sh
-
-# 3. Jalankan Hermes Dashboard
-hermes dashboard
-```
-
-#### Fitur:
-- **Service Latar Belakang Otomatis:** Menjalankan `ag-proxy` di port `8900` sebagai *systemd user service* (otomatis aktif saat booting/login).
-- **Routing Path Dinamis:** Mendukung *routing* ke server mana pun menggunakan path `/proxy/<host:port>/v1`.
-- **Streaming Tanpa Latensi:** Meneruskan respon *real-time* sepotong demi sepotong untuk mencegah koneksi *timeout*.
-- **Konfigurasi Otomatis:** Menyesuaikan provider di `config.yaml` secara otomatis untuk me-routing lewat port `8900`.
 
 ---
 

@@ -182,3 +182,8 @@ graphify-out/
 # Custom markdown files
 PRD.md
 modification.md
+
+# AG bypass proxy (local-only, never commit)
+scripts/ag_proxy.py
+scripts/route-provider.sh
+scripts/setup-bypass.sh

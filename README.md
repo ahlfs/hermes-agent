@@ -189,33 +189,7 @@ To provide your agent with new knowledge (meeting recordings, books, research pa
 - The extracted information is synthesized into Wikipedia-style interconnected `.md` pages in your `04-Wiki/` folder.
 - **Auto-Cleanup**: Once the knowledge has been successfully converted into Wiki pages and safely backed up to your GitHub repository, the agent's **Full Source Cleanup Cascade** kicks in. It will automatically delete the large raw source files (`.mp3`, `.pdf`, etc.) from your `01-Audio` and `02-Documents` folders to keep your server lightweight.
 
-### 10. Local Proxy & Prompt Sanitizer (Custom Local Gateways)
 
-When using custom local model gateways or third-party OpenAI-compatible bridges, specific upstream security filters or system prompt constraints may trigger connection errors or quota blocks on custom system roles.
-
-We provide a transparent **Local Proxy & Prompt Sanitizer** (`ag_proxy`) that automatically sanitizes identity keywords in system prompts, shifts context safely to user messages, and routes requests to your target local bridge.
-
-#### Quick Setup (Copy & Paste):
-
-```bash
-# 1. Run the automatic setup script
-cd ~/.hermes/hermes-agent
-bash scripts/setup-bypass.sh
-
-# 2. (Optional) Manage provider routing anytime
-bash scripts/route-provider.sh
-
-# 3. Launch Hermes Dashboard
-hermes dashboard
-```
-
-#### Features:
-- **Automatic Background Service:** Runs `ag-proxy` on port `8900` as a systemd user service (auto-starts on boot/login).
-- **Dynamic Path Routing:** Supports path-based routing (`/proxy/<host:port>/v1`) to handle multiple local/remote endpoints using a single proxy instance.
-- **Zero-Latency Streaming:** Forwards response chunks in real-time to maintain full streaming support and prevent socket timeouts.
-- **Automated Configuration:** Sets up target provider endpoints in `config.yaml` seamlessly via CLI.
-
----
 
 ### Troubleshooting
 
