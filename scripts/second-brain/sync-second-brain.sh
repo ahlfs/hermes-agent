@@ -95,20 +95,77 @@ GH_REPO="${GITHUB_REPO_SECONDBRAIN:-second-brain}"
 
 if [ -n "$GH_USER" ]; then
   if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-    info "Initializing Vault as a Git repository..."
-    git init
-    git branch -M main
+    REMOTE_URL="git@github.com:${GH_USER}/${GH_REPO}.git"
+    info "Vault is not a git repo. Attempting to clone from GitHub..."
+    
+    TEMP_CLONE="/tmp/hermes-vault-clone-$$"
+    if git clone "$REMOTE_URL" "$TEMP_CLONE" 2>&1; then
+      mv "$TEMP_CLONE/.git" "$OBSIDIAN_VAULT_DIR/.git"
+      rm -rf "$TEMP_CLONE"
+      git checkout main -- . 2>/dev/null || true
+      success "Cloned existing repo from GitHub (history preserved)."
+    else
+      rm -rf "$TEMP_CLONE"
+      info "Remote repo not found. Initializing fresh Git repository..."
+      git init
+      git branch -M main
+      if ! git remote get-url origin >/dev/null 2>&1; then
+        git remote add origin "$REMOTE_URL"
+      fi
+    fi
+  else
+    if ! git remote get-url origin >/dev/null 2>&1; then
+      REMOTE_URL="git@github.com:${GH_USER}/${GH_REPO}.git"
+      info "Adding remote origin: $REMOTE_URL"
+      git remote add origin "$REMOTE_URL"
+    fi
   fi
 
-  if ! git remote get-url origin >/dev/null 2>&1; then
-    REMOTE_URL="git@github.com:${GH_USER}/${GH_REPO}.git"
-    info "Adding remote origin: $REMOTE_URL"
-    git remote add origin "$REMOTE_URL"
-  fi
+  # ── Robust git helpers ───────────────────────────────────────────────
+  safe_git_pull() {
+    # Clean up stale rebase state that blocks future pulls
+    if [ -d ".git/rebase-merge" ] || [ -d ".git/rebase-apply" ]; then
+      warn "Found stale rebase state. Cleaning up..."
+      git rebase --abort 2>/dev/null || true
+      rm -rf .git/rebase-merge .git/rebase-apply 2>/dev/null || true
+    fi
+
+    info "Pulling latest changes from GitHub..."
+    if git pull origin main --rebase --autostash 2>&1; then
+      return 0
+    else
+      warn "Pull with rebase failed. Trying merge strategy (accept remote on conflict)..."
+      git rebase --abort 2>/dev/null || true
+      rm -rf .git/rebase-merge .git/rebase-apply 2>/dev/null || true
+      if git pull origin main --no-rebase -X theirs 2>&1; then
+        return 0
+      else
+        warn "Pull failed completely. Will attempt push anyway."
+        return 1
+      fi
+    fi
+  }
+
+  safe_git_push() {
+    info "Pushing to GitHub..."
+    local push_output
+    if push_output=$(git push origin main 2>&1); then
+      return 0
+    else
+      if echo "$push_output" | grep -q "non-fast-forward\\|rejected"; then
+        warn "Push rejected (non-fast-forward). Pulling and retrying..."
+        safe_git_pull
+        if git push origin main 2>&1; then
+          return 0
+        fi
+      fi
+      warn "Push failed: $push_output"
+      return 1
+    fi
+  }
 
   # Ensure we have the latest cloud data BEFORE we generate local schemas or run passes
-  info "Pulling latest changes from GitHub..."
-  git pull origin main --rebase --autostash || warn "Pull failed (maybe empty repo or conflict). Continuing anyway."
+  safe_git_pull || warn "Pull failed (maybe empty repo or conflict). Continuing anyway."
 else
   info "GITHUB_USERNAME not set in .env — skipping cloud sync."
 fi
@@ -186,8 +243,7 @@ if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
 
   if [ -n "${GITHUB_USERNAME:-}" ]; then
     if [ "$HAS_CHANGES" = true ] || [ $(git rev-list HEAD...origin/main --count 2>/dev/null || echo 0) -gt 0 ]; then
-      info "Pushing to GitHub..."
-      if git push origin main 2>/dev/null; then
+      if safe_git_push; then
         success "Knowledge successfully synced with GitHub!"
       else
         warn "Push failed. Possible causes:"
