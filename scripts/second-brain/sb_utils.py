@@ -15,7 +15,7 @@ def get_hermes_env():
     """Load env variables from ~/.hermes/.env and return api_key and port."""
     env_path = Path.home() / ".hermes" / ".env"
     api_key = ""
-    port = "20128" # Default Hermes API port
+    port = "8642" # Default Hermes API port
     
     if env_path.exists():
         with open(env_path, "r") as f:
