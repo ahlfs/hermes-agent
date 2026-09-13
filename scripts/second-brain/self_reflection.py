@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """
 Autonomous Self-Reflection Script for Second Brain.
-Reads yesterday's Daily Log, asks the AI to reflect on its own performance/activities,
-and updates the core MEMORY.md with new insights and learning goals.
+Reads yesterday's Daily Log, asks Hermes Agent via the official memory tool
+to synthesize durable facts and learnings, preventing raw string pollution.
 """
 
 import sys
 import os
+import subprocess
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -14,11 +15,8 @@ from pathlib import Path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from _vault import resolve_vault  # type: ignore
-from sb_utils import call_hermes_api  # type: ignore
 
 daily_dir = resolve_vault() / "07-Daily"
-memory_file = Path.home() / ".hermes" / "memories" / "MEMORY.md"
-memory_file.parent.mkdir(parents=True, exist_ok=True)
 
 # Read yesterday's journal
 yesterday_date = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
@@ -28,41 +26,31 @@ if not daily_file.exists():
     print(f"[INFO] No daily log found for {yesterday_date}. Skipping reflection.")
     sys.exit(0)
 
-with open(daily_file, "r") as f:
-    daily_content = f.read()
+daily_content = daily_file.read_text(encoding="utf-8")
+if len(daily_content) > 6000:
+    daily_content = daily_content[:6000] + "\n...[truncated]"
 
-prompt = f"""You are an autonomous AI Agent reflecting on your past day's performance.
+prompt = f"""Read this Daily Log from yesterday ({yesterday_date}) for Second Brain reflection:
 
-Here is the daily log of what you and the user did yesterday ({yesterday_date}):
 {daily_content}
 
-Your task:
-1. Reflect on what was discussed. Identify any knowledge gaps, repeated mistakes, or new preferences the user demonstrated.
-2. Based on this reflection, write a short, concise "Lesson Learned" or "New Rule" that you should add to your permanent memory to serve the user better in the future.
-3. Formulate the new rule as a direct instruction to yourself (e.g., "Always remember to...", "The user prefers...").
-
-If nothing significant happened that warrants a new rule, just output "NO_REFLECTION_NEEDED".
-Otherwise, output ONLY the text of the new rule(s). DO NOT wrap in markdown code blocks.
+Your goal:
+1. Identify any durable facts, permanent user preferences, or stable environment conventions discovered.
+2. Filter out all transient errors (e.g. 404s, temporary timeouts, temporary debugging logs, raw stack traces).
+3. If there are durable facts worth remembering, save them using the memory tool.
+4. If nothing is worth permanent memory storage, perform no memory actions and output 'NO_DURABLE_MEMORY'.
 """
 
-print(f"[INFO] Calling Hermes AI to self-reflect on {yesterday_date}...")
-try:
-    result_text = call_hermes_api(prompt, temperature=0.4)
-    
-    if result_text == "NO_REFLECTION_NEEDED" or "NO_REFLECTION_NEEDED" in result_text:
-        print("[INFO] AI decided no reflection/new rule is needed today.")
-        sys.exit(0)
-        
-    # Append to MEMORY.md
-    print(f"[SUCCESS] AI formulated new rule: {result_text[:50]}...")
-    
-    append_str = f"\n\n### Self-Reflection ({yesterday_date})\n{result_text}\n"
-    
-    with open(memory_file, "a") as f:
-        f.write(append_str)
-        
-    print(f"[SUCCESS] Updated MEMORY.md")
+print(f"[INFO] Calling Hermes CLI with memory tool for {yesterday_date}...")
+cmd = ["hermes", "-z", prompt, "-t", "memory", "--yolo"]
 
+try:
+    result = subprocess.run(cmd, capture_output=True, text=True, timeout=180)
+    if result.returncode == 0:
+        print("[SUCCESS] Self-reflection processed cleanly through Hermes memory subsystem.")
+        print(result.stdout.strip()[:300])
+    else:
+        print(f"[WARN] Hermes memory consolidation exited with code {result.returncode}: {result.stderr.strip()[:200]}")
 except Exception as e:
-    print(f"[ERROR] Failed to run self-reflection: {e}")
+    print(f"[ERROR] Failed to run self-reflection memory tool: {e}")
     sys.exit(1)

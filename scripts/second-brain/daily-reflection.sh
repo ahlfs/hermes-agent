@@ -1,13 +1,12 @@
 #!/usr/bin/env bash
-# AI Second Brain — Daily Reflection & Project Extraction Cron Job
+# AI Second Brain — Daily Reflection & Knowledge Compounding Pipeline
 #
-# This script runs ONCE a day (e.g. 06:00 AM) to:
+# This script runs ONCE a day (e.g. 06:00 AM / Midnight) to:
 #   1. Extract project updates from yesterday's chat logs -> 05-Projects/
-#   2. Generate a daily journal summarizing yesterday -> 07-Daily/
-#   3. Trigger AI self-reflection to learn from yesterday -> MEMORY.md
-#
-# Unlike sync-second-brain.sh, this script is decoupled so it doesn't
-# run every time a new document is dropped into the vault.
+#   2. Generate a structured daily journal -> 07-Daily/
+#   3. Trigger AI self-reflection via Hermes memory subsystem -> MEMORY.md
+#   4. Extract newly discussed concepts & selective web research -> 04-Wiki/
+#   5. Run wiki_lint quality assurance check -> 04-Wiki/lint-report.md
 
 set -euo pipefail
 
@@ -28,27 +27,33 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 # Find Python — prefer the second-brain venv, fall back to system python3
 VENV_PYTHON="$HOME/.hermes/venv-second-brain/bin/python"
 if [ ! -x "$VENV_PYTHON" ]; then
-  # Try the lam-cyberlab venv as second fallback
   VENV_PYTHON="$HOME/lam-cyberlab/.venv-second-brain/bin/python"
 fi
 if [ ! -x "$VENV_PYTHON" ]; then
-  # Final fallback
   VENV_PYTHON="python3"
 fi
 
-info "Starting Daily Reflection & Project Extractor Pipeline..."
+info "Starting Daily Reflection & Autonomous Learning Pipeline..."
 echo
 
-info "== Step 1: Project Extraction =="
-"$VENV_PYTHON" "$SCRIPT_DIR/extract_projects.py" || warn "Project Extraction failed."
+info "== Step 1: Structured Project Extraction =="
+"$VENV_PYTHON" "$SCRIPT_DIR/extract_projects.py" || warn "Project Extraction had warnings."
 echo
 
-info "== Step 2: Daily Journal Generation =="
-"$VENV_PYTHON" "$SCRIPT_DIR/generate_daily.py" || warn "Daily Journal Generation failed."
+info "== Step 2: Structured Daily Journal Generation =="
+"$VENV_PYTHON" "$SCRIPT_DIR/generate_daily.py" || warn "Daily Journal Generation had warnings."
 echo
 
-info "== Step 3: Autonomous Self-Reflection =="
-"$VENV_PYTHON" "$SCRIPT_DIR/self_reflection.py" || warn "Self-Reflection failed."
+info "== Step 3: Clean Autonomous Self-Reflection =="
+"$VENV_PYTHON" "$SCRIPT_DIR/self_reflection.py" || warn "Self-Reflection had warnings."
 echo
 
-success "Daily Reflection Pipeline Complete! Your Second Brain is now smarter."
+info "== Step 4: Autonomous Knowledge Extraction & Selective Web Research =="
+"$VENV_PYTHON" "$SCRIPT_DIR/extract_knowledge.py" || warn "Knowledge extraction had warnings."
+echo
+
+info "== Step 5: Second Brain Quality Linting =="
+"$VENV_PYTHON" "$SCRIPT_DIR/wiki_lint.py" --no-llm || warn "Wiki Lint found warnings."
+echo
+
+success "Daily Learning & Reflection Complete! Second Brain is compounded."

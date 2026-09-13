@@ -85,10 +85,11 @@ Return exactly this JSON shape:
       "action": "create" OR "update",
       "title": "Human Readable Title",
       "type": "entity" OR "concept",
-      "category": "short, e.g. Person / Project / Tool / Topic",
+      "category": "short, e.g. Person / Project / Tool / Topic / Architecture / Language / Security",
+      "tags": ["tag1", "tag2"],
       "summary": "one concise sentence for the index",
       "sources": ["{note_stem}"],
-      "body": "markdown body. Use [[Wiki Links]] to connect to related pages by title. NO YAML frontmatter, NO top-level # heading — the script adds those."
+      "body": "markdown body. Use [[Wiki Links]] ONLY to connect to pages listed in the CURRENT WIKI INDEX above, or to pages created in this exact same JSON output. DO NOT hallucinate or link to non-existent pages! NO YAML frontmatter, NO top-level # heading — the script adds those."
     }}
   ],
   "log": "one short line describing what you did",
@@ -97,9 +98,10 @@ Return exactly this JSON shape:
 
 Rules:
 - path must start with Entities/ or Concepts/, use only letters/numbers/spaces/hyphens, end with .md.
+- STRICT LINK INTEGRITY: ONLY link to existing pages in CURRENT WIKI INDEX or pages in this batch.
+- Include 2-4 descriptive tags in the "tags" array.
 - If the note is a test, empty, or has no durable content, return {{"pages": [], "log": "no durable content", "flags": []}}.
-- Prefer updating an existing page over creating a near-duplicate.
-- Link generously with [[Title]] to build a connected graph."""
+- Prefer updating an existing page over creating a near-duplicate."""
 
 
 def load_state() -> dict:
@@ -184,16 +186,25 @@ def is_safe_path(rel_path: str) -> bool:
 def assemble_page(page: dict, today: str) -> str:
     sources = page.get("sources") or []
     source_links = ", ".join(f"[[{s}]]" for s in sources if isinstance(s, str) and s)
+    tags = page.get("tags") or []
+    if isinstance(tags, str):
+        tags = [t.strip() for t in tags.split(",") if t.strip()]
+    tag_str = ", ".join(tags) if tags else "wiki"
+    
+    title = page.get("title") or page.get("path", "").split("/")[-1].replace(".md", "")
+    
     fm = [
         "---",
+        f"title: {title}",
         f"type: {page.get('type', 'concept')}",
         f"category: {page.get('category', '')}",
+        f"tags: [{tag_str}]",
         f"summary: {page.get('summary', '').replace(chr(10), ' ')}",
         f"sources: {source_links}",
         f"updated: {today}",
         "---",
         "",
-        f"# {page.get('title', page['path'])}",
+        f"# {title}",
         "",
         (page.get("body") or "").strip(),
         "",
