@@ -99,6 +99,7 @@ Return exactly this JSON shape:
 Rules:
 - path must start with Entities/ or Concepts/, use only letters/numbers/spaces/hyphens, end with .md.
 - STRICT LINK INTEGRITY: ONLY link to existing pages in CURRENT WIKI INDEX or pages in this batch.
+- NEVER SELF-REFERENCE: Do NOT use [[Page Title]] inside the body of "Page Title.md". A page must never link to itself. This is a hard rule — self-links create noise in the graph view and serve no navigational purpose.
 - Include 2-4 descriptive tags in the "tags" array.
 - If the note is a test, empty, or has no durable content, return {{"pages": [], "log": "no durable content", "flags": []}}.
 - Prefer updating an existing page over creating a near-duplicate."""
@@ -183,6 +184,11 @@ def is_safe_path(rel_path: str) -> bool:
     return True
 
 
+def strip_self_references(body: str, title: str) -> str:
+    """Remove [[Title]] self-links from the page body."""
+    return re.sub(r"\[\[" + re.escape(title) + r"\]\]", title, body)
+
+
 def assemble_page(page: dict, today: str) -> str:
     sources = page.get("sources") or []
     source_links = ", ".join(f"[[{s}]]" for s in sources if isinstance(s, str) and s)
@@ -206,7 +212,7 @@ def assemble_page(page: dict, today: str) -> str:
         "",
         f"# {title}",
         "",
-        (page.get("body") or "").strip(),
+        strip_self_references((page.get("body") or "").strip(), title),
         "",
     ]
     return "\n".join(fm)

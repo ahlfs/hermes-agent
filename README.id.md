@@ -42,8 +42,9 @@ Ini adalah fork kustom dari Hermes Agent yang **dimodifikasi dan dikelola oleh A
 ### Fitur
 1. **Pipeline Second Brain Otomatis**
    - **Transkripsi Audio**: Masukkan `.mp3` ke `01-Audio` dan Hermes secara otomatis mentranskripsinya menggunakan Whisper.
-   - **Parsing Dokumen**: Mem-parsing `.pdf` dan melakukan OCR pada gambar yang dijatuhkan ke `02-Documents`.
-   - **Generasi Wiki**: Mensintesis transkrip dan dokumen menjadi file markdown bergaya Wikipedia yang saling terhubung di `04-Wiki`.
+   - **Parsing Dokumen**: Mem-parsing `.pdf` dan melakukan OCR pada gambar yang dimasukkan ke `02-Documents` (atau catatan mentah di `03-Notes/Extracted-Docs`).
+   - **Generasi Wiki & Pemeriksaan Integritas**: Mensintesis transkrip dan dokumen menjadi file markdown bergaya Wikipedia yang saling terhubung di `04-Wiki` dengan pembersihan self-link otomatis dan validasi tautan.
+   - **Wiki Digest & Temu Kembali Pengetahuan**: Menghasilkan indeks ringkas `DIGEST.md` (~5K token) dan membekali agen dengan keterampilan `wiki-retrieval` untuk mengakses basis pengetahuan secara instan saat mengerjakan tugas.
    - **Pencadangan Git**: Secara otomatis melakukan commit dan push pengetahuan baru ke repositori GitHub pribadi.
    - **Kaskade Pembersihan Sumber Penuh**: Menghapus file sumber mentah (`.mp3`, `.pdf`, dll.) dari `01-Audio` dan `02-Documents` secara aman *hanya setelah* pengetahuan akhir berhasil dicadangkan ke GitHub, menjaga brankas Anda tetap ringan.
 2. **Pencadangan Konfigurasi Otomatis**
@@ -133,7 +134,7 @@ bash scripts/second-brain/setup-venv.sh
 ### 4. Konfigurasi Variabel Lingkungan & Auto-Backup (Opsional)
 Jika Anda ingin mengaktifkan sistem Auto-Backup (disinkronkan ke cloud/GitHub) untuk mengamankan konfigurasi dan basis pengetahuan Anda, buka file `~/.hermes/.env` Anda dan tambahkan pengaturan berikut:
 ```ini
-# Directory of your Obsidian Vault (Second Brain)
+# Direktori Obsidian Vault Anda (Second Brain) — Contoh path; Anda bebas menamai direktori vault Anda
 OBSIDIAN_VAULT_DIR=/home/user/obsidian/memo
 
 # GitHub Backup Settings
@@ -179,7 +180,8 @@ Untuk memberi agen Anda pengetahuan baru (rekaman rapat, buku, makalah penelitia
 **Apa yang terjadi selanjutnya?**
 - Agen secara otomatis mendeteksi file baru dan menjalankan pipeline konsumsi di latar belakang. Anda juga dapat memaksanya secara manual dengan memberi tahu agen: *"Pelajari file baru saya di vault."*
 - Audio ditranskripsikan melalui Whisper; Dokumen dan Gambar diuraikan dan di-OCR.
-- Informasi yang diekstraksi disintesis menjadi halaman `.md` yang saling terhubung bergaya Wikipedia di folder `04-Wiki/` Anda.
+- Informasi yang diekstraksi disintesis menjadi halaman `.md` yang saling terhubung bergaya Wikipedia di folder `04-Wiki/` Anda, serta indeks ringkas terpusat dikompilasi ke `04-Wiki/DIGEST.md`.
+- **Temu Kembali Pengetahuan Agen**: Agen mengonsolidasikan fakta penting ke `MEMORY.md` dan menggunakan keterampilan `wiki-retrieval` untuk secara instan mengingat konsep wiki saat mengobrol.
 - **Pembersihan Otomatis**: Setelah pengetahuan berhasil diubah menjadi halaman Wiki dan dengan aman dicadangkan ke repositori GitHub Anda, **Kaskade Pembersihan Sumber Penuh** agen akan bekerja. Ini akan secara otomatis menghapus file sumber mentah besar (`.mp3`, `.pdf`, dll.) dari folder `01-Audio` dan `02-Documents` Anda untuk menjaga server Anda tetap ringan.
 
 

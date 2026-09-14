@@ -43,8 +43,9 @@ This is a custom fork of Hermes Agent **modified and maintained by Ahlfs**, feat
 ### Features
 1. **Automated Second Brain Pipeline**
    - **Audio Transcription**: Drops an `.mp3` into `01-Audio` and Hermes automatically transcribes it using Whisper.
-   - **Document Parsing**: Parses `.pdf` and performs OCR on images dropped into `02-Documents`.
-   - **Wiki Generation**: Synthesizes transcripts and documents into interlinked Wikipedia-style markdown files in `04-Wiki`.
+   - **Document Parsing**: Parses `.pdf` and performs OCR on images dropped into `02-Documents` (or from raw notes in `03-Notes/Extracted-Docs`).
+   - **Wiki Generation & Integrity Linting**: Synthesizes transcripts and documents into clean, interlinked Wikipedia-style markdown files in `04-Wiki` with strict self-reference filtering and link validation.
+   - **Wiki Digest & Agent Retrieval**: Generates a compact `DIGEST.md` index (~5K tokens) and equips the agent with the `wiki-retrieval` skill to instantly consult the knowledge base during technical tasks.
    - **Git Backup**: Automatically commits and pushes new knowledge to a private GitHub repository.
    - **Full Source Cleanup Cascade**: Safely deletes the raw source files (`.mp3`, `.pdf`, etc.) from `01-Audio` and `02-Documents` *only after* the final knowledge has been successfully backed up to GitHub, keeping your vault lean.
 2. **Automated Skills Backup**
@@ -140,7 +141,7 @@ bash scripts/second-brain/setup-venv.sh
 ### 4. Configure Environment Variables & Auto-Backup (Optional)
 If you want to enable the Auto-Backup system (synced to cloud/GitHub) to secure your custom skills and knowledge base, open your `~/.hermes/.env` file and add the following settings:
 ```ini
-# Directory of your Obsidian Vault (Second Brain)
+# Directory of your Obsidian Vault (Second Brain) — Example path; you can freely name your vault directory
 OBSIDIAN_VAULT_DIR=/home/user/obsidian/memo
 
 # GitHub Backup Settings
@@ -186,7 +187,8 @@ To provide your agent with new knowledge (meeting recordings, books, research pa
 **What happens next?**
 - The agent automatically detects new files and runs the ingestion pipeline in the background. You can also force this manually by telling the agent: *"Learn from my new files in the vault."*
 - Audio is transcribed via Whisper; Documents and Images are parsed and OCR-ed.
-- The extracted information is synthesized into Wikipedia-style interconnected `.md` pages in your `04-Wiki/` folder.
+- The extracted information is synthesized into Wikipedia-style interconnected `.md` pages in your `04-Wiki/` folder, and an updated compact index is compiled into `04-Wiki/DIGEST.md`.
+- **Agent Knowledge Retrieval**: The agent consolidates durable facts into `MEMORY.md` and uses the `wiki-retrieval` skill to instantly recall wiki concepts during conversations.
 - **Auto-Cleanup**: Once the knowledge has been successfully converted into Wiki pages and safely backed up to your GitHub repository, the agent's **Full Source Cleanup Cascade** kicks in. It will automatically delete the large raw source files (`.mp3`, `.pdf`, etc.) from your `01-Audio` and `02-Documents` folders to keep your server lightweight.
 
 

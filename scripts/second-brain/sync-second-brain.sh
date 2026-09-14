@@ -218,6 +218,10 @@ echo
 info "== Pass 4.5: wiki lint =="
 python3 "$SCRIPT_DIR/wiki_lint.py" --no-llm --save-report || true
 
+echo
+info "== Pass 4.6: wiki digest =="
+python3 "$SCRIPT_DIR/generate_wiki_digest.py" || true
+
 # cleanup moved to after git push (Pass 7) to ensure backup exists
 
 echo
