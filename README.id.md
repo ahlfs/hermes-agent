@@ -79,30 +79,26 @@ Sebelum memulai, pastikan Anda telah menginstal hal-hal berikut di sistem Anda:
 > **Catatan:** Anda **tidak** perlu menginstal Obsidian untuk menggunakan pipeline Second Brain. "Vault" hanyalah sebuah folder berisi file `.md` di disk Anda. Editor teks apa pun (VS Code, Notepad, dll.) dapat membacanya. Obsidian direkomendasikan untuk pengalaman menjelajah terbaik dengan catatan yang saling terhubung dan tampilan graf.
 
 ### 1. Instal Dependensi OS
-Pipeline Second Brain membutuhkan `ffmpeg` (untuk audio), `tesseract-ocr` (untuk gambar), dan `cron` (untuk pencadangan latar belakang otomatis). Jalankan perintah yang sesuai untuk sistem Anda:
+Pipeline Second Brain membutuhkan `ffmpeg` (untuk transkripsi audio) dan `tesseract-ocr` (untuk ekstraksi teks gambar/PDF). Jalankan perintah yang sesuai untuk sistem Anda:
 
 **Ubuntu / Debian / WSL2 (Default):**
 ```bash
-sudo apt update && sudo apt install ffmpeg tesseract-ocr cron -y
-sudo systemctl enable --now cron
+sudo apt update && sudo apt install -y ffmpeg tesseract-ocr
 ```
 
 **macOS (via Homebrew):**
 ```bash
 brew install ffmpeg tesseract
-# cron biasanya sudah terinstal bawaan di macOS
 ```
 
 **Fedora / RHEL / AlmaLinux:**
 ```bash
-sudo dnf install ffmpeg tesseract cronie -y
-sudo systemctl enable --now crond
+sudo dnf install -y ffmpeg tesseract
 ```
 
 **Arch Linux:**
 ```bash
-sudo pacman -S ffmpeg tesseract cronie
-sudo systemctl enable --now cronie
+sudo pacman -S --noconfirm ffmpeg tesseract
 ```
 
 ### 2. Instal Dasar Hermes & Ganti ke Fork Kustom
