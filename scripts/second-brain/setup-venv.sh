@@ -21,6 +21,16 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REQ_FILE="$SCRIPT_DIR/requirements-second-brain.txt"
 
 # ── Pre-flight checks ───────────────────────────────────────────────────
+if [ "$(id -u)" -eq 0 ]; then
+  warn "You are executing this setup script as ROOT."
+  warn "It is highly recommended to run Hermes Agent and Second Brain under a dedicated non-root user (e.g. 'ahlfs') with sudo privileges."
+  read -r -p "Do you want to continue running as root anyway? (y/N): " confirm || confirm="N"
+  if [[ ! "$confirm" =~ ^[yY]([eE][sS])?$ ]]; then
+    error "Setup cancelled. Please re-run under a regular user."
+    exit 1
+  fi
+fi
+
 info "Checking prerequisites..."
 
 # Check: git installed
