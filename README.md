@@ -70,10 +70,10 @@ Follow these steps to install the LAM-Cyberlab compatible version of Hermes Agen
 
 > [!WARNING]
 > **Cloud VPS Notice (Root vs Non-Root User):**
-> If your cloud VPS defaults to the `root` user, **create and switch to a dedicated user with `sudo` and `docker` privileges** before running setup:
+> If your cloud VPS defaults to the `root` user, **create and switch to a dedicated user with `sudo` privileges** before running setup:
 > ```bash
 > adduser ahlfs
-> usermod -aG sudo,docker ahlfs
+> usermod -aG sudo ahlfs
 > su - ahlfs
 > ```
 > Running autonomous agents, browser tools, and package managers directly under `root` is discouraged for security and permissions isolation.
