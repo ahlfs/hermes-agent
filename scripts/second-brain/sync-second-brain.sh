@@ -87,6 +87,24 @@ info "Vault: $OBSIDIAN_VAULT_DIR"
 info "Python: $VENV_PYTHON"
 echo
 
+# Auto-initialize Second Brain folder structure
+mkdir -p "$OBSIDIAN_VAULT_DIR/01-Audio"
+mkdir -p "$OBSIDIAN_VAULT_DIR/02-Documents"
+mkdir -p "$OBSIDIAN_VAULT_DIR/03-Notes/Transcripts"
+mkdir -p "$OBSIDIAN_VAULT_DIR/03-Notes/Extracted-Docs"
+mkdir -p "$OBSIDIAN_VAULT_DIR/04-Wiki"
+mkdir -p "$OBSIDIAN_VAULT_DIR/05-Projects"
+mkdir -p "$OBSIDIAN_VAULT_DIR/06-Tasks"
+mkdir -p "$OBSIDIAN_VAULT_DIR/07-Daily"
+
+SCHEMA_FILE="$OBSIDIAN_VAULT_DIR/WIKI_SCHEMA.md"
+if [ ! -f "$SCHEMA_FILE" ]; then
+  info "Copying default WIKI_SCHEMA.md to vault..."
+  if [ -f "$SCRIPT_DIR/templates/WIKI_SCHEMA.md" ]; then
+    cp "$SCRIPT_DIR/templates/WIKI_SCHEMA.md" "$SCHEMA_FILE"
+  fi
+fi
+
 echo
 info "== Pass 0: git auto-pull =="
 cd "$OBSIDIAN_VAULT_DIR"
@@ -168,26 +186,6 @@ if [ -n "$GH_USER" ]; then
   safe_git_pull || warn "Pull failed (maybe empty repo or conflict). Continuing anyway."
 else
   info "GITHUB_USERNAME not set in .env — skipping cloud sync."
-fi
-
-echo
-
-# Auto-initialize Second Brain folder structure
-mkdir -p "$OBSIDIAN_VAULT_DIR/01-Audio"
-mkdir -p "$OBSIDIAN_VAULT_DIR/02-Documents"
-mkdir -p "$OBSIDIAN_VAULT_DIR/03-Notes/Transcripts"
-mkdir -p "$OBSIDIAN_VAULT_DIR/03-Notes/Extracted-Docs"
-mkdir -p "$OBSIDIAN_VAULT_DIR/04-Wiki"
-mkdir -p "$OBSIDIAN_VAULT_DIR/05-Projects"
-mkdir -p "$OBSIDIAN_VAULT_DIR/06-Tasks"
-mkdir -p "$OBSIDIAN_VAULT_DIR/07-Daily"
-
-SCHEMA_FILE="$OBSIDIAN_VAULT_DIR/WIKI_SCHEMA.md"
-if [ ! -f "$SCHEMA_FILE" ]; then
-  info "Copying default WIKI_SCHEMA.md to vault..."
-  if [ -f "$SCRIPT_DIR/templates/WIKI_SCHEMA.md" ]; then
-    cp "$SCRIPT_DIR/templates/WIKI_SCHEMA.md" "$SCHEMA_FILE"
-  fi
 fi
 
 echo
