@@ -58,9 +58,12 @@ for job_name in "second-brain-sync" "skills-sync" "daily-reflection"; do
   # Parse job IDs from the multi-line output format:
   #   <id> [active]
   #     Name:      <name>
-  echo "$CRON_LIST" | grep -B1 "Name:.*$job_name" | grep -oP '^\s+\K[a-f0-9]+' | while read -r job_id; do
-    "$HERMES_BIN" cron remove "$job_id" 2>/dev/null && warn "Removed existing job: $job_name ($job_id)" || true
-  done
+  matched_ids=$(echo "$CRON_LIST" | grep -B1 "Name:.*$job_name" | grep -oP '^\s+\K[a-f0-9]+' || true)
+  if [ -n "$matched_ids" ]; then
+    for job_id in $matched_ids; do
+      "$HERMES_BIN" cron remove "$job_id" 2>/dev/null && warn "Removed existing job: $job_name ($job_id)" || true
+    done
+  fi
 done
 
 echo
