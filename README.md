@@ -16,9 +16,6 @@
   <a href="README.es.md"><img src="https://img.shields.io/badge/Lang-Español-orange?style=for-the-badge" alt="Español"></a>
 </p>
 
-> **⚠️ CUSTOM FORK FOR LAM-CYBERLAB**
->
-> This repository is a heavily modified version of Hermes Agent by **Ahlfs**. It is specifically designed to be fully compatible as the backend intelligence engine for **[LAM-Cyberlab](https://github.com/ahlfs/LAM-Cyberlab)**. See the [Second Brain Edition](#-second-brain-edition-custom-fork) section below for details on custom features.
 
 **The self-improving AI agent built by [Nous Research](https://nousresearch.com).** It's the only agent with a built-in learning loop — it creates skills from experience, improves them during use, nudges itself to persist knowledge, searches its own past conversations, and builds a deepening model of who you are across sessions. Run it on a $5 VPS, a GPU cluster, or serverless infrastructure that costs nearly nothing when idle. It's not tied to your laptop — talk to it from Telegram while it works on a cloud VM.
 
