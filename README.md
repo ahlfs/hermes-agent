@@ -113,24 +113,33 @@ sudo pacman -S --noconfirm ffmpeg tesseract
 ```
 
 ### 2. Install Hermes Base & Swap to Custom Fork
-First, use the official installer to set up the necessary runtimes (Node.js, uv, PATH wrapper), then replace the source code with this custom repository.
+First, use the official installer to set up the necessary runtimes (Node.js, uv, PATH wrapper), then switch to this custom repository.
 
 **Linux / macOS / WSL2:**
 ```bash
-# Install the base environment
+# 1. Install official base runtime and environment
 curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash
 
-# Replace official repo with the Ahlfs custom fork
-rm -rf ~/.hermes/hermes-agent
-git clone https://github.com/ahlfs/hermes-agent.git ~/.hermes/hermes-agent
-
-# Re-sync dependencies
+# 2. Switch remote to the Ahlfs custom fork (Recommended: fast & keeps venv intact)
 cd ~/.hermes/hermes-agent
-~/.hermes/bin/uv venv venv
-~/.hermes/bin/uv pip install --python venv -e ".[all]"
+git remote set-url origin https://github.com/ahlfs/hermes-agent.git
+git fetch origin
+git checkout -B main origin/main
+
+# 3. Run setup to sync dependencies and launchers
+./setup-hermes.sh
 ```
 
-> **Windows Native:** Run `iex (irm https://hermes-agent.nousresearch.com/install.ps1)` in PowerShell, then delete `%LOCALAPPDATA%\hermes\hermes-agent` and `git clone https://github.com/ahlfs/hermes-agent.git` in its place.
+> **Note on Fresh Clone / Replacing folder (`rm -rf ~/.hermes/hermes-agent`):**
+> Deleting `~/.hermes/hermes-agent` also removes the internal `venv/` where the `hermes` binary lives. If you choose to wipe and clone from scratch, always run `./setup-hermes.sh` immediately after cloning to rebuild the environment and CLI command:
+> ```bash
+> rm -rf ~/.hermes/hermes-agent
+> git clone https://github.com/ahlfs/hermes-agent.git ~/.hermes/hermes-agent
+> cd ~/.hermes/hermes-agent
+> ./setup-hermes.sh
+> ```
+
+> **Windows Native:** Run `iex (irm https://hermes-agent.nousresearch.com/install.ps1)` in PowerShell, then switch the git remote in `%LOCALAPPDATA%\hermes\hermes-agent` or run `.\setup-hermes.ps1` if cloning fresh.
 
 ### 3. Initialize Second Brain Environment
 Run the setup script to create an isolated virtual environment specifically for the Second Brain tools:

@@ -101,23 +101,32 @@ sudo dnf install -y ffmpeg tesseract
 sudo pacman -S --noconfirm ffmpeg tesseract
 ```
 
-### 2. Instal Dasar Hermes & Ganti ke Fork Kustom
-Pertama, gunakan penginstal resmi untuk mengatur runtime yang diperlukan (Node.js, uv, PATH wrapper), lalu ganti kode sumber dengan repositori kustom ini.
+### 2. Instal Dasar Hermes & Beralih ke Fork Kustom
+Gunakan penginstal resmi terlebih dahulu untuk menyiapkan runtime dasar (Node.js, uv, PATH wrapper). Setelah itu, hubungkan ke repositori kustom ini.
 
 **Linux / macOS / WSL2:**
 ```bash
-# Instal lingkungan dasar
+# 1. Instal runtime & lingkungan dasar resmi
 curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash
 
-# Ganti repo resmi dengan fork kustom Ahlfs
-rm -rf ~/.hermes/hermes-agent
-git clone https://github.com/ahlfs/hermes-agent.git ~/.hermes/hermes-agent
-
-# Sinkronisasi ulang dependensi
+# 2. Ganti remote ke fork kustom Ahlfs (Rekomendasi: cepat & venv tetap utuh)
 cd ~/.hermes/hermes-agent
-~/.hermes/bin/uv venv venv
-~/.hermes/bin/uv pip install --python venv -e ".[all]"
+git remote set-url origin https://github.com/ahlfs/hermes-agent.git
+git fetch origin
+git checkout -B main origin/main
+
+# 3. Jalankan setup untuk sinkronisasi dependensi & launcher
+./setup-hermes.sh
 ```
+
+> **Catatan jika melakukan Clone Ulang / Fresh Clone (`rm -rf ~/.hermes/hermes-agent`):**
+> Menghapus folder `~/.hermes/hermes-agent` akan ikut menghapus environment `venv/` di dalamnya. Jika Anda memilih menghapus dan clone ulang, pastikan langsung menjalankan `./setup-hermes.sh` agar virtual environment dan command `hermes` dibuat kembali:
+> ```bash
+> rm -rf ~/.hermes/hermes-agent
+> git clone https://github.com/ahlfs/hermes-agent.git ~/.hermes/hermes-agent
+> cd ~/.hermes/hermes-agent
+> ./setup-hermes.sh
+> ```
 
 ### 3. Inisialisasi Lingkungan Second Brain
 Jalankan skrip *setup* untuk membuat *virtual environment* Python yang terisolasi khusus untuk alat Second Brain:
