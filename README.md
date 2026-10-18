@@ -112,37 +112,37 @@ sudo dnf install -y ffmpeg tesseract
 sudo pacman -S --noconfirm ffmpeg tesseract
 ```
 
-### 2. Install Hermes Base & Swap to Custom Fork
-First, use the official installer to set up the necessary runtimes (Node.js, uv, PATH wrapper), then switch to this custom repository.
+### 2. Install Hermes Second Brain Edition (All-In-One)
+You can directly clone this repository and run the unified setup wizard:
 
 **Linux / macOS / WSL2:**
 ```bash
-# 1. Install official base runtime and environment
-curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash
-
-# 2. Switch remote to the Ahlfs custom fork (Recommended: fast & keeps venv intact)
+# 1. Clone custom fork
+git clone https://github.com/ahlfs/hermes-agent.git ~/.hermes/hermes-agent
 cd ~/.hermes/hermes-agent
-git remote set-url origin https://github.com/ahlfs/hermes-agent.git
-git fetch origin
-git checkout -B main origin/main
 
-# 3. Run setup to sync dependencies and launchers
-./setup-hermes.sh
+# 2. Run the unified Second Brain setup
+./setup-secondbrain.sh
 ```
 
-> **Note on Fresh Clone / Replacing folder (`rm -rf ~/.hermes/hermes-agent`):**
-> Deleting `~/.hermes/hermes-agent` also removes the internal `venv/` where the `hermes` binary lives. If you choose to wipe and clone from scratch, always run `./setup-hermes.sh` immediately after cloning to rebuild the environment and CLI command:
+The `./setup-secondbrain.sh` script automatically handles:
+- Installing `uv`, Python 3.11, and core Hermes dependencies
+- Setting up the isolated Second Brain environment (`~/.hermes/venv-second-brain`)
+- Initializing memory templates (`MEMORY.md`, `USER.md`, `SOUL.md`) with dynamic OS detection
+- Structuring the Obsidian Vault (`~/obsidian/memo`) & configuring `.env`
+- Setting up automatic Cron jobs (every 12h sync & midnight daily reflection)
+
+> **Note (If migrating from an existing official Hermes install):**
+> You don't need to delete your folder. Simply switch the git remote to this fork and run the setup:
 > ```bash
-> rm -rf ~/.hermes/hermes-agent
-> git clone https://github.com/ahlfs/hermes-agent.git ~/.hermes/hermes-agent
 > cd ~/.hermes/hermes-agent
-> ./setup-hermes.sh
+> git remote set-url origin https://github.com/ahlfs/hermes-agent.git
+> git fetch origin && git checkout -B main origin/main
+> ./setup-secondbrain.sh
 > ```
 
-> **Windows Native:** Run `iex (irm https://hermes-agent.nousresearch.com/install.ps1)` in PowerShell, then switch the git remote in `%LOCALAPPDATA%\hermes\hermes-agent` or run `.\setup-hermes.ps1` if cloning fresh.
-
-### 3. Initialize Second Brain Environment
-Run the setup script to create an isolated virtual environment specifically for the Second Brain tools:
+### 3. Manual Component Setup (Optional)
+If you prefer running individual setup steps separately:
 ```bash
 cd ~/.hermes/hermes-agent
 bash scripts/second-brain/setup-venv.sh

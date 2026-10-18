@@ -101,35 +101,37 @@ sudo dnf install -y ffmpeg tesseract
 sudo pacman -S --noconfirm ffmpeg tesseract
 ```
 
-### 2. Instal Dasar Hermes & Beralih ke Fork Kustom
-Gunakan penginstal resmi terlebih dahulu untuk menyiapkan runtime dasar (Node.js, uv, PATH wrapper). Setelah itu, hubungkan ke repositori kustom ini.
+### 2. Instalasi Hermes Second Brain Edition (All-In-One)
+Anda dapat langsung meng-clone repositori ini dan menjalankan skrip setup terpadu:
 
 **Linux / macOS / WSL2:**
 ```bash
-# 1. Instal runtime & lingkungan dasar resmi
-curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash
-
-# 2. Ganti remote ke fork kustom Ahlfs (Rekomendasi: cepat & venv tetap utuh)
+# 1. Clone fork kustom
+git clone https://github.com/ahlfs/hermes-agent.git ~/.hermes/hermes-agent
 cd ~/.hermes/hermes-agent
-git remote set-url origin https://github.com/ahlfs/hermes-agent.git
-git fetch origin
-git checkout -B main origin/main
 
-# 3. Jalankan setup untuk sinkronisasi dependensi & launcher
-./setup-hermes.sh
+# 2. Jalankan installer all-in-one Second Brain
+./setup-secondbrain.sh
 ```
 
-> **Catatan jika melakukan Clone Ulang / Fresh Clone (`rm -rf ~/.hermes/hermes-agent`):**
-> Menghapus folder `~/.hermes/hermes-agent` akan ikut menghapus environment `venv/` di dalamnya. Jika Anda memilih menghapus dan clone ulang, pastikan langsung menjalankan `./setup-hermes.sh` agar virtual environment dan command `hermes` dibuat kembali:
+Skrip `./setup-secondbrain.sh` otomatis menangani:
+- Pemasangan `uv`, Python 3.11, dan dependensi Core Hermes
+- Pembuatan isolated environment Second Brain (`~/.hermes/venv-second-brain`)
+- Inisialisasi template memori (`MEMORY.md`, `USER.md`, `SOUL.md`) dengan auto-deteksi OS
+- Inisialisasi struktur folder Obsidian Vault (`~/obsidian/memo`) & variabel `.env`
+- Penyiapan jadwal Cron otomatis (sinkronisasi 12 jam & daily reflection)
+
+> **Catatan (Jika sebelumnya memasang Hermes resmi via `curl ... | bash`):**
+> Anda tidak perlu menghapus folder atau download ulang dari awal. Cukup ubah remote Git ke fork ini lalu jalankan setup:
 > ```bash
-> rm -rf ~/.hermes/hermes-agent
-> git clone https://github.com/ahlfs/hermes-agent.git ~/.hermes/hermes-agent
 > cd ~/.hermes/hermes-agent
-> ./setup-hermes.sh
+> git remote set-url origin https://github.com/ahlfs/hermes-agent.git
+> git fetch origin && git checkout -B main origin/main
+> ./setup-secondbrain.sh
 > ```
 
-### 3. Inisialisasi Lingkungan Second Brain
-Jalankan skrip *setup* untuk membuat *virtual environment* Python yang terisolasi khusus untuk alat Second Brain:
+### 3. Inisialisasi Manual (Opsional)
+Jika Anda ingin menjalankan inisialisasi environment Second Brain secara terpisah tanpa wizard all-in-one:
 ```bash
 cd ~/.hermes/hermes-agent
 bash scripts/second-brain/setup-venv.sh

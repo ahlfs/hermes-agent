@@ -199,7 +199,7 @@ info "== Pass 2: document parsing =="
 echo
 info "== Pass 3: memory consolidation =="
 if command -v hermes >/dev/null 2>&1; then
-  python3 "$SCRIPT_DIR/consolidate_memory.py" || warn "Pass 3 failed."
+  "$VENV_PYTHON" "$SCRIPT_DIR/consolidate_memory.py" || warn "Pass 3 failed."
 else
   warn "hermes CLI not found on PATH — skipping memory consolidation."
 fi
@@ -207,18 +207,18 @@ fi
 echo
 info "== Pass 4: wiki ingest =="
 if command -v hermes >/dev/null 2>&1; then
-  python3 "$SCRIPT_DIR/wiki_ingest.py" || warn "Pass 4 failed."
+  "$VENV_PYTHON" "$SCRIPT_DIR/wiki_ingest.py" || warn "Pass 4 failed."
 else
   warn "hermes CLI not found on PATH — skipping wiki ingest."
 fi
 
 echo
 info "== Pass 4.5: wiki lint =="
-python3 "$SCRIPT_DIR/wiki_lint.py" --no-llm --save-report || true
+"$VENV_PYTHON" "$SCRIPT_DIR/wiki_lint.py" --no-llm --save-report || true
 
 echo
 info "== Pass 4.6: wiki digest =="
-python3 "$SCRIPT_DIR/generate_wiki_digest.py" || true
+"$VENV_PYTHON" "$SCRIPT_DIR/generate_wiki_digest.py" || true
 
 # cleanup moved to after git push (Pass 7) to ensure backup exists
 
@@ -265,7 +265,7 @@ success "Second brain sync complete."
 echo
 info "== Pass 7: cleanup source notes and raw files =="
 info "(runs after git push to ensure cloud backup exists)"
-python3 "$SCRIPT_DIR/cleanup_sources.py" || true
+"$VENV_PYTHON" "$SCRIPT_DIR/cleanup_sources.py" || true
 
 echo
 success "All passes complete!"
