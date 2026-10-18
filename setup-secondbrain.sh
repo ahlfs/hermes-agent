@@ -136,7 +136,7 @@ fi
 echo ""
 echo -e "${CYAN}[4/7]${NC} Memasang Core Engine Hermes (uv, Python 3.11, venv, dependencies)..."
 if [ -f "./setup-hermes.sh" ]; then
-    bash ./setup-hermes.sh
+    HERMES_SKIP_SETUP=1 bash ./setup-hermes.sh --skip-setup
 else
     echo -e "${RED}✗${NC} setup-hermes.sh tidak ditemukan!"
     exit 1

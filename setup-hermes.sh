@@ -489,11 +489,16 @@ echo "  hermes cron list     # View scheduled jobs"
 echo "  hermes doctor        # Diagnose issues"
 echo ""
 
-# Ask if they want to run setup wizard now
-read -p "Would you like to run the setup wizard now? [Y/n] " -n 1 -r
-echo
-if [[ $REPLY =~ ^[Yy]$ ]] || [[ -z $REPLY ]]; then
-    echo ""
-    # Run directly with venv Python (no activation needed)
-    "$SCRIPT_DIR/venv/bin/python" -m hermes_cli.main setup
+# Ask if they want to run setup wizard now (skip if piped, non-interactive, or flagged)
+if [ "${HERMES_SKIP_SETUP:-}" != "1" ] && [ "${1:-}" != "--skip-setup" ]; then
+    if (: </dev/tty) 2>/dev/null; then
+        REPLY="n"
+        read -p "Would you like to run the setup wizard now? [Y/n] " -n 1 -r < /dev/tty 2>/dev/null || REPLY="n"
+        echo
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+            echo ""
+            # Run directly with venv Python (no activation needed)
+            "$SCRIPT_DIR/venv/bin/python" -m hermes_cli.main setup < /dev/tty
+        fi
+    fi
 fi
