@@ -63,8 +63,10 @@ if [ ${#MISSING_PKGS[@]} -gt 0 ]; then
     echo -e "${YELLOW}⚠${NC} Paket berikut belum terpasang di sistem: ${MISSING_PKGS[*]}"
     if command -v sudo >/dev/null 2>&1; then
         REPLY="y"
-        read -p "Pasang paket yang kurang (${MISSING_PKGS[*]}) otomatis via sudo? [Y/n] " -n 1 -r < /dev/tty 2>/dev/null || REPLY="y"
-        echo ""
+        if [ -c /dev/tty ] && (: </dev/tty) 2>/dev/null; then
+            read -p "Pasang paket yang kurang (${MISSING_PKGS[*]}) otomatis via sudo? [Y/n] " -n 1 -r REPLY < /dev/tty
+            echo ""
+        fi
         if [[ $REPLY =~ ^[Yy]$ ]] || [[ -z $REPLY ]]; then
             if command -v apt-get >/dev/null 2>&1; then
                 sudo apt-get update && sudo apt-get install -y ffmpeg tesseract-ocr build-essential git curl || true
@@ -174,8 +176,10 @@ fi
 echo ""
 echo -e "${CYAN}[7/7]${NC} Menyiapkan Tugas Terjadwal (Cron Jobs Second Brain)..."
 REPLY="y"
-read -p "Aktifkan otomatisasi cron (sync tiap 12 jam, refleksi harian tiap tengah malam)? [Y/n] " -n 1 -r < /dev/tty 2>/dev/null || REPLY="y"
-echo ""
+if [ -c /dev/tty ] && (: </dev/tty) 2>/dev/null; then
+    read -p "Aktifkan otomatisasi cron (sync tiap 12 jam, refleksi harian tiap tengah malam)? [Y/n] " -n 1 -r REPLY < /dev/tty
+    echo ""
+fi
 if [[ $REPLY =~ ^[Yy]$ ]] || [[ -z $REPLY ]]; then
     if [ -f "scripts/second-brain/install-cron.sh" ]; then
         bash scripts/second-brain/install-cron.sh
