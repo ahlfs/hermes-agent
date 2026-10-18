@@ -62,7 +62,8 @@ command -v curl >/dev/null 2>&1 || MISSING_PKGS+=("curl")
 if [ ${#MISSING_PKGS[@]} -gt 0 ]; then
     echo -e "${YELLOW}⚠${NC} Paket berikut belum terpasang di sistem: ${MISSING_PKGS[*]}"
     if command -v sudo >/dev/null 2>&1; then
-        read -p "Pasang paket yang kurang (${MISSING_PKGS[*]}) otomatis via sudo? [Y/n] " -n 1 -r || true
+        REPLY="y"
+        read -p "Pasang paket yang kurang (${MISSING_PKGS[*]}) otomatis via sudo? [Y/n] " -n 1 -r < /dev/tty 2>/dev/null || REPLY="y"
         echo ""
         if [[ $REPLY =~ ^[Yy]$ ]] || [[ -z $REPLY ]]; then
             if command -v apt-get >/dev/null 2>&1; then
@@ -172,7 +173,8 @@ fi
 # ── Step 7: Install Cron Jobs (Optional) ───────────────────────────────────
 echo ""
 echo -e "${CYAN}[7/7]${NC} Menyiapkan Tugas Terjadwal (Cron Jobs Second Brain)..."
-read -p "Aktifkan otomatisasi cron (sync tiap 12 jam, refleksi harian tiap tengah malam)? [Y/n] " -n 1 -r || true
+REPLY="y"
+read -p "Aktifkan otomatisasi cron (sync tiap 12 jam, refleksi harian tiap tengah malam)? [Y/n] " -n 1 -r < /dev/tty 2>/dev/null || REPLY="y"
 echo ""
 if [[ $REPLY =~ ^[Yy]$ ]] || [[ -z $REPLY ]]; then
     if [ -f "scripts/second-brain/install-cron.sh" ]; then
