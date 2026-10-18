@@ -102,24 +102,32 @@ sudo pacman -S --noconfirm ffmpeg tesseract
 ```
 
 ### 2. Instalasi Hermes Second Brain Edition (All-In-One)
-Anda dapat langsung meng-clone repositori ini dan menjalankan skrip setup terpadu:
+Anda dapat memasangnya dengan satu baris perintah instan:
 
-**Linux / macOS / WSL2:**
+**Metode 1: One-Line Installer (Paling Praktis untuk VPS Baru):**
+```bash
+curl -fsSL https://raw.githubusercontent.com/ahlfs/hermes-agent/main/install-secondbrain.sh | bash
+```
+
+**Metode 2: Manual Clone & Setup:**
 ```bash
 # 1. Clone fork kustom
 git clone https://github.com/ahlfs/hermes-agent.git ~/.hermes/hermes-agent
 cd ~/.hermes/hermes-agent
 
-# 2. Jalankan installer all-in-one Second Brain
+# 2. Jalankan wizard setup lengkap
 ./setup-secondbrain.sh
 ```
 
-Skrip `./setup-secondbrain.sh` otomatis menangani:
-- Pemasangan `uv`, Python 3.11, dan dependensi Core Hermes
+Skrip `./setup-secondbrain.sh` otomatis menangani seluruh fondasi:
+- Pengecekan & auto-install paket sistem (`ffmpeg`, `tesseract-ocr`, `build-essential`)
+- Pemasangan runtime `Node.js` mandiri (jika belum ada, tanpa perlu root/sudo)
+- Pemasangan `uv`, Python 3.11, dependensi Core Hermes, dan symlink CLI
+- Pemasangan tools web automation (`browser-use` CLI)
 - Pembuatan isolated environment Second Brain (`~/.hermes/venv-second-brain`)
 - Inisialisasi template memori (`MEMORY.md`, `USER.md`, `SOUL.md`) dengan auto-deteksi OS
-- Inisialisasi struktur folder Obsidian Vault (`~/obsidian/memo`) & variabel `.env`
-- Penyiapan jadwal Cron otomatis (sinkronisasi 12 jam & daily reflection)
+- Inisialisasi struktur folder Obsidian Vault (`~/obsidian/memo`) & konfigurasi `.env`
+- Penyiapan jadwal Cron otomatis (sinkronisasi berkala 12 jam & daily reflection)
 
 > **Catatan (Jika sebelumnya memasang Hermes resmi via `curl ... | bash`):**
 > Anda tidak perlu menghapus folder atau download ulang dari awal. Cukup ubah remote Git ke fork ini lalu jalankan setup:

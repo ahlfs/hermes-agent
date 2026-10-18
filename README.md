@@ -113,22 +113,30 @@ sudo pacman -S --noconfirm ffmpeg tesseract
 ```
 
 ### 2. Install Hermes Second Brain Edition (All-In-One)
-You can directly clone this repository and run the unified setup wizard:
+You can install everything in one simple step:
 
-**Linux / macOS / WSL2:**
+**Method 1: One-Line Installer (Recommended for new VPS):**
+```bash
+curl -fsSL https://raw.githubusercontent.com/ahlfs/hermes-agent/main/install-secondbrain.sh | bash
+```
+
+**Method 2: Manual Clone & Setup:**
 ```bash
 # 1. Clone custom fork
 git clone https://github.com/ahlfs/hermes-agent.git ~/.hermes/hermes-agent
 cd ~/.hermes/hermes-agent
 
-# 2. Run the unified Second Brain setup
+# 2. Run the unified setup wizard
 ./setup-secondbrain.sh
 ```
 
-The `./setup-secondbrain.sh` script automatically handles:
-- Installing `uv`, Python 3.11, and core Hermes dependencies
-- Setting up the isolated Second Brain environment (`~/.hermes/venv-second-brain`)
-- Initializing memory templates (`MEMORY.md`, `USER.md`, `SOUL.md`) with dynamic OS detection
+The `./setup-secondbrain.sh` script automatically provisions all foundations:
+- System package check & auto-installation (`ffmpeg`, `tesseract-ocr`, `build-essential`)
+- Standalone `Node.js` runtime provisioning (no root/sudo required)
+- Installing `uv`, Python 3.11, and core Hermes dependencies + CLI symlinks
+- Web automation provisioning (`browser-use` CLI)
+- Isolated Second Brain environment (`~/.hermes/venv-second-brain`)
+- Memory templates (`MEMORY.md`, `USER.md`, `SOUL.md`) with dynamic OS detection
 - Structuring the Obsidian Vault (`~/obsidian/memo`) & configuring `.env`
 - Setting up automatic Cron jobs (every 12h sync & midnight daily reflection)
 
