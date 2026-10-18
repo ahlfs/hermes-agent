@@ -38,6 +38,18 @@ echo -e "${CYAN}║     🧠 Hermes Agent — Second Brain Edition Setup Wizard 
 echo -e "${CYAN}╚═════════════════════════════════════════════════════════════════╝${NC}"
 echo ""
 
+# ── Pre-check: OS Environment ──────────────────────────────────────────────
+OS_RAW="$(uname -s 2>/dev/null || echo 'Unknown')"
+case "$OS_RAW" in
+    CYGWIN*|MINGW*|MSYS*)
+        echo -e "${YELLOW}⚠ Terdeteksi lingkungan Windows ($OS_RAW).${NC}"
+        echo "   Hermes Second Brain Edition dirancang untuk Linux & macOS."
+        echo "   Untuk pengguna Windows, sangat disarankan menggunakan WSL2 (Ubuntu di Windows)"
+        echo "   agar Python venv, cron jobs, dan symlink berjalan sempurna."
+        echo ""
+        ;;
+esac
+
 # ── Step 1: Clean Stale Locks ──────────────────────────────────────────────
 echo -e "${CYAN}[1/7]${NC} Memeriksa status sistem & membersihkan stale lock..."
 for lock in "$HOME/.hermes/.hermes-update-in-progress.lock" "$HOME/.hermes/.hermes-update-in-progress"; do
@@ -61,23 +73,36 @@ command -v curl >/dev/null 2>&1 || MISSING_PKGS+=("curl")
 
 if [ ${#MISSING_PKGS[@]} -gt 0 ]; then
     echo -e "${YELLOW}⚠${NC} Paket berikut belum terpasang di sistem: ${MISSING_PKGS[*]}"
-    if command -v sudo >/dev/null 2>&1; then
+    if command -v brew >/dev/null 2>&1; then
         REPLY="y"
         if [ -c /dev/tty ] && (: </dev/tty) 2>/dev/null; then
-            read -p "Pasang paket yang kurang (${MISSING_PKGS[*]}) otomatis via sudo? [Y/n] " -n 1 -r REPLY < /dev/tty
+            read -p "Pasang paket yang kurang (${MISSING_PKGS[*]}) otomatis via Homebrew? [Y/n] " -n 1 -r REPLY < /dev/tty
+            echo ""
+        fi
+        if [[ $REPLY =~ ^[Yy]$ ]] || [[ -z $REPLY ]]; then
+            brew install ffmpeg tesseract git curl || true
+        fi
+    elif [ "$(id -u)" -eq 0 ] || command -v sudo >/dev/null 2>&1; then
+        SUDO_CMD=""
+        [ "$(id -u)" -ne 0 ] && SUDO_CMD="sudo"
+        REPLY="y"
+        if [ -c /dev/tty ] && (: </dev/tty) 2>/dev/null; then
+            read -p "Pasang paket yang kurang (${MISSING_PKGS[*]}) otomatis via $SUDO_CMD? [Y/n] " -n 1 -r REPLY < /dev/tty
             echo ""
         fi
         if [[ $REPLY =~ ^[Yy]$ ]] || [[ -z $REPLY ]]; then
             if command -v apt-get >/dev/null 2>&1; then
-                sudo apt-get update && sudo apt-get install -y ffmpeg tesseract-ocr build-essential git curl || true
+                $SUDO_CMD apt-get update && $SUDO_CMD apt-get install -y ffmpeg tesseract-ocr build-essential git curl || true
             elif command -v dnf >/dev/null 2>&1; then
-                sudo dnf install -y ffmpeg tesseract git curl gcc-c++ || true
+                $SUDO_CMD dnf install -y ffmpeg tesseract git curl gcc-c++ || true
             elif command -v pacman >/dev/null 2>&1; then
-                sudo pacman -S --noconfirm ffmpeg tesseract git curl base-devel || true
+                $SUDO_CMD pacman -S --noconfirm ffmpeg tesseract git curl base-devel || true
+            elif command -v zypper >/dev/null 2>&1; then
+                $SUDO_CMD zypper install -y ffmpeg tesseract-ocr git curl gcc-c++ || true
             fi
         fi
     else
-        echo -e "${YELLOW}ℹ${NC} Anda tidak memiliki sudo. Audio transcription atau OCR mungkin memerlukan pemasangan manual:"
+        echo -e "${YELLOW}ℹ${NC} Anda tidak memiliki akses root/sudo. Audio transcription atau OCR mungkin memerlukan pemasangan manual:"
         echo "   sudo apt install -y ${MISSING_PKGS[*]}"
     fi
 else

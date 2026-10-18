@@ -26,12 +26,18 @@ echo ""
 # Ensure git is available
 if ! command -v git >/dev/null 2>&1; then
     echo -e "${YELLOW}→${NC} git tidak ditemukan. Mencoba memasang git..."
-    if command -v apt-get >/dev/null 2>&1 && command -v sudo >/dev/null 2>&1; then
-        sudo apt-get update && sudo apt-get install -y git curl
-    elif command -v dnf >/dev/null 2>&1 && command -v sudo >/dev/null 2>&1; then
-        sudo dnf install -y git curl
-    elif command -v pacman >/dev/null 2>&1 && command -v sudo >/dev/null 2>&1; then
-        sudo pacman -S --noconfirm git curl
+    if command -v brew >/dev/null 2>&1; then
+        brew install git curl
+    elif [ "$(id -u)" -eq 0 ] || command -v sudo >/dev/null 2>&1; then
+        SUDO_CMD=""
+        [ "$(id -u)" -ne 0 ] && SUDO_CMD="sudo"
+        if command -v apt-get >/dev/null 2>&1; then
+            $SUDO_CMD apt-get update && $SUDO_CMD apt-get install -y git curl
+        elif command -v dnf >/dev/null 2>&1; then
+            $SUDO_CMD dnf install -y git curl
+        elif command -v pacman >/dev/null 2>&1; then
+            $SUDO_CMD pacman -S --noconfirm git curl
+        fi
     else
         echo -e "${RED}✗${NC} Silakan pasang 'git' dan 'curl' terlebih dahulu di sistem Anda."
         exit 1
